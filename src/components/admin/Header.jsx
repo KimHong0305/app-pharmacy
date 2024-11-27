@@ -5,7 +5,7 @@ const Header = ({ showSidebar, setShowSidebar }) => {
 
   const userInfo = {
     name: "Kim Hong",
-    role: "admin", // Có thể thay đổi thành 'user' để thử nghiệm
+    role: "admin",
     image: "http://localhost:3000/images/avata_1.jpg"
   };
 

@@ -27,41 +27,41 @@ export const allNav = [
         title : 'Categories',
         icon : <MdOutlineCategory />,
         role : 'ROLE_ADMIN',
-        path: '/admin/users'
+        path: '/admin/categories'
     },
     {
         id : 4,
         title : 'Products',
         icon : <GiMedicines />,
         role : 'ROLE_ADMIN',
-        path: '/admin/users'
+        path: '/admin/products'
     },
     {
         id : 5,
         title : 'Prices',
         icon : <IoPricetagOutline />,
         role : 'ROLE_ADMIN',
-        path: '/admin/users'
+        path: '/admin/prices'
     },
     {
         id : 6,
         title : 'Units',
         icon : <CiBoxes />,
         role : 'ROLE_ADMIN',
-        path: '/admin/users'
+        path: '/admin/units'
     },
     {
         id : 7,
         title : 'Orders',
         icon : <BsCartCheck />,
         role : 'ROLE_ADMIN',
-        path: '/admin/users'
+        path: '/admin/orders'
     },
     {
         id : 8,
-        title : 'Company',
+        title : 'Companies',
         icon : <PiTrademarkRegisteredLight />,
         role : 'ROLE_ADMIN',
-        path: '/admin/users'
+        path: '/admin/companies'
     },
 ]

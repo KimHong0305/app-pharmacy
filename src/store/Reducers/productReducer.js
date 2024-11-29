@@ -3,15 +3,16 @@ import api from "../../api/api";
 
 export const getAllProducts = createAsyncThunk(
   'product/fetchProducts',
-  async (_, { rejectWithValue }) => {
+  async ({ page = 0, size = 10, sortOrder = 'asc' }, { rejectWithValue }) => {
     try {
-      const response = await api.get('product?sortOrder=asc');
+      const response = await api.get(`product?page=${page}&size=${size}&sortOrder=${sortOrder}`);
       return response.data.result;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
+
 
 export const getProductById = createAsyncThunk(
   'product/fetchProductById',
@@ -42,6 +43,9 @@ const productSlice = createSlice({
   initialState: {
     allProducts: [],
     products: [],
+    totalPages: 0,
+    totalElements: 0,
+    currentPage: 0,
     product: null,
     loading: false,
     error: null
@@ -56,6 +60,8 @@ const productSlice = createSlice({
         state.loading = false;
         state.products = action.payload.content;
         state.allProducts = action.payload.content;
+        state.totalPages = action.payload.totalPages;
+        state.totalElements = action.payload.totalElements;
       })
       .addCase(getAllProducts.rejected, (state, action) => {
         state.loading = false;
@@ -82,7 +88,7 @@ const productSlice = createSlice({
       .addCase(getProductByCategory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });;
+      });
   }
 });
 

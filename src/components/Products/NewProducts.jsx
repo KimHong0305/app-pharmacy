@@ -11,10 +11,12 @@ import { useDispatch, useSelector } from 'react-redux';
 const NewProducts = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.product);
+  const { allProducts } = useSelector((state) => state.product);
 
+  const page = 0;
+  const size = 10;
   useEffect(() => {
-    dispatch(getAllProducts());
+    dispatch(getAllProducts({ page, size }));
   }, [dispatch]);
 
   const handleProductClick = (productId) => {
@@ -51,7 +53,7 @@ const NewProducts = () => {
         }}
         className="my-5"
         >
-        {products.map((product) => (
+        {allProducts.map((product) => (
           <SwiperSlide key={product.id}>
             <div
               className="static flex flex-col items-center justify-center border border-[#6ec2f7] w-[200px] h-[280px] 

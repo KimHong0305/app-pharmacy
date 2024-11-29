@@ -14,7 +14,7 @@ root.render(
       <BrowserRouter>
         <App />
         <ToastContainer />
-      </BrowserRouter>
+      </BrowserRouter>  
     </Provider>
   </React.StrictMode>
 );

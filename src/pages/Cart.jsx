@@ -25,7 +25,7 @@ const Cart = () => {
       dispatch(getCartUser());
       console.log('gio hang user')
     } else {
-      dispatch(getCartGuest()); // Gọi API lấy giỏ hàng cho khách
+      dispatch(getCartGuest());
     }
   }, [dispatch, token]);
 
@@ -35,10 +35,10 @@ const Cart = () => {
       const deleteItem = { cartItemId: id };
 
       if (token) {
-        dispatch(deleteCartUser(deleteItem)) // API xóa sản phẩm của người dùng
+        dispatch(deleteCartUser(deleteItem))
           .then(() => dispatch(getCartUser()));
       } else {
-        dispatch(deleteCartGuest(deleteItem)) // API xóa sản phẩm của khách
+        dispatch(deleteCartGuest(deleteItem))
           .then(() => dispatch(getCartGuest()));
       }
     }

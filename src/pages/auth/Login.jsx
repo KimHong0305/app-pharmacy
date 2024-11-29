@@ -12,7 +12,7 @@ const Login = ({isVisible, onClose}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { errorMessage,successMessage } = useSelector((state) => state.auth);
+  const { role, errorMessage,successMessage } = useSelector((state) => state.auth);
 
   const [ state, setState ] = useState({
     username:'',
@@ -40,7 +40,11 @@ const Login = ({isVisible, onClose}) => {
         username: '',
         password: '',
       });
-      navigate('/');
+      if (role === 'ROLE_ADMIN'){
+        navigate('/admin/dashboard');
+      }else{
+        navigate('/');
+      }
       onClose()
     }
     if (errorMessage) {
@@ -74,9 +78,9 @@ const Login = ({isVisible, onClose}) => {
                 placeholder='Nhập mật khẩu' id='password' required name='password'></input>
               </div>
               <div className='flex justify-end'>
-                <button className='mt-2 font-semibold text-sm' onClick={() => navigate("/forgotPassword")}>
+                <label className='mt-2 font-semibold text-sm' onClick={() => navigate("/forgotPassword")}>
                   Quên mật khẩu?
-                </button>
+                </label>
               </div>
               <button className="mt-5 w-full h-10 px-3 rounded bg-sky-500 hover:bg-sky-700 text-white
               text-lg font-semibold" type="submit">

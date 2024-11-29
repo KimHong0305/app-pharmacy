@@ -57,7 +57,7 @@ const ProductList = () => {
                             <button className='w-full h-8 px-3 rounded-md bg-sky-500 hover:bg-sky-700 text-white text-sm font-semibold'>
                                 Áp dụng
                             </button>
-                            <p className='text-sm font-semibold'>Khoảng giá</p>
+                            <p className='text-sm font-semibold'>Thương hiệu</p>
                             <div className="flex items-center border border-gray-300 rounded-md px-3 py-1 w-full">
                                 <input
                                     type="text"

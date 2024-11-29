@@ -97,10 +97,10 @@ export const resetPassword = createAsyncThunk(
 const returnRole = (token) => {
   if (token) {
     const decodeToken = jwtDecode(token);
-    const expireTime = new Date(decodeToken.exp * 1000);
+    const expireTime = new Date(decodeToken.exp * 10000);
     
     if (new Date() > expireTime) {
-      localStorage.removeItem('token');
+      console.log('Het time')
       return '';
     } else {
       return decodeToken.scope;

@@ -10,7 +10,7 @@ import { MdLogout } from "react-icons/md";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getCategoryNull } from '../store/Reducers/categoryReducer';
-import { getCartGuest } from '../store/Reducers/cartReducer';
+import { getCartGuest, getCartUser } from '../store/Reducers/cartReducer';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
@@ -22,7 +22,13 @@ const Header = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   
   useEffect(() => {
-    dispatch(getCartGuest());
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      dispatch(getCartUser());
+    } else {
+      dispatch(getCartGuest());
+    }
   }, [dispatch]);
 
   const cartCount = cartItems.length;

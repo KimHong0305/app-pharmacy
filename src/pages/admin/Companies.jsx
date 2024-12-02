@@ -17,40 +17,40 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { toast } from 'react-toastify';
 
 const Companies = () => {
-    const dispatch = useDispatch();
-    const { companies, loading, totalPages, currentPage } = useSelector((state) => state.company);
-    const [companyName, setCompanyName] = useState('');
-    const [origin, setOrigin] = useState('');
-    const [logo, setLogo] = useState(null)
-    const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20];
-    const [logoPreview, setLogoPreview] = useState(null);
+  const dispatch = useDispatch();
+  const { companies, loading, totalPages, currentPage } = useSelector((state) => state.company);
+  const [companyName, setCompanyName] = useState('');
+  const [origin, setOrigin] = useState('');
+  const [logo, setLogo] = useState(null)
+  const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20];
+  const [logoPreview, setLogoPreview] = useState(null);
 
-    const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[1]);
+  const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
 
-    useEffect(() => {
-      dispatch(getCompanies({ page: currentPage, size }));
-    }, [dispatch, size, currentPage]);
+  useEffect(() => {
+    dispatch(getCompanies({ page: currentPage, size }));
+  }, [dispatch, size, currentPage]);
 
-    const handlePageChange = (page) => {
-        dispatch(getCompanies({ page, size }));
+  const handlePageChange = (page) => {
+      dispatch(getCompanies({ page, size }));
+  }
+
+  const handleItemsPerPageChange = (e) => {
+      setSize(Number(e.target.value));
+  };
+
+  const handleLogoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setLogoPreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+        setLogo(file);
+    } else {
+        setLogo(null);
     }
-
-    const handleItemsPerPageChange = (e) => {
-        setSize(Number(e.target.value));
-    };
-
-    const handleLogoChange = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-              setLogoPreview(reader.result);
-          };
-          reader.readAsDataURL(file);
-          setLogo(file);
-      } else {
-          setLogo(null);
-      }
   };     
 
   const handleSubmit = async (e) => {
@@ -239,13 +239,13 @@ const Companies = () => {
                       />
                       <label
                           htmlFor="logo"
-                          className="flex items-center justify-center w-[127px] h-[70px] border-dashed border-2 border-gray-300 cursor-pointer"
+                          className="flex items-center justify-center w-[150px] h-[100px] border-dashed border-2 border-gray-300 cursor-pointer"
                       >
                         {logoPreview ? (
                           <img
                             src={logoPreview}
                             alt="Logo Preview"
-                            className="object-cover h-[70px] h-[70px]"
+                            className="object-cover w-[150px] h-[90px]"
                           />
                         ) : (
                           <IoIosAddCircleOutline className="text-gray-300 text-4xl" />

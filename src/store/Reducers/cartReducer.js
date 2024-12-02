@@ -54,12 +54,11 @@ export const deleteCartGuest = createAsyncThunk(
     }
 );
 
-const token = localStorage.getItem('token');
-
 export const addCartUser = createAsyncThunk(
     "user/add_cart",
     async ({ item, token }, { rejectWithValue }) => {
         try {
+            const token = localStorage.getItem('token');
             const response = await api.post("/cart", item, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -76,6 +75,7 @@ export const getCartUser = createAsyncThunk(
     "user/cart",
     async (_, { rejectWithValue }) => {
         try {
+            const token = localStorage.getItem('token');
             const cartResponse = await api.get("/cart", {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -92,6 +92,7 @@ export const updateCartUser = createAsyncThunk(
     "user/updateCart",
     async (itemUpdate, { rejectWithValue }) => {
         try {
+            const token = localStorage.getItem('token');
             const response = await api.put("/cart", itemUpdate, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -109,6 +110,7 @@ export const deleteCartUser = createAsyncThunk(
     "user/deleteCart",
     async (itemDelete, { rejectWithValue }) => {
         try {
+            const token = localStorage.getItem('token');
             const response = await api.delete("/cart", { data: itemDelete ,
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -125,6 +127,7 @@ export const transfer = createAsyncThunk(
     "transfer",
     async (_, { rejectWithValue }) => {
         try {
+            const token = localStorage.getItem('token');
             const cartResponse = await api_cartGuest.post("/cart/transfer", null, {
                 headers: {
                     Authorization: `Bearer ${token}`,

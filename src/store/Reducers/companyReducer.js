@@ -1,11 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/api";
 
-const token = localStorage.getItem('token');
-
 export const getCompanies = createAsyncThunk(
   "/getCompanies",
-  async ({ page = 0, size = 10 }, { rejectWithValue }) => {
+  async ({ page = 0, size = 5 }, { rejectWithValue }) => {
     try {
       const response = await api.get(`/company?page=${page}&size=${size}`);
       return response.data.result;
@@ -19,6 +17,7 @@ export const createCompany = createAsyncThunk(
   "/createCompany",
   async (newCompany, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await api.post('/company', newCompany, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -44,7 +43,6 @@ const companySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Lấy danh sách công ty
       .addCase(getCompanies.pending, (state) => {
         state.loading = true;
         state.error = null;

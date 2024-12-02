@@ -5,7 +5,7 @@ const token = localStorage.getItem('token');
 
 export const getUnits = createAsyncThunk(
   "unit/getUnits",
-  async ({ page = 0, size = 10 }, { rejectWithValue }) => {
+  async ({ page = 0, size = 5 }, { rejectWithValue }) => {
     try {
       const response = await api.get(`/unit?page=${page}&size=${size}`);
       return response.data.result;

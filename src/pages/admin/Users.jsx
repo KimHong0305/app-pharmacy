@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getUsers } from '../../store/Reducers/userReducer';
+import { banUsers, getUsers, unBanUsers } from '../../store/Reducers/userReducer';
 import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead, } from "../../components/ui/table"
 import {
     Pagination,
@@ -13,15 +13,21 @@ import {
     } from "../../components/ui/pagination";  
 import { FaSearch } from "react-icons/fa";
 import { FiUserCheck, FiUserX } from 'react-icons/fi';
+import { toast } from 'react-toastify';
 
 const Users = () => {
 
   const dispatch = useDispatch();
   const { allUsers, loading, totalPages, currentPage } = useSelector((state) => state.user);
 
+  const [UserToBan, setUserToBan] = useState(null);
+  const [isBanDialogOpen, setIsBanDialogOpen] = useState(false);
+  const [UserToUnban, setUserToUnban] = useState(null);
+  const [isUnbanDialogOpen, setIsUnbanDialogOpen] = useState(false);
+
   const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20];
 
-  const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[1]);
+  const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
 
   useEffect(() => {
     dispatch(getUsers({ page: currentPage, size }));
@@ -34,7 +40,56 @@ const Users = () => {
   const handleItemsPerPageChange = (e) => {
     setSize(Number(e.target.value));
   };
+
+  const handleBanClick = (UserId) => {
+    setUserToBan(UserId);
+    setIsBanDialogOpen(true);
+  };
+
+  const handleConfirmBan = async () => {
+      if (UserToBan) {
+          try {
+              await dispatch(banUsers(UserToBan));
+              dispatch(getUsers({ page: currentPage, size }));
+              toast.success('Cấm người dùng thành công');
+              setUserToBan(null);
+              setIsBanDialogOpen(false);
+            } catch (error) {
+              toast.error(error.message);
+          }
+      }
+  };
+
+  const handleCancelBan = () => {
+      setUserToBan(null);
+      setIsBanDialogOpen(false);
+  };
   
+  const handleUnbanClick = (UserId) => {
+    setUserToUnban(UserId);
+    setIsUnbanDialogOpen(true);
+  };
+
+  const handleConfirmUnban = async () => {
+      if (UserToUnban) {
+          try {
+              await dispatch(unBanUsers(UserToUnban));
+              dispatch(getUsers({ page: currentPage, size }));
+              toast.success('Bỏ cấm người dùng thành công');
+              setUserToUnban(null);
+              setIsUnbanDialogOpen(false);
+          } catch (error) {
+              toast.error(error.message);
+          }
+      }
+  };
+
+  const handleCancelUnban = () => {
+      setUserToUnban(null);
+      setIsUnbanDialogOpen(false);
+  };
+
+
   return (
     <div className="px-2 md:px-4">
       <div className="flex flex-col p-4 rounded bg-white shadow-lg">
@@ -110,11 +165,13 @@ const Users = () => {
                       </TableCell>
                       <TableCell>
                         {user.status ? 
-                          <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2">
+                          <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2"
+                          onClick={() => handleBanClick(user.id)}>
                             <FiUserX className="text-red-500" /> 
                           </button>
                           : 
-                          <button className="flex items-center justify-center p-2 rounded-lg bg-green-200 ml-2">
+                          <button className="flex items-center justify-center p-2 rounded-lg bg-green-200 ml-2"
+                          onClick={() => handleUnbanClick(user.id)}>
                             <FiUserCheck className="text-green-500" />
                           </button>}
                       </TableCell>
@@ -145,14 +202,53 @@ const Users = () => {
               disabled={currentPage === totalPages - 1}
           />
         </Pagination>
-
-        <button
-          className="px-4 py-2 bg-[#41c5e5] text-white font-semibold rounded hover:bg-sky-500"
-        >
-          Create accounts
-        </button>
       </div>  
     </div>
+    {isBanDialogOpen && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg">
+              <h3 className="text-lg font-bold mb-4">Xác nhận cấm</h3>
+              <p className="mb-6">Bạn có chắc chắn muốn cấm người dùng này không?</p>
+              <div className="flex justify-end space-x-4">
+                  <button
+                      className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300"
+                      onClick={handleCancelBan}
+                  >
+                      Hủy
+                  </button>
+                  <button
+                      className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                      onClick={handleConfirmBan}
+                  >
+                      Xác nhận
+                  </button>
+              </div>
+          </div>
+      </div>
+    )}
+
+    {isUnbanDialogOpen && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg">
+              <h3 className="text-lg font-bold mb-4">Xác nhận bỏ cấm</h3>
+              <p className="mb-6">Bạn có chắc chắn muốn bỏ cấm người dùng này không?</p>
+              <div className="flex justify-end space-x-4">
+                  <button
+                      className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300"
+                      onClick={handleCancelUnban}
+                  >
+                      Hủy
+                  </button>
+                  <button
+                      className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                      onClick={handleConfirmUnban}
+                  >
+                      Xác nhận
+                  </button>
+              </div>
+          </div>
+      </div>
+    )}
   </div>
   );
 };

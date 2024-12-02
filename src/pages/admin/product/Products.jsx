@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllProducts } from "../../store/Reducers/productReducer";
-import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "../../components/ui/table";
+import { deleteProduct, getAllProducts } from "../../../store/Reducers/productReducer";
+import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "../../../components/ui/table";
 import {
   Pagination,
   PaginationContent,
@@ -9,19 +9,26 @@ import {
   PaginationLink,
   PaginationPrevious,
   PaginationNext,
-} from "../../components/ui/pagination";
+} from "../../../components/ui/pagination";
 import { FaSearch, FaRegEdit } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { MdAdd } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Products = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    const { allProducts, loading, error, currentPage, totalPages } = useSelector((state) => state.product);
+    const { allProducts, loading, error, totalPages } = useSelector((state) => state.product);
 
     const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20];
-    const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[1]);
+    const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
+    const [currentPage, setCurrentPage] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
+
+    const [productToDelete, setProductToDelete] = useState(null);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     useEffect(() => {
         dispatch(getAllProducts({ page: currentPage, size }));
@@ -34,15 +41,46 @@ const Products = () => {
 
     const handlePageChange = (page) => {
         if (page >= 0 && page < totalPages) {
-        dispatch(getAllProducts({ page, size }));
+            setCurrentPage(page);
         }
+    };
+
+    const handleAddProduct= () => {
+        navigate('/admin/addProduct');
     };
 
     const truncateText = (text, maxLength) => 
         text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;      
-    
 
-    // Tìm kiếm sản phẩm
+    const handleEditProduct= (id) => {
+        console.log(id)
+        navigate('/admin/editProduct', { state: id });
+    };
+
+    const handleDeleteClick = (productId) => {
+        setProductToDelete(productId);
+        setIsDeleteDialogOpen(true);
+    };
+    
+    const handleConfirmDelete = async () => {
+        if (productToDelete) {
+            try {
+                await dispatch(deleteProduct(productToDelete));
+                dispatch(getAllProducts({ page: currentPage, size }));
+                toast.success('Xóa sản phẩm thành công');
+                setProductToDelete(null);
+                setIsDeleteDialogOpen(false);
+              } catch (error) {
+                toast.error(error.message);
+            }
+        }
+    };
+    
+    const handleCancelDelete = () => {
+        setProductToDelete(null);
+        setIsDeleteDialogOpen(false);
+    };
+    
     const handleSearch = (e) => setSearchQuery(e.target.value);
 
     return (
@@ -83,7 +121,8 @@ const Products = () => {
                 </div>
                 </div>
                 <div className="mt-4 md:mt-0 mr-10">
-                    <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
+                    <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                    onClick= {handleAddProduct}>
                         <div className="flex items-center justify-center">
                             <MdAdd className="mr-2"/>
                             <p>Thêm sản phẩm</p>
@@ -128,10 +167,12 @@ const Products = () => {
                         <TableCell>{product.dateCreation}</TableCell>
                         <TableCell>
                             <div className='flex'>
-                                <button className="flex items-center justify-center p-2 rounded-lg bg-sky-200">
+                                <button className="flex items-center justify-center p-2 rounded-lg bg-sky-200"
+                                onClick={() => handleEditProduct(product.id)}>
                                     <FaRegEdit className="text-sky-400" /> 
                                 </button>
-                                <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2">
+                                <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2"
+                                onClick={() => handleDeleteClick(product.id)}>
                                     <FaRegTrashCan className="text-red-500" /> 
                                 </button>
                             </div>
@@ -143,28 +184,52 @@ const Products = () => {
             </Table>
 
             {/* Pagination */}
-                <Pagination>
-                    <PaginationPrevious
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 0}
-                    />
-                    {Array.from({ length: totalPages }).map((_, idx) => (
-                        <PaginationItem className="list-none" key={idx}>
+            <Pagination>
+                <PaginationPrevious
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 0}
+                />
+                {Array.from({ length: totalPages }).map((_, idx) => (
+                    <PaginationItem className="list-none" key={idx}>
                         <PaginationLink
                             isActive={currentPage === idx}
                             onClick={() => handlePageChange(idx)}
                         >
                             {idx + 1}
                         </PaginationLink>
-                        </PaginationItem>                  
-                    ))}
-                    <PaginationNext
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages - 1}
-                    />
-                </Pagination>
+                    </PaginationItem>                  
+                ))}
+                <PaginationNext
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages - 1}
+                />
+            </Pagination>
                 </div>
             </div>
+
+            {isDeleteDialogOpen && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div className="bg-white p-6 rounded-md shadow-lg">
+                    <h3 className="text-lg font-bold mb-4">Xác nhận xóa</h3>
+                    <p className="mb-6">Bạn có chắc chắn muốn xóa sản phẩm này không?</p>
+                    <div className="flex justify-end space-x-4">
+                        <button
+                            className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300"
+                            onClick={handleCancelDelete}
+                        >
+                            Hủy
+                        </button>
+                        <button
+                            className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                            onClick={handleConfirmDelete}
+                        >
+                            Xác nhận
+                        </button>
+                    </div>
+                </div>
+            </div>
+            )}
+
         </div>
     );
 };

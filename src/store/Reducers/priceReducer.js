@@ -1,11 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/api";
 
-const token = localStorage.getItem('token');
-
 export const getAllPrices = createAsyncThunk(
-  "unit/getAllPrices",
-  async ({ page = 0, size = 10 }, { rejectWithValue }) => {
+  "price/getAllPrices",
+  async ({ page = 0, size = 5 }, { rejectWithValue }) => {
     try {
       const response = await api.get(`/price?page=${page}&size=${size}`);
       return response.data.result;
@@ -15,7 +13,41 @@ export const getAllPrices = createAsyncThunk(
   }
 );
 
-const companySlice = createSlice({
+export const createPrice = createAsyncThunk(
+  "price/createPrice",
+  async (item, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.post('/price', item, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const updatePrice = createAsyncThunk(
+  "price/updatePrice",
+  async (price, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.put('/price', price, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+const priceSlice = createSlice({
   name: "price",
   initialState: {
     prices: [],
@@ -24,10 +56,16 @@ const companySlice = createSlice({
     currentPage: 0,
     loading: false,
     error: null,
+    successMessage: null,
   },
-  reducers: {},
+  reducers: {
+    messageClear: (state, _) => {
+      state.successMessage = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
+      // Get All Price
       .addCase(getAllPrices.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -43,7 +81,32 @@ const companySlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      // Create Price
+      .addCase(createPrice.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createPrice.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(createPrice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Edit Price
+      .addCase(updatePrice.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updatePrice.fulfilled, (state, action) => {
+        state.loading = false;
+        state.successMessage = action.payload.message;
+      })
+      .addCase(updatePrice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
   },
 });
 
-export default companySlice.reducer;
+export default priceSlice.reducer;

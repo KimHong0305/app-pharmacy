@@ -3,9 +3,10 @@ import api from "../../api/api";
 
 export const getAllProducts = createAsyncThunk(
   'product/fetchProducts',
-  async ({ page = 0, size = 10, sortOrder = 'asc' }, { rejectWithValue }) => {
+  async ({ page = 0, size = 5, sortOrder = 'asc' }, { rejectWithValue }) => {
     try {
       const response = await api.get(`product?page=${page}&size=${size}&sortOrder=${sortOrder}`);
+      console.log(response.data.result)
       return response.data.result;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -38,6 +39,58 @@ export const getProductByCategory = createAsyncThunk(
   }
 );
 
+export const createProduct = createAsyncThunk(
+  "product/createProduct",
+  async (newProduct, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.post('/product', newProduct, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data)
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const updateProduct = createAsyncThunk(
+  "product/updateProduct",
+  async (product, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.put('/product', product, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const deleteProduct = createAsyncThunk(
+  "product/deleteProduct",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.delete(`/product/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: 'product',
   initialState: {
@@ -53,6 +106,7 @@ const productSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // get All
       .addCase(getAllProducts.pending, (state) => {
         state.loading = true;
       })
@@ -67,6 +121,7 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      // Get by Id
       .addCase(getProductById.pending, (state) => {
         state.loading = true;
       })
@@ -78,6 +133,7 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      // Get by category
       .addCase(getProductByCategory.pending, (state) => {
         state.loading = true;
       })
@@ -88,7 +144,40 @@ const productSlice = createSlice({
       .addCase(getProductByCategory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // create
+      .addCase(createProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createProduct.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(createProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // update product
+      .addCase(updateProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // xoa san pham
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
   }
 });
 

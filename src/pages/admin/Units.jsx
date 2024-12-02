@@ -21,7 +21,7 @@ const Units = () => {
     const { units, loading, currentPage, totalPages } = useSelector((state) => state.unit);
 
     const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20];
-    const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[1]);
+    const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
     const [searchQuery, setSearchQuery] = useState("");
     const [unitName, setUnitName] = useState("");
     const [unitNameUpdate, setUnitUpdateName] = useState("");
@@ -303,7 +303,7 @@ const Units = () => {
                     </div>
                 </div>
             </div>
-        )}
+            )}
         </div>
     );
 };

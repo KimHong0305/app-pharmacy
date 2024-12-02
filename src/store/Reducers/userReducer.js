@@ -1,18 +1,51 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../api/api";
 
-const token = localStorage.getItem('token');
-
 export const getUsers = createAsyncThunk(
     'admin/user',
-    async ({ page = 0, size = 10 }, { rejectWithValue, fulfillWithValue }) => {
+    async ({ page = 0, size = 5 }, { rejectWithValue, fulfillWithValue }) => {
         try {
+            const token = localStorage.getItem('token');
             const { data } = await api.get(`/user?page=${page}&size=${size}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             return fulfillWithValue(data);
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const banUsers = createAsyncThunk(
+    'admin/banUser',
+    async (user, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.put(`/user/ban/${user}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const unBanUsers = createAsyncThunk(
+    'admin/unBanUser',
+    async (user, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.put(`/user/unban/${user}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
@@ -32,6 +65,7 @@ const userSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            // get All User
             .addCase(getUsers.pending, (state) => {
                 state.loading = true;
             })
@@ -45,6 +79,28 @@ const userSlice = createSlice({
             .addCase(getUsers.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            // Ban người dùng
+            .addCase(banUsers.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(banUsers.fulfilled, (state, action) => {
+            state.loading = false;
+            })
+            .addCase(banUsers.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+            })
+            // Gỡ Ban người dùng
+            .addCase(unBanUsers.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(unBanUsers.fulfilled, (state, action) => {
+            state.loading = false;
+            })
+            .addCase(unBanUsers.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
             });
     },
 });

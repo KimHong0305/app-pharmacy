@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getAllPrices } from '../../store/Reducers/priceReducer';
+import { getAllPrices } from '../../../store/Reducers/priceReducer';
 import {
-Table,
-TableHeader,
-TableBody,
-TableRow,
-TableCell,
-TableHead,
-} from "../../components/ui/table";
+    Table,
+    TableHeader,
+    TableBody,
+    TableRow,
+    TableCell,
+    TableHead,
+} from "../../../components/ui/table";
 import {
-Pagination,
-PaginationContent,
-PaginationItem,
-PaginationLink,
-PaginationPrevious,
-PaginationNext,
-PaginationEllipsis,
-} from "../../components/ui/pagination";  
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationPrevious,
+    PaginationNext,
+    PaginationEllipsis,
+} from "../../../components/ui/pagination";  
 import { FaSearch, FaRegEdit } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { MdAdd } from "react-icons/md";
@@ -29,7 +29,7 @@ const Prices = () => {
     const { prices, loading, totalPages, currentPage } = useSelector((state) => state.price);
 
     const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20];
-    const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[1]);
+    const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
 
 
     useEffect(() => {
@@ -42,6 +42,10 @@ const Prices = () => {
 
     const handleItemsPerPageChange = (e) => {
         setSize(Number(e.target.value));
+    };
+
+    const handleEditPrice= (price) => {
+        navigate('/admin/editPrice', { state: price });
     };
 
     const handleAddPrice= () => {
@@ -125,7 +129,8 @@ const Prices = () => {
                         <TableCell>{price.unit.name}</TableCell>
                         <TableCell>
                             <div className='flex'>
-                                <button className="flex items-center justify-center p-2 rounded-lg bg-sky-200">
+                                <button className="flex items-center justify-center p-2 rounded-lg bg-sky-200"
+                                onClick={() => handleEditPrice(price)}>
                                     <FaRegEdit className="text-sky-400" /> 
                                 </button>
                                 <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2">

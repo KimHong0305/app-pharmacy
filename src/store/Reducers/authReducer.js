@@ -96,14 +96,19 @@ export const resetPassword = createAsyncThunk(
 
 const returnRole = (token) => {
   if (token) {
-    const decodeToken = jwtDecode(token);
-    const expireTime = new Date(decodeToken.exp * 10000);
-    
-    if (new Date() > expireTime) {
-      console.log('Het time')
+    try {
+      const decodeToken = jwtDecode(token);
+      const expireTime = new Date(decodeToken.exp * 1000);
+
+      if (new Date() > expireTime) {
+        console.log('Token hết hạn');
+        return '';
+      } else {
+        return decodeToken.scope;
+      }
+    } catch (error) {
+      console.error('Lỗi giải mã token:', error);
       return '';
-    } else {
-      return decodeToken.scope;
     }
   } else {
     return '';

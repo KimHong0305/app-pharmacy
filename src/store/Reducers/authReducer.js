@@ -40,8 +40,9 @@ export const userLogin = createAsyncThunk(
 
 export const getUserInfo = createAsyncThunk(
   'user/bio',
-  async (token, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await api.get('/user/bio', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -216,7 +217,6 @@ const authSlice = createSlice({
     .addCase(getUserInfo.fulfilled, (state, action) => {
       state.loading = false;
       state.bio = action.payload.result;
-      console.log(state.bio);
     })
     .addCase(getUserInfo.rejected, (state, action) => {
       state.loading = false;

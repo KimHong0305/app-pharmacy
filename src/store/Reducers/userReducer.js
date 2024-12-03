@@ -18,6 +18,23 @@ export const getUsers = createAsyncThunk(
     }
 );
 
+export const updateBio = createAsyncThunk(
+    "user/updateBio",
+    async (bio, { rejectWithValue }) => {
+        try {
+        const token = localStorage.getItem('token');
+        const response = await api.put('/user/update-bio', bio, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+        } catch (error) {
+        return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 export const banUsers = createAsyncThunk(
     'admin/banUser',
     async (user, { rejectWithValue }) => {
@@ -101,7 +118,18 @@ const userSlice = createSlice({
             .addCase(unBanUsers.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
-            });
+            })
+            // Cập nhật bio
+            .addCase(updateBio.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(updateBio.fulfilled, (state, action) => {
+            state.loading = false;
+            })
+            .addCase(updateBio.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+            })
     },
 });
 

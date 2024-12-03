@@ -7,6 +7,7 @@ import Register from '../../pages/auth/Register';
 import TestComponent from  '../../pages/TestComponent';
 import ForgotPassword from '../../pages/auth/ForgotPassword';
 import SearchProduct from '../../pages/SearchProduct';
+import Order from '../../pages/Order';
 
 const publicRoutes = [
     {
@@ -40,6 +41,10 @@ const publicRoutes = [
     {
         path: '/search',
         element : <SearchProduct/>, 
+    },
+    {
+        path: '/order',
+        element : <Order/>, 
     },
 ]
 

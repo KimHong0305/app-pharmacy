@@ -45,6 +45,8 @@ const ProductDetail = () => {
         dispatch(getProductById(productId));
     }, [dispatch, productId]);
 
+    console.log(product)
+
     useEffect(() => {
         if (product?.length > 0) {
             setProductImages(product[0].images);
@@ -93,6 +95,18 @@ const ProductDetail = () => {
             dispatch(messageClear());
         }
     }, [message, messageError, dispatch]);
+
+    const renderTextWithLineBreaks = (text) => {
+        if (!text) return null;
+        // Thay \\n bằng \n và chia nhỏ thành dòng
+        return text.replace(/\\n/g, '\n').split('\n').map((line, index) => (
+            <React.Fragment key={index}>
+                {line}
+                <br />
+            </React.Fragment>
+        ));
+    };    
+    
 
     return (
         <div>
@@ -166,21 +180,26 @@ const ProductDetail = () => {
                             </div>
                         </div>
                         <div className="flex-grow border-t border-gray-400"></div>
-                        <div>
-                            <p className="text-base font-medium text-gray-700 my-2">Lợi ích</p>
-                            {product?.[0]?.benefits}
-                            <p className="text-base font-medium text-gray-700 my-2">Thành phần</p>
-                            {product?.[0]?.ingredients}
-                            <p className="text-base font-medium text-gray-700 my-2">Chống chỉ định</p>
-                            {product?.[0]?.constraindication}
-                            <p className="text-base font-medium text-gray-700 my-2">Cách sử dụng</p>
-                            {product?.[0]?.object_use}
-                            <p className="text-base font-medium text-gray-700 my-2">Hướng dẫn sử dụng</p>
-                            {product?.[0]?.instruction}
-                            <p className="text-base font-medium text-gray-700 my-2">Điều kiện bảo quản</p>
-                            {product?.[0]?.preserve}
+                            <div>
+                                <p className="text-xl font-semibold my-2">Lợi ích</p>
+                                <div>{renderTextWithLineBreaks(product?.[0]?.benefits)}</div>
+                                
+                                <p className="text-xl font-semibold my-2">Thành phần</p>
+                                <div>{renderTextWithLineBreaks(product?.[0]?.ingredients)}</div>
+                                
+                                <p className="text-xl font-semibold my-2">Chống chỉ định</p>
+                                <div>{renderTextWithLineBreaks(product?.[0]?.constraindication)}</div>
+                                
+                                <p className="text-xl font-semibold my-2">Cách sử dụng</p>
+                                <div>{renderTextWithLineBreaks(product?.[0]?.instruction)}</div>
+                                
+                                <p className="text-xl font-semibold my-2">Lưu ý</p>
+                                <div>{renderTextWithLineBreaks(product?.[0]?.note)}</div>
+                                
+                                <p className="text-xl font-semibold my-2">Điều kiện bảo quản</p>
+                                <div>{renderTextWithLineBreaks(product?.[0]?.preserve)}</div>
+                            </div>
                         </div>
-                    </div>
                     <div className="fixed md:col-span-1 rounded border border-inherit flex flex-col items-center top-40 right-20">
                         <a className='mt-5 font-bold'>Số lượng</a>
                         <div className="quantity-container flex items-center my-4">

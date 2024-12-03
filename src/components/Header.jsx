@@ -162,7 +162,7 @@ const Header = () => {
                     <button onClick={() => setShowMenu(!showMenu)} type="button" className='h-10 px-3 rounded-lg bg-white text-black flex items-center justify-start' 
                     id="menu-button" aria-expanded="true" aria-haspopup="true">
                       <img className='w-[30px] h-[30px] rounded-full overflow-hidden' src="http://localhost:3000/images/avata_1.jpg" alt="" />
-                      <span className='ml-2 text-sm font-medium'>Kim Hồng</span>
+                      <span className='ml-2 text-sm font-medium'>Khách hàng</span>
                       {/* <button onClick={handleLogout}>Đăng xuất</button> */}
                     </button>
                   </div>

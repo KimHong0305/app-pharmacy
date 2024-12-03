@@ -77,7 +77,7 @@ const Cart = () => {
   return (
     <div>
       <Header />
-      <div className="container px-4 md:px-8 lg:px-48 container mx-auto my-10 h-[500px]">
+      <div className="container px-4 md:px-8 lg:px-48 container mx-auto my-10 min-h-[400px]">
         <h1 className="text-2xl font-bold mb-6">Giỏ hàng</h1>
         {loading ? (
           <p>Đang tải giỏ hàng...</p>

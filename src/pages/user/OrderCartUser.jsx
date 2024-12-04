@@ -8,10 +8,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { createOrderHomeUser } from "../../store/Reducers/order/orderUserReducer";
 import { toast } from 'react-toastify';
 import { createPaymentVNPay } from "../../store/Reducers/payment/VNPayReducer";
-import { createPaymentMoMo } from "../../store/Reducers/payment/MoMoReducer";
-import { createPaymentZaloPay } from "../../store/Reducers/payment/ZaloPayReducer";
 
-const OrderUser = () => {
+const OrderCartUser = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -82,40 +80,8 @@ const OrderUser = () => {
                     console.error("Error creating VNPay payment:", error);
                     toast.error("Đã xảy ra lỗi khi tạo thanh toán VNPay.");
                 }
-            }
-            else {
-                if (result.result.paymentMethod === "MOMO") {
-                    try {
-                        const data = await dispatch(createPaymentMoMo(result.result.id)).unwrap();
-                        if (data.result) {
-                            window.location.href = data.result.payUrl;
-                        } else {
-                            toast.error("Không tạo được thanh toán Momo.");
-                        }
-                    } catch (error) {
-                        console.error("Error creating Momo payment:", error);
-                        toast.error("Đã xảy ra lỗi khi tạo thanh toán Momo.");
-                    }
-                }
-                else{
-                    if (result.result.paymentMethod === "ZALOPAY") {
-                        try {
-                            const data = await dispatch(createPaymentZaloPay(result.result.id)).unwrap();
-                            if (data.result) {
-                                window.location.href = data.result.orderurl;
-                            } else {
-                                toast.error("Không tạo được thanh toán Momo.");
-                            }
-                        } catch (error) {
-                            console.error("Error creating Momo payment:", error);
-                            toast.error("Đã xảy ra lỗi khi tạo thanh toán Momo.");
-                        }
-                    }
-                    else{
-                        toast.error(`Đơn hàng đã được tạo với phương thức thanh toán: ${paymentMethod}`);
-                        navigate('/')
-                    }
-                }
+            } else {
+                toast.error(`Đơn hàng đã được tạo với phương thức thanh toán: ${paymentMethod}`);
             }
         } catch (error) {
             toast.error(error.message);
@@ -376,4 +342,4 @@ const OrderUser = () => {
     );
 };
 
-export default OrderUser;
+export default OrderCartUser;

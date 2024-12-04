@@ -1,3 +1,4 @@
+import addressReducer from "./Reducers/addressReducer";
 import authReducer from "./Reducers/authReducer";
 import cartReducer from "./Reducers/cartReducer";
 import categoryReducer from "./Reducers/categoryReducer";
@@ -18,5 +19,6 @@ const rootReducer = {
     company: companyReducer,
     price: priceReducer,
     location: locationReducer,
+    address: addressReducer,
 }
 export default rootReducer;

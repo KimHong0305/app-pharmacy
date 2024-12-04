@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/api";
 
-const token = localStorage.getItem('token');
-
 export const getUnits = createAsyncThunk(
   "unit/getUnits",
   async ({ page = 0, size = 5 }, { rejectWithValue }) => {
@@ -19,6 +17,7 @@ export const createUnit = createAsyncThunk(
   "unit/createUnits",
   async (unitName, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await api.post('/unit', unitName, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -35,6 +34,7 @@ export const updateUnit = createAsyncThunk(
   "unit/updateUnits",
   async (unit, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await api.put('/unit', unit, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -51,6 +51,7 @@ export const deleteUnit = createAsyncThunk(
   "unit/deleteUnits",
   async (unitId, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await api.delete(`/unit/${unitId}`, {
         headers: {
           Authorization: `Bearer ${token}`,

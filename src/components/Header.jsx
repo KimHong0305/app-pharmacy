@@ -55,8 +55,6 @@ const Header = () => {
   };
 
   useEffect(() => {
-    console.log("Products:", products);
-    console.log("Search Query:", searchQuery);
   
     if (searchQuery.trim() === '') {
       setFilteredProducts([]);

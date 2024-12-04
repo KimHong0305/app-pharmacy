@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductById } from '../store/Reducers/productReducer';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PiTrademarkDuotone } from "react-icons/pi";
 import { addCartGuest, addCartUser, messageClear } from '../store/Reducers/cartReducer';
 import { toast } from 'react-toastify';
@@ -17,6 +17,7 @@ const ProductDetail = () => {
     const slider2Ref = useRef(null);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { productId } = useParams();
 
     const { product } = useSelector((state) => state.product);
@@ -50,7 +51,7 @@ const ProductDetail = () => {
     useEffect(() => {
         if (product?.length > 0) {
             setProductImages(product[0].images);
-            setSelectedUnit(product[0].price.unit.name); // Chọn đơn vị mặc định
+            setSelectedUnit(product[0].price.unit.name);
         }
     }, [product]);
 
@@ -66,6 +67,17 @@ const ProductDetail = () => {
             dispatch(addCartGuest(newItem));
         }
     };
+
+    const handleOrder = () => {
+        const selectedProduct = product.find((p) => p.price.unit.name === selectedUnit);
+        if (token) {
+            //console.log(selectedProduct)
+            navigate('/orderUser', { state: selectedProduct })
+        } else {
+            // dispatch(addCartGuest(newItem));
+            console.log('Mua hang khach')
+        }
+    }
 
     const getProductPrice = () => {
         if (selectedUnit && product?.length > 0) {
@@ -223,7 +235,8 @@ const ProductDetail = () => {
                             </button>
                         </div>
                         <div className='mx-5'>
-                            <button className="mt-5 w-full bg-sky-500 hover:bg-sky-700 text-white font-medium py-2 px-4 rounded">
+                            <button className="mt-5 w-full bg-sky-500 hover:bg-sky-700 text-white font-medium py-2 px-4 rounded"
+                            onClick={handleOrder}>
                                 Mua ngay
                             </button>
                             <button className="my-5 w-full font-medium text-inherit hover:bg-slate-200 py-2 px-4 rounded border border-inherit"

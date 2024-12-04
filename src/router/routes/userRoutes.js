@@ -1,6 +1,9 @@
 import Profile from "../../pages/user/Profile";
 import HomeUser from "../../pages/user/HomeUser";
-import Address from "../../pages/user/Address";
+import Address from "../../pages/user/address/Address";
+import EditAddress from "../../pages/user/address/EditAddress";
+import AddAdderss from "../../pages/user/address/AddAddress";
+import OrderUser from "../../pages/user/OrderUser";
 
 const userRoutes = [
     {
@@ -16,6 +19,21 @@ const userRoutes = [
     {
         path: '/address',
         element : <Address/>, 
+        role:'ROLE_USER'
+    },
+    {
+        path: '/editAddress',
+        element : <EditAddress/>, 
+        role:'ROLE_USER'
+    },
+    {
+        path: '/addAddress',
+        element : <AddAdderss/>, 
+        role:'ROLE_USER'
+    },
+    {
+        path: '/orderUser',
+        element : <OrderUser/>, 
         role:'ROLE_USER'
     },
 ]

@@ -4,6 +4,7 @@ import Address from "../../pages/user/address/Address";
 import EditAddress from "../../pages/user/address/EditAddress";
 import AddAdderss from "../../pages/user/address/AddAddress";
 import OrderUser from "../../pages/user/OrderUser";
+import PaymentCallback from "../../pages/user/PaymentCallback";
 
 const userRoutes = [
     {
@@ -34,6 +35,11 @@ const userRoutes = [
     {
         path: '/orderUser',
         element : <OrderUser/>, 
+        role:'ROLE_USER'
+    },
+    {
+        path: '/paymentCallback',
+        element : <PaymentCallback/>, 
         role:'ROLE_USER'
     },
 ]

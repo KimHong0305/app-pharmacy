@@ -5,6 +5,9 @@ import Footer from "../../components/Footer";
 import { fetchAddressWithLocationNames, getAddress } from "../../store/Reducers/addressReducer";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
+import { createOrderHomeUser } from "../../store/Reducers/order/orderUserReducer";
+import { toast } from 'react-toastify';
+import { createPaymentVNPay } from "../../store/Reducers/payment/VNPayReducer";
 
 const OrderUser = () => {
     const dispatch = useDispatch();
@@ -55,13 +58,35 @@ const OrderUser = () => {
     };
     
 
-    const handleOrder = () => {
+    const handleOrder = async() => {
         const order = {
             priceId: selectedProduct.price.id,
             addressId: defaultAddress.id,
             paymentMethod: paymentMethod
         };
         console.log(order)
+        try{
+            const result = await dispatch(createOrderHomeUser(order)).unwrap();
+            toast.success("Đặt hàng thành công!");
+            if (result.result.paymentMethod === "VNPAY") {
+                try {
+                    const data = await dispatch(createPaymentVNPay(result.result.id)).unwrap();
+                    if (data.result) {
+                        window.location.href = data.result;
+                    } else {
+                        toast.error("Không tạo được thanh toán VNPay.");
+                    }
+                } catch (error) {
+                    console.error("Error creating VNPay payment:", error);
+                    toast.error("Đã xảy ra lỗi khi tạo thanh toán VNPay.");
+                }
+            } else {
+                toast.error(`Đơn hàng đã được tạo với phương thức thanh toán: ${paymentMethod}`);
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
+
     }
 
     if (loading) {

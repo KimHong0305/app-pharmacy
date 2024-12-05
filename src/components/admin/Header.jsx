@@ -42,7 +42,7 @@ const Header = ({ showSidebar, setShowSidebar }) => {
           <div className="flex justify-center items-center">
             <div className="flex justify-center items-center gap-3">
               <div className="flex justify-center items-center flex-col text-end">
-                <h2 className="text-md font-bold">{bio.username}</h2>
+                <h2 className="text-md font-bold">{bio?.username}</h2>
                 <span className="text-[14px] w-full font-normal">{role}</span>
               </div>
 
@@ -56,7 +56,7 @@ const Header = ({ showSidebar, setShowSidebar }) => {
               ) : (
                 <img
                   className="w-[45px] h-[45px] rounded-full overflow-hidden"
-                  src={bio.image}
+                  src={bio?.image}
                   alt="User Avatar"
                 />
               )}

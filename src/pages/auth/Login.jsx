@@ -43,7 +43,11 @@ const Login = ({isVisible, onClose}) => {
       if (role === 'ROLE_ADMIN'){
         navigate('/admin/dashboard');
       }else{
-        navigate('/');
+        if (role === 'ROLE_EMPLOYEE'){
+          navigate('/employee/dashboard');
+        }else{
+          navigate('/');
+        }
       }
       onClose()
     }

@@ -119,6 +119,10 @@ const Profile = () => {
         navigate('/address');
     }
 
+    const hanldeHistory = () => {
+        navigate('/history');
+    }
+
     if (!bio) {
         return <div>No user information available.</div>;
     }
@@ -134,7 +138,7 @@ const Profile = () => {
                     <div className='md:col-span-1 space-y-8'>
                         <div className='w-full bg-white rounded-lg shadow-xl flex flex-col p-5'>
                             <div className='flex items-center justify-start'>
-                                <img className='w-[80px] h-[80px] rounded-full border-2 overflow-hidden' src={bio.image} alt="" />
+                                <img className='w-[80px] h-[80px] rounded-full border-2 overflow-hidden' src={bio.image || "https://via.placeholder.com/80"} alt="" />
                                 <div className='ml-4 flex flex-col items-start'>
                                     <p className='text-lg font-normal'>{username}</p>
                                     <div className='flex items-center justify-center mt-5 '>
@@ -156,7 +160,8 @@ const Profile = () => {
                                     <span>Địa chỉ nhận hàng</span>
                                 </button>
 
-                                <button className="block w-full h-10 flex items-center space-x-2 text-left text-gray-700 font-medium hover:text-sky-600">
+                                <button className="block w-full h-10 flex items-center space-x-2 text-left text-gray-700 font-medium hover:text-sky-600"
+                                onClick={hanldeHistory}>
                                     <PiNewspaperClippingLight className="text-xl ml-2"/>
                                     <span>Lịch sử mua hàng</span>
                                 </button>

@@ -20,16 +20,6 @@ const Header = () => {
   const products = useSelector((state) => state.product.allProducts);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
-  
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-
-    if (token) {
-      dispatch(getCartUser());
-    } else {
-      dispatch(getCartGuest());
-    }
-  }, [dispatch]);
 
   const cartCount = cartItems.length;
   // localStorage.removeItem('token');
@@ -41,6 +31,7 @@ const Header = () => {
 
   const { message } = useSelector((state) => state.auth);
   const { categories } = useSelector((state) => state.category);
+  const { bio } = useSelector((state) => state.auth);   
 
   const handleLogout = () => {
     setShowMenu(false)
@@ -159,9 +150,8 @@ const Header = () => {
                   <div>
                     <button onClick={() => setShowMenu(!showMenu)} type="button" className='h-10 px-3 rounded-lg bg-white text-black flex items-center justify-start' 
                     id="menu-button" aria-expanded="true" aria-haspopup="true">
-                      <img className='w-[30px] h-[30px] rounded-full overflow-hidden' src="http://localhost:3000/images/avata_1.jpg" alt="" />
-                      <span className='ml-2 text-sm font-medium'>Khách hàng</span>
-                      {/* <button onClick={handleLogout}>Đăng xuất</button> */}
+                      <img className='w-[30px] h-[30px] rounded-full overflow-hidden' src={bio.image|| "https://via.placeholder.com/80"} alt="" />
+                      <span className='ml-2 text-sm font-medium'>{bio.username}</span>
                     </button>
                   </div>
                   {showMenu && (
@@ -169,7 +159,7 @@ const Header = () => {
                   role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabIndex="-1">
                   <div className="py-1" role="none">
                     <a href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-0">Thông tin cá nhân</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-1">Lịch sử đơn hàng</a>
+                    <a href="/history" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-1">Lịch sử đơn hàng</a>
                     <a onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200 flex items-center justify-between" 
                     role="menuitem" tabIndex="-1" id="menu-item-2">Đăng xuất <MdLogout className='text-rose-700'/></a>
                   </div>

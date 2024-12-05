@@ -5,16 +5,18 @@ import Footer from "../../components/Footer";
 import { fetchAddressWithLocationNames, getAddress } from "../../store/Reducers/addressReducer";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createOrderHomeUser } from "../../store/Reducers/order/orderUserReducer";
+import { createOrderCartUser } from "../../store/Reducers/order/orderUserReducer";
 import { toast } from 'react-toastify';
 import { createPaymentVNPay } from "../../store/Reducers/payment/VNPayReducer";
+import { createPaymentMoMo } from "../../store/Reducers/payment/MoMoReducer";
+import { createPaymentZaloPay } from "../../store/Reducers/payment/ZaloPayReducer";
 
 const OrderCartUser = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
 
-    const selectedProduct = location.state;
+    const cartItems = location.state;
     const [defaultAddress, setDefaultAddress] = useState(null);
     const [showAddressList, setShowAddressList] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -56,17 +58,15 @@ const OrderCartUser = () => {
     const handlePaymentMethodChange = (event) => {
         setPaymentMethod(event.target.value);
     };
-    
 
     const handleOrder = async() => {
         const order = {
-            priceId: selectedProduct.price.id,
             addressId: defaultAddress.id,
             paymentMethod: paymentMethod
         };
         console.log(order)
         try{
-            const result = await dispatch(createOrderHomeUser(order)).unwrap();
+            const result = await dispatch(createOrderCartUser(order)).unwrap();
             toast.success("Đặt hàng thành công!");
             if (result.result.paymentMethod === "VNPAY") {
                 try {
@@ -80,13 +80,44 @@ const OrderCartUser = () => {
                     console.error("Error creating VNPay payment:", error);
                     toast.error("Đã xảy ra lỗi khi tạo thanh toán VNPay.");
                 }
-            } else {
-                toast.error(`Đơn hàng đã được tạo với phương thức thanh toán: ${paymentMethod}`);
+            }
+            else {
+                if (result.result.paymentMethod === "MOMO") {
+                    try {
+                        const data = await dispatch(createPaymentMoMo(result.result.id)).unwrap();
+                        if (data.result) {
+                            window.location.href = data.result.payUrl;
+                        } else {
+                            toast.error("Không tạo được thanh toán Momo.");
+                        }
+                    } catch (error) {
+                        console.error("Error creating Momo payment:", error);
+                        toast.error("Đã xảy ra lỗi khi tạo thanh toán Momo.");
+                    }
+                }
+                else{
+                    if (result.result.paymentMethod === "ZALOPAY") {
+                        try {
+                            const data = await dispatch(createPaymentZaloPay(result.result.id)).unwrap();
+                            if (data.result) {
+                                window.location.href = data.result.orderurl;
+                            } else {
+                                toast.error("Không tạo được thanh toán Momo.");
+                            }
+                        } catch (error) {
+                            console.error("Error creating Momo payment:", error);
+                            toast.error("Đã xảy ra lỗi khi tạo thanh toán Momo.");
+                        }
+                    }
+                    else{
+                        toast.error(`Đơn hàng đã được tạo với phương thức thanh toán: ${paymentMethod}`);
+                        navigate('/')
+                    }
+                }
             }
         } catch (error) {
             toast.error(error.message);
         }
-
     }
 
     if (loading) {
@@ -104,26 +135,26 @@ const OrderCartUser = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 my-5">
                     {/* Danh sách sản phẩm */}
                     <div className="md:col-span-3 p-4">
-                        <h2 className="text-2xl font-bold mb-4">Mua hàng</h2>
-                        {/* Product list */}
-                        <div className="border-b py-4 flex items-center justify-between">
-                            <div className="flex">
-                                <img
-                                    className="w-16 h-16 rounded-md mr-4"
-                                    src={selectedProduct.images[0]}
-                                    alt="Product"
-                                />
-                                <div className="flex-grow max-w-[500px]">
-                                    <p className="font-medium break-words">{selectedProduct.name}</p>
-                                    <p className="text-sm text-gray-500">{selectedProduct.price.unit.name}</p>
+                        <h2 className="text-2xl font-bold mb-4">Giỏ hàng</h2>
+                        {cartItems.map((item) => (
+                            <div key={item.id} className="border-b py-4 flex items-center justify-between">
+                                <div className="flex">
+                                    <img
+                                        className="w-16 h-16 rounded-md mr-4"
+                                        src={item.image}
+                                        alt={item.productName}
+                                    />
+                                    <div className="flex-grow max-w-[500px]">
+                                        <p className="font-medium break-words">{item.productName}</p>
+                                        <p className="text-sm text-gray-500">{item.unitName}</p>
+                                    </div>
                                 </div>
+                                <p className="text-sm text-gray-500 px-2">x{item.quantity}</p>
+                                <p className="font-medium">
+                                    {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.amount)}
+                                </p>
                             </div>
-                            <p className="text-sm text-gray-500 px-2">x1</p>
-                            <p className="font-medium">
-                                {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(selectedProduct.price.price)}
-                            </p>
-                        </div>
-
+                        ))}
 
                         <h2 className="text-lg font-bold mt-6">Thông tin người nhận</h2>
                         <div className="p-2 border-b border-gray-300 text-sm space-y-2">
@@ -144,12 +175,8 @@ const OrderCartUser = () => {
                                             defaultAddress.addressCategory === "COMPANY" ? "Văn phòng" : "Loại khác"}
                                         </p>
                                     </div>
-                                    <p>
-                                        {defaultAddress.address}
-                                    </p>
-                                    <p>
-                                        {defaultAddress.villageName}
-                                    </p>
+                                    <p>{defaultAddress.address}</p>
+                                    <p>{defaultAddress.villageName}</p>
                                     {defaultAddress.addressDefault && (
                                         <p className='w-[80px] px-2 text-center rounded border border-red-600 text-red-600'>
                                             Mặc định
@@ -187,7 +214,7 @@ const OrderCartUser = () => {
                                     <p className="ml-4">Tiền mặt</p>
                                 </label>
                             </div>
-
+                            
                             <div className="flex items-center mt-4">
                                 <input
                                     type="radio"
@@ -244,9 +271,8 @@ const OrderCartUser = () => {
                                     <p className="ml-4">ZaloPay</p>
                                 </label>
                             </div>
-                        </div>
-
-                        {showAddressList && (
+                        
+                            {showAddressList && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                             <div className="bg-white p-6 rounded-md shadow-lg w-[600px]">
                                 <h3 className="text-lg font-bold mb-4">Chọn địa chỉ</h3>
@@ -302,6 +328,7 @@ const OrderCartUser = () => {
                             </div>
                         </div>
                         )}
+                        </div>
 
                     </div>
 
@@ -311,7 +338,9 @@ const OrderCartUser = () => {
                         <p className="flex justify-between">
                             <span>Tạm tính:</span>
                             <span>
-                                {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(selectedProduct.price.price)}
+                                {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+                                    cartItems.reduce((total, item) => total + item.amount, 0)
+                                )}
                             </span>
                         </p>
                         <p className="flex justify-between my-2">
@@ -322,10 +351,14 @@ const OrderCartUser = () => {
                         <p className="flex justify-between items-center font-bold">
                             <div className="flex flex-col">
                                 <span>Tổng tiền:</span>
-                                <span className="font-normal text-gray-500">1 sản phẩm</span>
+                                <span className="font-normal text-gray-500">
+                                    {cartItems.reduce((total, item) => total + item.quantity, 0)} sản phẩm
+                                </span>
                             </div>
                             <span>
-                                {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(selectedProduct.price.price)}
+                                {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+                                    cartItems.reduce((total, item) => total + item.amount, 0)
+                                )}
                             </span>
                         </p>
                         <button

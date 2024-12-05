@@ -33,7 +33,7 @@ const SearchProduct = () => {
   return (
     <div>
       <Header />
-      <div className="px-4 md:px-8 lg:px-48 container mx-auto my-10">
+      <div className="px-4 md:px-8 lg:px-48 container mx-auto my-5">
         <p className="text-2xl font-semibold">Kết quả tìm kiếm</p>
         <p className="text-lg text-gray-600">Kết quả cho "{query}"</p>
         <div className="container relative grid grid-cols-1 items-start gap-3 md:grid-cols-[193px,1fr]">
@@ -95,7 +95,7 @@ const SearchProduct = () => {
                 filteredProducts.map((product) => (
                   <div
                     key={product.id}
-                    className="flex flex-col items-center justify-center border border-[#6ec2f7] w-[200px] h-[280px] shadow-lg hover:shadow-2xl bg-[#ffffff] rounded-lg"
+                    className="flex flex-col items-center justify-center border border-[#6ec2f7] w-[200px] h-[280px] hover:shadow-2xl bg-[#ffffff] rounded-lg"
                     onClick={() => handleProductClick(product.id)}
                   >
                     <img
@@ -103,7 +103,7 @@ const SearchProduct = () => {
                       src={product.image}
                       alt={product.name}
                     />
-                    <span className="mt-1 font-medium text-center">
+                    <span className={`mt-1 font-sans font-medium px-2 w-full overflow-hidden text-ellipsis line-clamp-2 text-center ${product.name.split('\n').length > 1 ? '' : 'h-12'}`}>
                       {product.name}
                     </span>
                     <span className="mt-1 font-medium font-semibold text-[#27a4f2] text-lg">

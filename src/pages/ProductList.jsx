@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { getProductByCategory } from '../store/Reducers/productReducer';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import { getChildCategory } from '../store/Reducers/categoryReducer';
 
 const ProductList = () => {
     const dispatch = useDispatch();
@@ -13,22 +14,54 @@ const ProductList = () => {
     const categoryName = location.state?.categoryName;
     const { categoryId } = useParams();
     const products = useSelector((state) => state.product.products);
+    const { childCategories } = useSelector((state) => state.category);
 
+    const [sortOrder, setSortOrder] = useState('asc'); // Trạng thái sắp xếp
+
+    // Gửi yêu cầu API khi sortOrder hoặc categoryId thay đổi
     useEffect(() => {
-        dispatch(getProductByCategory(categoryId));
-    }, [dispatch, categoryId]);
+        dispatch(getProductByCategory({ categoryId, sortOrder }));
+        dispatch(getChildCategory(categoryId));
+    }, [dispatch, categoryId, sortOrder]);
 
     const handleProductClick = (productId) => {
         navigate(`/productDetail/${productId}`);
     };
 
-    console.log('san pham', products)
+    const handleCategoryClick = (categoryId, categoryName) => {
+        navigate(`/productList/${categoryId}`, {
+            state: { categoryName },
+        });
+    };
+
+    const handleSortOrderChange = (order) => {
+        setSortOrder(order); // Cập nhật trạng thái sortOrder
+    };
 
     return (
         <div>
             <Header />
             <div className="px-4 md:px-8 lg:px-48 container mx-auto my-10">
                 <p className="text-2xl font-semibold">{categoryName}</p>
+                <div className="grid grid-cols-4 gap-6 md:grid-cols-[repeat(auto-fill,136px)] md:pb-4">
+                    {childCategories.map((child) => (
+                        <a
+                            key={child.id}
+                            className="grid w-fit content-start justify-center justify-items-center gap-2"
+                            onClick={() => handleCategoryClick(child.id, child.name)}
+                        >
+                            <span className="relative h-[calc(76rem/16)] w-[calc(76rem/16)] overflow-hidden rounded-full md:h-[calc(136rem/16)] md:w-[calc(136rem/16)]">
+                                <img
+                                    className="h-full w-full object-cover p-4"
+                                    src={child.image || 'https://via.placeholder.com/130'}
+                                    alt={child.name}
+                                />
+                            </span>
+                            <p className="text-center text-sm font-medium">{child.name}</p>
+                        </a>
+                    ))}
+                </div>
+
                 <div className="container relative grid grid-cols-1 items-start gap-3 md:grid-cols-[193px,1fr]">
                     {/* Bộ lọc */}
                     <div class="px-1">
@@ -68,16 +101,29 @@ const ProductList = () => {
                         </div>
                     </div>
 
-
                     {/* Danh sách sản phẩm */}
                     <div className="px-1">
                         <div className="flex py-3">
                             <div className="flex gap-4 items-center justify-start">
                                 <p className="text-sm font-semibold">Sắp xếp theo: </p>
-                                <button className="px-4 py-2 border rounded-md text-gray-600 border-gray-300 hover:bg-gray-100 text-sm font-semibold">
+                                <button
+                                    className={`px-4 py-2 border rounded-md text-sm font-semibold ${
+                                        sortOrder === 'desc'
+                                            ? 'border-blue-600 text-blue-600'
+                                            : 'text-gray-600 border-gray-300 hover:bg-gray-100'
+                                    }`}
+                                    onClick={() => handleSortOrderChange('desc')}
+                                >
                                     Giá giảm dần
                                 </button>
-                                <button className="px-4 py-2 border rounded-md text-gray-600 border-gray-300 hover:bg-gray-100 text-sm font-semibold">
+                                <button
+                                    className={`px-4 py-2 border rounded-md text-sm font-semibold ${
+                                        sortOrder === 'asc'
+                                            ? 'border-blue-600 text-blue-600'
+                                            : 'text-gray-600 border-gray-300 hover:bg-gray-100'
+                                    }`}
+                                    onClick={() => handleSortOrderChange('asc')}
+                                >
                                     Giá tăng dần
                                 </button>
                             </div>
@@ -87,28 +133,31 @@ const ProductList = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {products.length > 0 ? (
                                 products.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className="static flex flex-col items-center justify-center border border-[#6ec2f7] w-[200px] h-[280px] shadow-lg hover:shadow-2xl bg-[#ffffff] mr-5 rounded-lg"
-                                    onClick={() => handleProductClick(item.id)}
-                                >
-                                    <img
-                                    className="h-[130px] object-cover"
-                                    src={item.image}
-                                    alt={item.name}
-                                    />
-                                    <span
-                                    className={`mt-1 font-sans font-medium px-2 w-full overflow-hidden text-ellipsis line-clamp-2 text-center ${item.name.split('\n').length > 1 ? '' : 'h-12'}`}
+                                    <div
+                                        key={item.id}
+                                        className="static flex flex-col items-center justify-center border border-[#6ec2f7] w-[200px] h-[280px] hover:shadow-2xl bg-[#ffffff] mr-5 rounded-lg"
+                                        onClick={() => handleProductClick(item.id)}
                                     >
-                                    {item.name}
-                                    </span>
-                                    <span className="mt-1 font-medium font-semibold text-[#27a4f2] text-lg">
-                                    {item.prices?.[0]?.price?.toLocaleString('vi-VN')} đ / {item.prices?.[0]?.unit?.name}
-                                    </span>
-                                    <button className="mt-1 h-8 px-3 rounded-lg bg-sky-500 hover:bg-sky-700 text-white">
-                                    Chọn sản phẩm
-                                    </button>
-                                </div>
+                                        <img
+                                            className="h-[130px] object-cover"
+                                            src={item.image}
+                                            alt={item.name}
+                                        />
+                                        <span
+                                            className={`mt-1 font-sans font-medium px-2 w-full overflow-hidden text-ellipsis line-clamp-2 text-center ${
+                                                item.name.split('\n').length > 1 ? '' : 'h-12'
+                                            }`}
+                                        >
+                                            {item.name}
+                                        </span>
+                                        <span className="mt-1 font-medium font-semibold text-[#27a4f2] text-lg">
+                                            {item.prices?.[0]?.price?.toLocaleString('vi-VN')} đ /{' '}
+                                            {item.prices?.[0]?.unit?.name}
+                                        </span>
+                                        <button className="mt-1 h-8 px-3 rounded-lg bg-sky-500 hover:bg-sky-700 text-white">
+                                            Chọn sản phẩm
+                                        </button>
+                                    </div>
                                 ))
                             ) : (
                                 <p className="text-center col-span-4">Không có sản phẩm nào!</p>

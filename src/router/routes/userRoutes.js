@@ -4,12 +4,19 @@ import Address from "../../pages/user/address/Address";
 import EditAddress from "../../pages/user/address/EditAddress";
 import AddAdderss from "../../pages/user/address/AddAddress";
 import OrderUser from "../../pages/user/OrderUser";
+import OrderCartUser from "../../pages/user/OrderCartUser";
 import PaymentCallback from "../../pages/user/PaymentCallback";
+import HistoryOrder from "../../pages/user/HistoryOrder";
 
 const userRoutes = [
     {
         path: '/profile',
         element : <Profile/>, 
+        role:'ROLE_USER'
+    },
+    {
+        path: '/history',
+        element : <HistoryOrder/>, 
         role:'ROLE_USER'
     },
     {
@@ -40,6 +47,11 @@ const userRoutes = [
     {
         path: '/paymentCallback',
         element : <PaymentCallback/>, 
+        role:'ROLE_USER'
+    },
+    {
+        path: '/orderCartUser',
+        element : <OrderCartUser/>, 
         role:'ROLE_USER'
     },
 ]

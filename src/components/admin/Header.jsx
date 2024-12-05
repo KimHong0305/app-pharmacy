@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { FaList } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 const Header = ({ showSidebar, setShowSidebar }) => {
 
-  const userInfo = {
-    name: "Kim Hong",
-    role: "admin",
-    image: "http://localhost:3000/images/avata_1.jpg"
-  };
-
+  const { role } = useSelector((state) => state.auth); 
   const [searchTerm, setSearchTerm] = useState("");
+  const { bio } = useSelector((state) => state.auth);   
 
+  console.log(bio)
+
+  console.log(role)
   return (
     <div className="fixed top-0 left-0 w-full z-40">
       <div className="ml-0 lg:ml-[260px] h-[65px] flex justify-between items-center bg-[#41c5e5] px-5 transition-all">
@@ -42,12 +42,12 @@ const Header = ({ showSidebar, setShowSidebar }) => {
           <div className="flex justify-center items-center">
             <div className="flex justify-center items-center gap-3">
               <div className="flex justify-center items-center flex-col text-end">
-                <h2 className="text-md font-bold">{userInfo.name}</h2>
-                <span className="text-[14px] w-full font-normal">{userInfo.role}</span>
+                <h2 className="text-md font-bold">{bio.username}</h2>
+                <span className="text-[14px] w-full font-normal">{role}</span>
               </div>
 
               {/* User Avatar */}
-              {userInfo.role === "admin" ? (
+              {role === 'ROLE_ADMIN' || role === 'ROLE_EMPLOYEE' ? (
                 <img
                   className="w-[45px] h-[45px] rounded-full overflow-hidden"
                   src="http://localhost:3000/images/avata_1.jpg"
@@ -56,7 +56,7 @@ const Header = ({ showSidebar, setShowSidebar }) => {
               ) : (
                 <img
                   className="w-[45px] h-[45px] rounded-full overflow-hidden"
-                  src={userInfo.image}
+                  src={bio.image}
                   alt="User Avatar"
                 />
               )}

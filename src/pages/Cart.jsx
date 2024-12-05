@@ -12,13 +12,14 @@ import {
   transfer
 } from "../store/Reducers/cartReducer";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { cartItems, totalPrice, loading, message } = useSelector((state) => state.cart);
   const token = localStorage.getItem('token');
 
-  console.log(token)
   useEffect(() => {
     if (token) {
       dispatch(transfer())
@@ -73,6 +74,15 @@ const Cart = () => {
       }
     }
   };
+
+  const handleOrder = () => {
+    if (token) {
+        navigate('/orderCartUser', { state: cartItems })
+    } else {
+        // dispatch(addCartGuest(newItem));
+        console.log('Mua hang khach')
+    }
+}
 
   return (
     <div>
@@ -177,7 +187,8 @@ const Cart = () => {
                   })}
                 </p>
               </div>
-              <button className="bg-sky-500 hover:bg-sky-700 text-white font-medium py-2 px-4 rounded w-full">
+              <button className="bg-sky-500 hover:bg-sky-700 text-white font-medium py-2 px-4 rounded w-full"
+              onClick={handleOrder}>
                 Thanh toán
               </button>
             </div>

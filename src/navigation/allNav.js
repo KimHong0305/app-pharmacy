@@ -64,4 +64,39 @@ export const allNav = [
         role : 'ROLE_ADMIN',
         path: '/admin/companies'
     },
+    {
+        id : 9,
+        title : 'Dashboard',
+        icon : <IoMdHome />,
+        role : 'ROLE_EMPLOYEE',
+        path: '/employee/dashboard'
+    },
+    {
+        id : 10,
+        title : 'Products',
+        icon : <GiMedicines />,
+        role : 'ROLE_EMPLOYEE',
+        path: '/admin/products'
+    },
+    {
+        id : 11,
+        title : 'Prices',
+        icon : <IoPricetagOutline />,
+        role : 'ROLE_EMPLOYEE',
+        path: '/admin/prices'
+    },
+    {
+        id : 12,
+        title : 'Units',
+        icon : <CiBoxes />,
+        role : 'ROLE_EMPLOYEE',
+        path: '/admin/units'
+    },
+    {
+        id : 13,
+        title : 'Orders',
+        icon : <BsCartCheck />,
+        role : 'ROLE_EMPLOYEE',
+        path: '/admin/orders'
+    },
 ]

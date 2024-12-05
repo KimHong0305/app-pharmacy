@@ -29,9 +29,11 @@ export const getProductById = createAsyncThunk(
 
 export const getProductByCategory = createAsyncThunk(
   'product/fetchProductByCategory',
-  async (categoryId, { rejectWithValue }) => {
+  async ({categoryId, sortOrder = 'asc'}, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/product/category/${categoryId}`);
+      const response = await api.get(`/product/category/${categoryId}`, {
+        params: { sortOrder },
+      });
       return response.data.result;
     } catch (error) {
       return rejectWithValue(error.response.data);

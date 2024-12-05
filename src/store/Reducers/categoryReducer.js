@@ -30,6 +30,18 @@ export const getAllCategory = createAsyncThunk(
   }
 );
 
+export const getChildCategory = createAsyncThunk(
+  "category/child",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/category/${id}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const createCategory = createAsyncThunk(
   "category/createCategory",
   async (newCategory, { rejectWithValue }) => {
@@ -86,6 +98,7 @@ const categorySlice = createSlice({
   initialState: {
     categories: [],
     allCategory: [],
+    childCategories: [],
     isLoading: false,
     error: null,
   },
@@ -105,6 +118,20 @@ const categorySlice = createSlice({
       .addCase(getCategoryNull.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
+      })
+      // Get category child
+      .addCase(getChildCategory.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getChildCategory.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.childCategories = action.payload.result;
+        state.error = null;
+      })
+      .addCase(getChildCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       })
       // Get all category
       .addCase(getAllCategory.pending, (state) => {

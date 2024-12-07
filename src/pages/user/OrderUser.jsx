@@ -286,7 +286,7 @@ const OrderUser = () => {
                                 <h3 className="text-lg font-bold mb-4">Chọn địa chỉ</h3>
                                 <div className="max-h-80 overflow-y-auto">
                                 {address.map((addr) => (
-                                    <div key={addr.id} className="p-4 border-b border-gray-300 text-sm text-gray-400 space-y-2"
+                                    <div key={addr.id} className="p-4 border-b border-gray-300 text-sm text-gray-400 space-y-2 cursor-pointer"
                                     onClick={() => handleAddressClick(addr)}>
                                         <div className='flex justify-between'>
                                             <div className='flex'>
@@ -341,7 +341,7 @@ const OrderUser = () => {
 
                     {/* Chi tiết thanh toán */}
                     <div className="fixed p-4 w-1/5 border rounded top-[200px] right-[100px]">
-                        <h2 className="text-lg font-bold mb-4">Chi tiết thanh toán</h2>
+                        <h2 className=" font-bold mb-4">Chi tiết thanh toán</h2>
                         <p className="flex justify-between">
                             <span>Tạm tính:</span>
                             <span>
@@ -350,13 +350,13 @@ const OrderUser = () => {
                         </p>
                         <p className="flex justify-between my-2">
                             <span>Phí vận chuyển:</span>
-                            <span>0 VND</span>
+                            <span>0 đ</span>
                         </p>
                         <div className="border-t border-gray-300 my-2"></div>
                         <p className="flex justify-between items-center font-bold">
                             <div className="flex flex-col">
                                 <span>Tổng tiền:</span>
-                                <span className="font-normal text-gray-500">1 sản phẩm</span>
+                                <span className="font-normal text-sm text-gray-500">1 sản phẩm</span>
                             </div>
                             <span>
                                 {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(selectedProduct.price.price)}

@@ -1,12 +1,14 @@
-import Profile from "../../pages/user/Profile";
-import HomeUser from "../../pages/user/HomeUser";
-import Address from "../../pages/user/address/Address";
-import EditAddress from "../../pages/user/address/EditAddress";
-import AddAdderss from "../../pages/user/address/AddAddress";
-import OrderUser from "../../pages/user/OrderUser";
-import OrderCartUser from "../../pages/user/OrderCartUser";
-import PaymentCallback from "../../pages/user/PaymentCallback";
-import HistoryOrder from "../../pages/user/HistoryOrder";
+import { lazy } from "react";
+
+const Profile = lazy(() => import("../../pages/user/Profile"));
+const Address = lazy(() => import("../../pages/user/address/Address"));
+const EditAddress = lazy(() => import("../../pages/user/address/EditAddress"));
+const AddAdderss = lazy(() => import("../../pages/user/address/AddAddress"));
+const OrderUser = lazy(() => import("../../pages/user/OrderUser"));
+const OrderCartUser = lazy(() => import("../../pages/user/OrderCartUser"));
+const PaymentCallback = lazy(() => import("../../pages/user/PaymentCallback"));
+const HistoryOrder = lazy(() => import("../../pages/user/HistoryOrder"));
+
 
 const userRoutes = [
     {
@@ -17,11 +19,6 @@ const userRoutes = [
     {
         path: '/history',
         element : <HistoryOrder/>, 
-        role:'ROLE_USER'
-    },
-    {
-        path: '/home',
-        element : <HomeUser/>, 
         role:'ROLE_USER'
     },
     {

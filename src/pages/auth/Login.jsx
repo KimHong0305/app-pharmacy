@@ -82,7 +82,7 @@ const Login = ({isVisible, onClose}) => {
                 placeholder='Nhập mật khẩu' id='password' required name='password'></input>
               </div>
               <div className='flex justify-end'>
-                <label className='mt-2 font-semibold text-sm' onClick={() => navigate("/forgotPassword")}>
+                <label className='mt-2 font-semibold text-sm cursor-pointer' onClick={() => navigate("/forgotPassword")}>
                   Quên mật khẩu?
                 </label>
               </div>

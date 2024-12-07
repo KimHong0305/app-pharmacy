@@ -1,17 +1,20 @@
-import AddPrice from "../../pages/admin/price/AddPrice";
-import AdminDashboard from "../../pages/admin/AdminDashboard";
-import Categories from "../../pages/admin/category/Categories";
-import Companies from "../../pages/admin/Companies";
-import Orders from "../../pages/admin/Orders";
-import Prices from "../../pages/admin/price/Prices";
-import Products from "../../pages/admin/product/Products";
-import Units from "../../pages/admin/Units";
-import Users from "../../pages/admin/Users";
-import EditPrice from "../../pages/admin/price/EditPrice";
-import AddCategory from "../../pages/admin/category/AddCategory";
-import EditCategory from "../../pages/admin/category/EditCategory";
-import AddProduct from "../../pages/admin/product/AddProduct";
-import EditProduct from "../../pages/admin/product/EditProduct";
+import { lazy } from "react";
+
+const AddPrice = lazy(() => import("../../pages/admin/price/AddPrice"));
+const AdminDashboard = lazy(() => import("../../pages/admin/AdminDashboard"));
+const Categories = lazy(() => import("../../pages/admin/category/Categories"));
+const Companies = lazy(() => import("../../pages/admin/Companies"));
+const Orders = lazy(() => import("../../pages/admin/Orders"));
+const Prices = lazy(() => import("../../pages/admin/price/Prices"));
+const Products = lazy(() => import("../../pages/admin/product/Products"));
+const Units = lazy(() => import("../../pages/admin/Units"));
+const Users = lazy(() => import("../../pages/admin/Users"));
+const EditPrice = lazy(() => import("../../pages/admin/price/EditPrice"));
+const AddCategory = lazy(() => import("../../pages/admin/category/AddCategory"));
+const EditCategory = lazy(() => import("../../pages/admin/category/EditCategory"));
+const AddProduct = lazy(() => import("../../pages/admin/product/AddProduct"));
+const EditProduct = lazy(() => import("../../pages/admin/product/EditProduct"));
+
 
 export const adminRoutes = [
     {

@@ -1,12 +1,14 @@
-import AddPrice from "../../pages/admin/price/AddPrice";
-import AdminDashboard from "../../pages/admin/AdminDashboard";
-import Orders from "../../pages/admin/Orders";
-import Prices from "../../pages/admin/price/Prices";
-import Products from "../../pages/admin/product/Products";
-import Units from "../../pages/admin/Units";
-import EditPrice from "../../pages/admin/price/EditPrice";
-import AddProduct from "../../pages/admin/product/AddProduct";
-import EditProduct from "../../pages/admin/product/EditProduct";
+import { lazy } from "react";
+
+const AddPrice = lazy(() => import("../../pages/admin/price/AddPrice"));
+const AdminDashboard = lazy(() => import("../../pages/admin/AdminDashboard"));
+const Orders = lazy(() => import("../../pages/admin/Orders"));
+const Prices = lazy(() => import("../../pages/admin/price/Prices"));
+const Products = lazy(() => import("../../pages/admin/product/Products"));
+const Units = lazy(() => import("../../pages/admin/Units"));
+const EditPrice = lazy(() => import("../../pages/admin/price/EditPrice"));
+const AddProduct = lazy(() => import("../../pages/admin/product/AddProduct"));
+const EditProduct = lazy(() => import("../../pages/admin/product/EditProduct"));
 
 export const employeeRoutes = [
     {

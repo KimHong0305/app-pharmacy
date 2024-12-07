@@ -1,13 +1,14 @@
-import Home from  '../../pages/Home';
-import Cart from "../../pages/Cart";
-import ProductDetail from  '../../pages/ProductDetail';
-import ProductList from  '../../pages/ProductList';
-import Register from '../../pages/auth/Register';
+import { lazy } from "react";
 
-import TestComponent from  '../../pages/TestComponent';
-import ForgotPassword from '../../pages/auth/ForgotPassword';
-import SearchProduct from '../../pages/SearchProduct';
-import Order from '../../pages/Order';
+const Home = lazy(() => import('../../pages/Home'));
+const Cart = lazy(() => import('../../pages/Cart'));
+const ProductDetail = lazy(() => import('../../pages/ProductDetail'));
+const ProductList = lazy(() => import('../../pages/ProductList'));
+const Register = lazy(() => import('../../pages/auth/Register'));
+const ForgotPassword = lazy(() => import('../../pages/auth/ForgotPassword'));
+const SearchProduct = lazy(() => import('../../pages/SearchProduct'));
+const Order = lazy(() => import('../../pages/Order'));
+
 
 const publicRoutes = [
     {
@@ -29,10 +30,6 @@ const publicRoutes = [
     {
         path: '/forgotPassword',
         element : <ForgotPassword/>, 
-    },
-    {
-        path: '/test',
-        element : <TestComponent/>, 
     },
     {
         path: '/ProductList/:categoryId',

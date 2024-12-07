@@ -176,7 +176,7 @@ const Cart = () => {
               </div>
               <div className="flex justify-between items-center mb-4">
                 <p>Giảm giá:</p>
-                <p className="font-medium">- 0 VND</p>
+                <p className="font-medium">- 0 đ</p>
               </div>
               <div className="flex justify-between items-center mb-6">
                 <p>Thành tiền:</p>

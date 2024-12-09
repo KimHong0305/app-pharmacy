@@ -11,23 +11,29 @@ import { useNavigate } from 'react-router-dom';
 import { getAddress, fetchAddressWithLocationNames } from '../../../store/Reducers/addressReducer';
 import { IoIosAddCircleOutline } from "react-icons/io";
 
-const Profile = () => {
+const Address = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    
+    const address = useSelector((state) => state.address.address);
+    const { bio } = useSelector((state) => state.auth);
+    const { updateAddress } = useSelector((state) => state.address);
 
     useEffect(() => {
         const fetchData = async () => {
             await dispatch(getUserInfo());
             await dispatch(getAddress());
-            await dispatch(fetchAddressWithLocationNames());
         };
-    
+
         fetchData();
     }, [dispatch]);
-    
 
-    const { bio } = useSelector((state) => state.auth);
-    const { address } = useSelector((state) => state.address);
+    useEffect(() => {
+        if (address.length > 0) {
+          dispatch(fetchAddressWithLocationNames(address));
+        }
+      }, [address, dispatch]);
+    
 
     const hanldeProfile = () => {
         navigate('/profile');
@@ -50,7 +56,7 @@ const Profile = () => {
     }
 
     const { username, image, point } = bio;
-
+    console.log('tai trang')
     return (
         <div>
             <Header />
@@ -99,9 +105,9 @@ const Profile = () => {
                         <div className="md:col-span-2 flex flex-col items-center justify-start">
                             <div className="w-full bg-white rounded-lg shadow-xl flex flex-col items-center justify-center py-5 px-10">
                                 <p className="mb-4 text-2xl font-semibold">ĐỊA CHỈ NHẬN HÀNG</p>
-                                {address && address.length > 0 ? (
+                                {updateAddress && updateAddress.length > 0 ? (
                                     <div className="w-full text-left">
-                                        {address.map((addr) => (
+                                        {updateAddress.map((addr) => (
                                             <div key={addr.id} className="p-4 border-b border-gray-300 text-sm text-gray-400 space-y-2"
                                             onClick={() =>hanldeEditAddress(addr)}>
                                                 <div className='flex justify-between'>
@@ -154,4 +160,4 @@ const Profile = () => {
     );
 };
 
-export default Profile;
+export default Address;

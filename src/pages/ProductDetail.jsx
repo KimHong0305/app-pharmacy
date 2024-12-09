@@ -71,11 +71,9 @@ const ProductDetail = () => {
     const handleOrder = () => {
         const selectedProduct = product.find((p) => p.price.unit.name === selectedUnit);
         if (token) {
-            //console.log(selectedProduct)
             navigate('/orderUser', { state: selectedProduct })
         } else {
-            // dispatch(addCartGuest(newItem));
-            console.log('Mua hang khach')
+            toast.warning("Vui lòng đăng nhập để mua hàng!");
         }
     }
 

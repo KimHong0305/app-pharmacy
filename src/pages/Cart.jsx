@@ -13,6 +13,7 @@ import {
 } from "../store/Reducers/cartReducer";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -77,10 +78,9 @@ const Cart = () => {
 
   const handleOrder = () => {
     if (token) {
-        navigate('/orderCartUser', { state: cartItems })
+      navigate('/orderCartUser', { state: cartItems })
     } else {
-        // dispatch(addCartGuest(newItem));
-        console.log('Mua hang khach')
+      toast.warning("Vui lòng đăng nhập để mua hàng!");
     }
 }
 

@@ -95,6 +95,18 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+export const loginGoogle = createAsyncThunk(
+  'auth/loginGoogle',
+  async (authCode, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/auth/outbound/authentication?code=${authCode}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const returnRole = (token) => {
   if (token) {
     try {
@@ -103,6 +115,7 @@ const returnRole = (token) => {
 
       if (new Date() > expireTime) {
         console.log('Token hết hạn');
+        localStorage.removeItem('accessToken')
         return '';
       } else {
         return decodeToken.scope;
@@ -244,7 +257,24 @@ const authSlice = createSlice({
     .addCase(resetPassword.rejected, (state, action) => {
       state.loading = false;
       state.errorResetMessage = action.payload;
-    });
+    })
+    // Đăng nhập bằng Google
+    .addCase(loginGoogle.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(loginGoogle.fulfilled, (state, action) => {
+      state.loading = false;
+      state.token = action.payload.result.token;
+      state.redirectToHome = true;
+
+      state.role = returnRole(action.payload.result.token);
+
+      localStorage.setItem('token', action.payload.result.token);
+    })
+    .addCase(loginGoogle.rejected, (state, action) => {
+      state.loading = false;
+    })
   },
 });
 

@@ -7,6 +7,7 @@ import { userLogin, messageClear } from '../../store/Reducers/authReducer';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { OAuthConfig } from "../../configurations/configuration";
 
 const Login = ({isVisible, onClose}) => {
   const navigate = useNavigate();
@@ -32,6 +33,20 @@ const Login = ({isVisible, onClose}) => {
     console.log(state)
   }
 
+  const handleContinueWithGoogle = () => {
+    const callbackUrl = OAuthConfig.redirectUri;
+    const authUrl = OAuthConfig.authUri;
+    const googleClientId = OAuthConfig.clientId;
+
+    const targetUrl = `${authUrl}?redirect_uri=${encodeURIComponent(
+      callbackUrl
+    )}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`;
+
+    console.log(targetUrl);
+
+    window.location.href = targetUrl;
+  };
+
   useEffect(() => {
     if (successMessage) {
       toast.success(successMessage);
@@ -56,7 +71,6 @@ const Login = ({isVisible, onClose}) => {
       dispatch(messageClear());
     }
   }, [successMessage, errorMessage, navigate, dispatch, onClose]);
-
 
   if (!isVisible) return null;
 
@@ -97,7 +111,9 @@ const Login = ({isVisible, onClose}) => {
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
             <button className="mt-5 w-full h-10 px-3 rounded border shadow-md hover:shadow-lg
-              flex items-center justify-center" type="submit">
+              flex items-center justify-center" type="button"
+              onClick={handleContinueWithGoogle}
+              >
               <FcGoogle className='h-6 w-6'/>
               <p className='ml-2 text-base font-medium'>Tiếp tục với Google</p>
             </button>

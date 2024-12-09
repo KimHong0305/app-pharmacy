@@ -20,7 +20,6 @@ const EditProduct = () => {
 
     const id = location.state;
 
-    console.log(product)
     const [productName, setProductName] = useState(product?.[0]?.name);
     const [quantity, setQuantity] = useState(product?.[0]?.quantity);
     const [categoryName, setCategoryName] = useState(product?.[0]?.category.id);
@@ -144,7 +143,7 @@ const EditProduct = () => {
         }
     
         try {
-            const response = await dispatch(updateProduct(formData)).unwrap();
+            await dispatch(updateProduct(formData)).unwrap();
             toast.success("Cập nhật sản phẩm thành công!");
             navigate(-1);
         } catch (error) {

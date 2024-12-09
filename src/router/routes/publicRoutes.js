@@ -1,4 +1,5 @@
 import { lazy } from "react";
+import Authenticate from "../../pages/auth/Authenticate";
 
 const Home = lazy(() => import('../../pages/Home'));
 const Cart = lazy(() => import('../../pages/Cart'));
@@ -42,6 +43,10 @@ const publicRoutes = [
     {
         path: '/order',
         element : <Order/>, 
+    },
+    {
+        path: '//authenticate',
+        element : <Authenticate/>, 
     },
 ]
 

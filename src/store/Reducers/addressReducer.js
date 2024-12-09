@@ -73,31 +73,46 @@ export const deleteAddress = createAsyncThunk(
 // Fetch và bổ sung tên địa phương
 export const fetchAddressWithLocationNames = createAsyncThunk(
     "address/fetchAddressWithLocationNames",
-    async (_, { dispatch, getState, rejectWithValue }) => {
-        try {
-            const { address } = getState().address;
-
-            const updatedAddresses = await Promise.all(
-                address.map(async (addr) => {
-                    const [provinceName, districtName, villageName] = await Promise.all([
-                        dispatch(getProvinceName(addr.province)).unwrap(),
-                        dispatch(getDistrictName(addr.district)).unwrap(),
-                        dispatch(getVillageName(addr.village)).unwrap(),
-                    ]);
-
-                    return {
-                        ...addr,
-                        provinceName,
-                        districtName,
-                        villageName,
-                    };
-                })
-            );
-
-            return updatedAddresses;
-        } catch (error) {
-            return rejectWithValue("Failed to fetch location names.");
+    async (address, { dispatch, rejectWithValue }) => {
+      try {
+        if (Array.isArray(address)) {
+          // Nếu là mảng địa chỉ
+          const updatedAddresses = await Promise.all(
+            address.map(async (addr) => {
+              const [provinceName, districtName, villageName] = await Promise.all([
+                dispatch(getProvinceName(addr.province)).unwrap(),
+                dispatch(getDistrictName(addr.district)).unwrap(),
+                dispatch(getVillageName(addr.village)).unwrap(),
+              ]);
+  
+              return {
+                ...addr,
+                provinceName,
+                districtName,
+                villageName,
+              };
+            })
+          );
+  
+          return updatedAddresses;
+        } else {
+          // Nếu chỉ là một địa chỉ đơn lẻ
+          const [provinceName, districtName, villageName] = await Promise.all([
+            dispatch(getProvinceName(address.province)).unwrap(),
+            dispatch(getDistrictName(address.district)).unwrap(),
+            dispatch(getVillageName(address.village)).unwrap(),
+          ]);
+  
+          return {
+            ...address,
+            provinceName,
+            districtName,
+            villageName,
+          };
         }
+      } catch (error) {
+        return rejectWithValue("Failed to fetch location names.");
+      }
     }
 );
 
@@ -105,6 +120,7 @@ const addressSlice = createSlice({
     name: "address",
     initialState: {
       address: [],
+      updateAddress: [],
       loading: false,
       error: null,
     },
@@ -167,7 +183,7 @@ const addressSlice = createSlice({
         })
         .addCase(fetchAddressWithLocationNames.fulfilled, (state, action) => {
             state.loading = false;
-            state.address = action.payload;
+            state.updateAddress = action.payload;
         })
         .addCase(fetchAddressWithLocationNames.rejected, (state, action) => {
             state.loading = false;

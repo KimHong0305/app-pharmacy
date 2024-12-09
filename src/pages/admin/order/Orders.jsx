@@ -7,18 +7,18 @@ import {
     TableRow,
     TableCell,
     TableHead,
-} from "../../components/ui/table";
+} from "../../../components/ui/table";
 import {
     Pagination,
     PaginationItem,
     PaginationLink,
     PaginationPrevious,
     PaginationNext,
-} from "../../components/ui/pagination";  
+} from "../../../components/ui/pagination";  
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getOrders } from '../../store/Reducers/order/orderAdminReducer';
+import { getOrders } from '../../../store/Reducers/order/orderAdminReducer';
 
 const Orders = () => {
 
@@ -38,8 +38,6 @@ const Orders = () => {
         dispatch(getOrders());
     }, [dispatch]);
 
-    console.log(orders)
-
     const handlePageChange = (page) => {
         if (page >= 0 && page < totalPages) {
             setCurrentPage(page);
@@ -49,6 +47,10 @@ const Orders = () => {
     const handleItemsPerPageChange = (e) => {
         setSize(Number(e.target.value));
         setCurrentPage(0);
+    };
+
+    const handleOrderDetail= (order) => {
+        navigate('/admin/orderDetail', { state: order });
     };
 
     const paginatedCategories = orders.slice(currentPage * size, (currentPage + 1) * size);
@@ -105,7 +107,8 @@ const Orders = () => {
                         </TableHeader>
                         <TableBody>
                             {paginatedCategories.map((order) => (
-                                <TableRow key={order.id}>
+                                <TableRow key={order} 
+                                onClick={() => handleOrderDetail(order)}>
                                     <TableCell>{order.id}</TableCell>
                                     <TableCell>{order.orderDate}</TableCell>
                                     <TableCell>{order.orderItemResponses.length}</TableCell>

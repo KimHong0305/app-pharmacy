@@ -3,7 +3,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { FaHeart } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { getAllProducts } from '../../store/Reducers/productReducer';
 import { useDispatch, useSelector } from 'react-redux';
@@ -56,13 +55,10 @@ const NewProducts = () => {
         {allProducts.map((product) => (
           <SwiperSlide key={product.id}>
             <div
-              className="static flex flex-col items-center justify-center border border-[#6ec2f7] w-[200px] h-[280px] 
+              className="static flex flex-col items-center justify-center border border-gray-300 w-[200px] h-[280px] 
               shadow-lg hover:shadow-2xl bg-[#ffffff] mr-5 rounded-lg"
               onClick={() => handleProductClick(product.id)}
             >
-              <button className='absolute top-2 left-40'>
-                <FaHeart className='h-6 w-6 text-red-600'/>
-              </button>
               <img className="size-[130px]" src={product.image} alt={product.name}/>
               <span className={`mt-1 font-sans font-medium px-2 w-full overflow-hidden text-ellipsis line-clamp-2 text-center 
                 ${product.name.split('\n').length > 1 ? '' : 'h-12'}`}>

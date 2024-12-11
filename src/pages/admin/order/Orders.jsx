@@ -18,7 +18,9 @@ import {
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getOrders } from '../../../store/Reducers/order/orderAdminReducer';
+import { confirmOrder, getOrders } from '../../../store/Reducers/order/orderAdminReducer';
+import { IoPrintOutline } from "react-icons/io5";
+import { FaRegSquareCheck } from "react-icons/fa6";
 
 const Orders = () => {
 
@@ -28,9 +30,12 @@ const Orders = () => {
     const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20];
     const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
     const [currentPage, setCurrentPage] = useState(0);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     const { orders, loading, error, totalPages } = useSelector((state) => state.orderAdmin);
+    const { role } = useSelector((state) => state.auth); 
 
+    console.log(orders)
     useEffect(() => {
         dispatch(getOrders({ page: currentPage, size }));
     }, [dispatch, currentPage, size]);
@@ -49,6 +54,22 @@ const Orders = () => {
     const handleOrderDetail= (order) => {
         navigate('/admin/orderDetail', { state: order });
     };
+
+    const handleConfirm = async(orderId) => {
+        console.log(orderId)
+        try {
+            await dispatch(confirmOrder(orderId)).unwrap();
+            toast.success('Cập nhật trạng thái đơn hàng thành công!');
+            dispatch(getOrders({ page: currentPage, size }));
+          } catch (error) {
+            toast.error(error.message);
+        }
+    }
+
+    const handlePrint = () =>{
+
+    }
+    console.log(role)
 
     return (
         <div className="px-2 md:px-4">
@@ -98,30 +119,45 @@ const Orders = () => {
                                 <TableHead>Đơn giá</TableHead>
                                 <TableHead>Phương thức thanh toán</TableHead>
                                 <TableHead>Trạng thái</TableHead>
+                                <TableHead>Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {orders.map((order) => (
-                                <TableRow key={order} 
-                                onClick={() => handleOrderDetail(order)}>
-                                    <TableCell>{order.id}</TableCell>
+                                <TableRow key={order} >
+                                    <TableCell className="cursor-pointer" onClick={() => handleOrderDetail(order)}>{order.id}</TableCell>
                                     <TableCell>{order.orderDate}</TableCell>
                                     <TableCell>{order.orderItemResponses.length}</TableCell>
                                     <TableCell>{new Intl.NumberFormat('vi-VN').format(order.totalPrice)} đ</TableCell>
                                     <TableCell>{order.paymentMethod}</TableCell>
                                     <TableCell>
                                         <span
-                                            className={`px-3 py-1 font-semibold rounded ${
-                                                order.status === 'PENDING' 
-                                                    ? 'bg-yellow-200 text-yellow-600 '
-                                                    : order.status === 'SUCCESS' 
-                                                    ? 'bg-green-200 text-green-600'
-                                                    : 'bg-gray-500' 
+                                            className={`px-3 py-1 text-sm rounded-lg ${
+                                                order.isConfirm === false ? 'bg-yellow-200 text-yellow-800' : 'bg-blue-200 text-blue-800'
                                             }`}
                                         >
-                                            {order.status}
+                                            {order.isConfirm === false ? 'Đang xử lý' : 'Đang giao hàng'}
                                         </span>
                                     </TableCell>
+                                    <TableCell>
+                                        <div className='flex'>
+                                            {!order.isConfirm && role === 'ROLE_EMPLOYEE' ? (
+                                                <button
+                                                    className="flex items-center justify-center p-2 rounded-lg bg-green-200"
+                                                    onClick={() => handleConfirm(order.id)}
+                                                >
+                                                    <FaRegSquareCheck className="text-green-400" />
+                                                </button>
+                                            ) : null}
+                                            <button 
+                                                className="flex items-center justify-center p-2 rounded-lg bg-gray-200 ml-2"
+                                                onClick={handlePrint}
+                                            >
+                                                <IoPrintOutline className="text-gray-500" />
+                                            </button>
+                                        </div>
+                                    </TableCell>
+
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -150,6 +186,30 @@ const Orders = () => {
                     </Pagination>
                 </div>
             </div>
+
+            {isDeleteDialogOpen && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div className="bg-white p-6 rounded-md shadow-lg">
+                    <h3 className="text-lg font-bold mb-4">Xác nhận xóa</h3>
+                    <p className="mb-6">Bạn có chắc chắn muốn xóa danh mục này không?</p>
+                    <div className="flex justify-end space-x-4">
+                        <button
+                            className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300"
+                            // onClick={handleCancelDelete}
+                        >
+                            Hủy
+                        </button>
+                        <button
+                            className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                            // onClick={handleConfirmDelete}
+                        >
+                            Xác nhận
+                        </button>
+                    </div>
+                </div>
+            </div>
+            )}
+
         </div>
     );
 };

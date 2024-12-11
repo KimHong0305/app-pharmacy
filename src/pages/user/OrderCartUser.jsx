@@ -21,14 +21,17 @@ const OrderCartUser = () => {
     const [showAddressList, setShowAddressList] = useState(false);
     const [loading, setLoading] = useState(true);
     const [paymentMethod, setPaymentMethod] = useState("CASH");
-    const { address } = useSelector((state) => state.address);
+    const address = useSelector((state) => state.address.address);
+    const { updateAddress } = useSelector((state) => state.address);
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
                 await dispatch(getAddress());
-                await dispatch(fetchAddressWithLocationNames());
+                if (address.length > 0) {
+                    dispatch(fetchAddressWithLocationNames(address));
+                }
             } catch (error) {
                 console.error("Error fetching address:", error);
             } finally {
@@ -40,7 +43,7 @@ const OrderCartUser = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        const defaultAddr = address.find((addr) => addr.addressDefault);
+        const defaultAddr = updateAddress.find((addr) => addr.addressDefault);
         if (defaultAddr) {
             setDefaultAddress(defaultAddr);
         }
@@ -277,7 +280,7 @@ const OrderCartUser = () => {
                             <div className="bg-white p-6 rounded-md shadow-lg w-[600px]">
                                 <h3 className="text-lg font-bold mb-4">Chọn địa chỉ</h3>
                                 <div className="max-h-80 overflow-y-auto">
-                                {address.map((addr) => (
+                                {updateAddress.map((addr) => (
                                     <div key={addr.id} className="p-4 border-b border-gray-300 text-sm text-gray-400 space-y-2"
                                     onClick={() => handleAddressClick(addr)}>
                                         <div className='flex justify-between'>

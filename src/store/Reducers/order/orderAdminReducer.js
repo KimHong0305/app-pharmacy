@@ -18,6 +18,23 @@ export const getOrders = createAsyncThunk(
     }
 );
 
+export const confirmOrder = createAsyncThunk(
+    "employee/confirmOrder",
+    async (orderId, { rejectWithValue }) => {
+        try {
+        const token = localStorage.getItem('token');
+        const response = await api.put(`/order/${orderId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+        } catch (error) {
+        return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 const orderAdminSlice = createSlice({
     name: "orderAdmin",
     initialState: {
@@ -41,6 +58,18 @@ const orderAdminSlice = createSlice({
                 state.totalPages = action.payload.totalPages;
             })
             .addCase(getOrders.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // confirm 
+            .addCase(confirmOrder.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(confirmOrder.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(confirmOrder.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })

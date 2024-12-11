@@ -32,7 +32,7 @@ const Address = () => {
         if (address.length > 0) {
           dispatch(fetchAddressWithLocationNames(address));
         }
-      }, [address, dispatch]);
+    }, [address, dispatch]);
     
 
     const hanldeProfile = () => {

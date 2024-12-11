@@ -1,8 +1,7 @@
 import { lazy } from "react";
-import Authenticate from "../../pages/auth/Authenticate";
-import PaymentCallback from "../../pages/PaymentCallback";
-import SearchOrder from "../../pages/SearchOrder";
-
+const Authenticate = lazy(() => import("../../pages/auth/Authenticate"));
+const PaymentCallback = lazy(() => import("../../pages/PaymentCallback"));
+const SearchOrder = lazy(() => import("../../pages/SearchOrder"));
 const Home = lazy(() => import('../../pages/Home'));
 const Cart = lazy(() => import('../../pages/Cart'));
 const ProductDetail = lazy(() => import('../../pages/ProductDetail'));

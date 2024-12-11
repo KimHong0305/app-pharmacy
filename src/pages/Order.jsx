@@ -134,7 +134,7 @@ const Order = () => {
                         }
                     }
                     else{
-                        toast.error(`Đơn hàng đã được tạo với phương thức thanh toán: ${paymentMethod}`);
+                        toast.success(`Đặt hàng thành công !`);
                         navigate('/')
                     }
                 }

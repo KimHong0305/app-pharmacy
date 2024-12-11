@@ -13,8 +13,13 @@ import { toast } from 'react-toastify';
 const ProductDetail = () => {
     const token = localStorage.getItem('token');
 
+    // const [feedbackList, setFeedbackList] = useState([]);
+
+
     const slider1Ref = useRef(null);
     const slider2Ref = useRef(null);
+    const [activeImageIndex, setActiveImageIndex] = useState(0);
+
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -26,6 +31,7 @@ const ProductDetail = () => {
     const [quantity, setQuantity] = useState(1);
     const [selectedUnit, setSelectedUnit] = useState(null);
     const [productImages, setProductImages] = useState([]);
+    const [activeTab, setActiveTab] = useState('benefits');
 
     const settings1 = {
         slidesToShow: 1,
@@ -35,12 +41,16 @@ const ProductDetail = () => {
 
     const settings2 = {
         dots: true,
-        slidesToShow: 3,
+        slidesToShow: 4,
         slidesToScroll: 1,
         asNavFor: slider1Ref.current,
         focusOnSelect: true,
         swipeToSlide: true,
     };
+
+    const onSliderChange = (index) => {
+        setActiveImageIndex(index);
+    };      
 
     useEffect(() => {
         dispatch(getProductById(productId));
@@ -116,47 +126,79 @@ const ProductDetail = () => {
             </React.Fragment>
         ));
     };    
+
+    const tabs = [
+        { key: "benefits", label: "Lợi ích" },
+        { key: "ingredients", label: "Thành phần" },
+        { key: "constraindication", label: "Chống chỉ định" },
+        { key: "object_use", label: "Đối tượng sử dụng" },
+        { key: "instruction", label: "Hướng dẫn sử dụng" },
+        { key: "preserve", label: "Bảo quản" },
+        { key: "note", label: "Ghi chú" },
+    ];
     
+    const validTabs = tabs.filter(
+        (tab) => product?.[0]?.[tab.key]?.trim()
+    );
+
+    const feedbackList = {
+        result: [
+          {
+            id: "81db29bf-2d1f-44e0-a174-d1ffbe2b10fa",
+            username: "kimhong",
+            avatar: "https://res.cloudinary.com/dvyvp4n4p/image/upload/v1733522479/iw8oagqw9ttba8hyl3en.jpg",
+            productName: "Sữa Tắm Gội Toàn Thân Cho Bé JOHNSON'S Top To Toe Baby Wash (500ml)",
+            feedback: "Sản phẩm dịu nhẹ",
+            createDate: "2024-12-11"
+          }
+        ]
+    };
 
     return (
         <div>
             <Header />
             <div className="px-4 md:px-8 lg:px-48 container mx-auto my-10">
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-6 pb-2">
                     {/* Slider */}
-                    <div className='md:col-span-2'>
-                    <Slider
-                        className="slider-for"
-                        {...settings1}
-                        ref={slider1Ref}
-                    >
-                        {productImages.map((image, index) => (
-                            <div key={index}>
+                    <div className='md:col-span-2 flex items-start justify-center'>
+                        <div className='w-4/5'>
+                        <Slider
+                            className="slider-for"
+                            {...settings1}
+                            ref={slider1Ref}
+                            afterChange={(index) => onSliderChange(index)}
+                            >
+                            {productImages.map((image, index) => (
+                                <div key={index}>
                                 <img
                                     className="w-full h-auto rounded-lg"
                                     src={image}
                                     alt={`Product ${index + 1}`}
                                 />
-                            </div>
-                        ))}
-                    </Slider>
-                    {productImages.length > 1 && (
-                        <Slider
-                            className="slider-nav"
-                            {...settings2}
-                            ref={slider2Ref}
-                        >
-                            {productImages.map((image, index) => (
-                                <div key={index}>
-                                    <img
-                                        className="w-full h-auto rounded-lg"
-                                        src={image}
-                                        alt={`Product ${index + 1}`}
-                                    />
                                 </div>
                             ))}
-                        </Slider>
-                    )}
+                            </Slider>
+
+                            {/* Slider nhỏ */}
+                            {productImages.length > 1 && (
+                            <Slider
+                                className="slider-nav"
+                                {...settings2}
+                                ref={slider2Ref}
+                            >
+                                {productImages.map((image, index) => (
+                                <div key={index}>
+                                    <img
+                                    className={`w-4/5 h-auto rounded-lg cursor-pointer ${index === activeImageIndex ? 'border-2 border-sky-500' : ''}`}
+                                    src={image}
+                                    alt={`Product ${index + 1}`}
+                                    onClick={() => slider1Ref.current.slickGoTo(index)}
+                                    />
+                                </div>
+                                ))}
+                            </Slider>
+                            )}
+                        </div>
                     </div>
                     {/* Product details */}
                     <div className='md:col-span-2'>
@@ -172,7 +214,7 @@ const ProductDetail = () => {
                                 {getProductPrice().toLocaleString('vi-VN')} đ /{selectedUnit}
                             </span>
                         </div>
-                        <div className="flex-grow border-t border-gray-400"></div>
+                        <div className="flex-grow border-t border-gray-300"></div>
                         <div>
                             <p className="text-base font-medium text-gray-700 my-2">Phân loại sản phẩm</p>
                             <div className="flex flex-wrap gap-2 mb-2">
@@ -189,26 +231,30 @@ const ProductDetail = () => {
                                 ))}
                             </div>
                         </div>
-                        <div className="flex-grow border-t border-gray-400"></div>
+                        <div className="flex-grow border-t border-gray-300"></div>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 my-2">
                             <div>
-                                <p className="text-xl font-semibold my-2">Lợi ích</p>
-                                <div>{renderTextWithLineBreaks(product?.[0]?.benefits)}</div>
-                                
-                                <p className="text-xl font-semibold my-2">Thành phần</p>
-                                <div>{renderTextWithLineBreaks(product?.[0]?.ingredients)}</div>
-                                
-                                <p className="text-xl font-semibold my-2">Chống chỉ định</p>
-                                <div>{renderTextWithLineBreaks(product?.[0]?.constraindication)}</div>
-                                
-                                <p className="text-xl font-semibold my-2">Cách sử dụng</p>
-                                <div>{renderTextWithLineBreaks(product?.[0]?.instruction)}</div>
-                                
-                                <p className="text-xl font-semibold my-2">Lưu ý</p>
-                                <div>{renderTextWithLineBreaks(product?.[0]?.note)}</div>
-                                
-                                <p className="text-xl font-semibold my-2">Điều kiện bảo quản</p>
-                                <div>{renderTextWithLineBreaks(product?.[0]?.preserve)}</div>
+                                <p className="text-base font-medium text-gray-700">Danh mục</p>
                             </div>
+                            <div className='md:col-span-2'>
+                                {product?.[0]?.category.name}
+                            </div>
+
+                            <div>
+                                <p className="text-base font-medium text-gray-700">Công dụng</p>
+                            </div>
+                            <div className='md:col-span-2'>
+                                {product?.[0]?.benefits}
+                            </div>
+
+                            <div>
+                                <p className="text-base font-medium text-gray-700">Nhà sản xuất</p>
+                            </div>
+                            <div className='md:col-span-2'>
+                                {product?.[0]?.company.name}
+                            </div>
+                        </div>
+                            
                         </div>
                     <div className="fixed md:col-span-1 rounded border border-inherit flex flex-col items-center top-40 right-20">
                         <a className='mt-5 font-bold'>Số lượng</a>
@@ -248,7 +294,69 @@ const ProductDetail = () => {
                     </div>
 
                 </div>
-            </div>
+                <div className='w-5/6 border-t border-gray-300 py-2'>
+                    {/* Tabs */}
+                    <div className="bg-white text-base font-semibold">
+                        {/* Render các tab động */}
+                        {validTabs.map((tab) => (
+                            <button
+                            key={tab.key}
+                            className={`cursor-pointer px-4 py-2 ${
+                                activeTab === tab.key
+                                ? 'inline-block border-b-2 border-sky-600 text-sky-600'
+                                : 'text-black'
+                            }`}
+                            onClick={() => setActiveTab(tab.key)}
+                            >
+                            {tab.label}
+                            </button>
+                        ))}
+                    </div>
+
+                        {/* Render thông tin theo tab */}
+                    <div>
+                        {validTabs.map(
+                            (tab) =>
+                            activeTab === tab.key && (
+                                <div key={tab.key}>
+                                <p className="text-xl font-semibold my-2">{tab.label}</p>
+                                <div>{renderTextWithLineBreaks(product?.[0]?.[tab.key])}</div>
+                                </div>
+                            )
+                        )}
+                    </div>
+                </div>
+                
+                <div className='w-5/6 border-t border-gray-300 py-4'>
+                    <p className="text-xl font-semibold my-2">Đánh giá</p>
+                    <div>
+                        {feedbackList?.result?.length > 0 ? (
+                            feedbackList.result.map((feedback) => (
+                            <div key={feedback.id} className="feedback-item border p-3 rounded-md shadow-sm mb-3">
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className='flex items-center'>
+                                        <img
+                                            src={feedback.avatar}
+                                            alt={feedback.username}
+                                            className="w-10 h-10 rounded-full mr-3"
+                                        />
+                                        <p className="font-semibold">{feedback.username}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-600">{feedback.createDate}</p>
+                                    </div>
+                                </div>
+                                <p className="text-sm">{feedback.feedback}</p>
+                            </div>
+                            ))
+                        ) : (
+                            <p>Chưa có đánh giá nào</p>
+                        )}
+
+                        </div>
+                    </div>
+
+                </div>
             <Footer />
         </div>
     );

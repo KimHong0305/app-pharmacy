@@ -5,6 +5,7 @@ import categoryReducer from "./Reducers/categoryReducer";
 import companyReducer from "./Reducers/companyReducer";
 import locationReducer from "./Reducers/locationReducer";
 import orderAdminReducer from "./Reducers/order/orderAdminReducer";
+import orderGuestReducer from "./Reducers/order/orderGuestReducer";
 import orderUserReducer from "./Reducers/order/orderUserReducer";
 import MoMoReducer from "./Reducers/payment/MoMoReducer";
 import VNPayReducer from "./Reducers/payment/VNPayReducer";
@@ -30,5 +31,6 @@ const rootReducer = {
     momo: MoMoReducer,
     zaloPay: ZaloPayReducer,
     orderAdmin: orderAdminReducer,
+    orderGuest: orderGuestReducer,
 }
 export default rootReducer;

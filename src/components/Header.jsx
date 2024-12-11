@@ -27,7 +27,7 @@ const Header = () => {
   const [showLogin, setShowLogin] = useState(false)
   const isLoggedIn = !!localStorage.getItem('token');
   const [showMenu, setShowMenu] = useState(false);
-
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   const { message } = useSelector((state) => state.auth);
   const { categories } = useSelector((state) => state.category);
@@ -46,7 +46,6 @@ const Header = () => {
   };
 
   useEffect(() => {
-  
     if (searchQuery.trim() === '') {
       setFilteredProducts([]);
     } else {
@@ -68,6 +67,11 @@ const Header = () => {
     navigate(`/productDetail/${productId}`);
   };
 
+  const handleSearchFocus = () => {
+    setShowSearchResults(true);
+  };
+  
+
   useEffect(() => {
     dispatch(getCategoryNull());
     // if (message) {
@@ -87,21 +91,38 @@ const Header = () => {
             {/* Thanh search */}
             <div className="flex items-center w-full max-w-[695px] ml-5 relative">
               <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden w-full bg-white">
-                <input  
-                  type="text" 
-                  placeholder="Tìm kiếm..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                />
+              <input  
+                type="text" 
+                placeholder="Tìm kiếm sản phẩm hoặc tra cứu đơn hàng..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={handleSearchFocus}
+                onBlur={(e) => {
+                  if (e.relatedTarget?.classList?.contains('Tra cứu đơn hàng')) {
+                    return;
+                  }
+                  setShowSearchResults(false);
+                }}
+                
+                className="flex-1 p-2 focus:outline-none" 
+              />
+
                 <button onClick={handleSearch} className="p-2">
                   <FaSearch />
                 </button>
               </div>
 
               {/* Hiển thị kết quả tìm kiếm */}
-              {filteredProducts.length > 0 && (
+              {(filteredProducts.length > 0 || showSearchResults) && (
                 <div className="absolute top-12 w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 max-w-[695px]">
+                  <div className="p-3">
+                    <button
+                      className="w-[200px] bg-gray-200 hover:bg-blue-300 font-semibold py-2 px-4 rounded-lg focus:outline-none"
+                      onMouseDown={() => navigate('/searchOrder')}
+                    >
+                      Tra cứu đơn hàng
+                    </button>
+                  </div>
                   <ul className="divide-y divide-gray-200">
                     {filteredProducts.map((product) => (
                       <li key={product.id} className="flex items-center gap-4 p-3 hover:bg-gray-100 cursor-pointer"

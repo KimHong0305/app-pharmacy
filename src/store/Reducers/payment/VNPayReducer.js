@@ -5,15 +5,9 @@ export const createPaymentVNPay = createAsyncThunk(
     'user/createVNPay',
     async (orderId, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem('token');
             const response = await api.post(
                 `/vnpay/create-payment?orderId=${orderId}`,
-                null,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
+                null
             );
 
             return response.data;

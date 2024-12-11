@@ -5,15 +5,9 @@ export const createPaymentZaloPay = createAsyncThunk(
     'user/createZaloPay',
     async (orderId, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem('token');
             const response = await api.post(
                 `/zalopay/create-payment?orderId=${orderId}`,
-                null,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
+                null
             );
 
             return response.data;

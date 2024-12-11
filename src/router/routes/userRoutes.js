@@ -6,7 +6,6 @@ const EditAddress = lazy(() => import("../../pages/user/address/EditAddress"));
 const AddAdderss = lazy(() => import("../../pages/user/address/AddAddress"));
 const OrderUser = lazy(() => import("../../pages/user/OrderUser"));
 const OrderCartUser = lazy(() => import("../../pages/user/OrderCartUser"));
-const PaymentCallback = lazy(() => import("../../pages/user/PaymentCallback"));
 const HistoryOrder = lazy(() => import("../../pages/user/HistoryOrder"));
 
 
@@ -39,11 +38,6 @@ const userRoutes = [
     {
         path: '/orderUser',
         element : <OrderUser/>, 
-        role:'ROLE_USER'
-    },
-    {
-        path: '/paymentCallback',
-        element : <PaymentCallback/>, 
         role:'ROLE_USER'
     },
     {

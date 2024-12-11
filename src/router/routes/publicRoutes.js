@@ -1,5 +1,7 @@
 import { lazy } from "react";
 import Authenticate from "../../pages/auth/Authenticate";
+import PaymentCallback from "../../pages/PaymentCallback";
+import SearchOrder from "../../pages/SearchOrder";
 
 const Home = lazy(() => import('../../pages/Home'));
 const Cart = lazy(() => import('../../pages/Cart'));
@@ -45,8 +47,16 @@ const publicRoutes = [
         element : <Order/>, 
     },
     {
-        path: '//authenticate',
+        path: '/authenticate',
         element : <Authenticate/>, 
+    },
+    {
+        path: '/paymentCallback',
+        element : <PaymentCallback/>, 
+    },
+    {
+        path: '/searchOrder',
+        element : <SearchOrder/>, 
     },
 ]
 

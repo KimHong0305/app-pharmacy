@@ -29,14 +29,16 @@ const Orders = () => {
     const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
     const [currentPage, setCurrentPage] = useState(0);
 
-    const { orders } = useSelector((state) => state.orderAdmin);
-
-    const totalItems = orders.length;
-    const totalPages = Math.ceil(totalItems / size);
+    const { orders, loading, error, totalPages } = useSelector((state) => state.orderAdmin);
 
     useEffect(() => {
-        dispatch(getOrders());
-    }, [dispatch]);
+        dispatch(getOrders({ page: currentPage, size }));
+    }, [dispatch, currentPage, size]);
+
+    const handleItemsPerPageChange = (e) => {
+        setSize(Number(e.target.value)); 
+        dispatch(getOrders({ page: 0, size: Number(e.target.value) }));
+    };
 
     const handlePageChange = (page) => {
         if (page >= 0 && page < totalPages) {
@@ -44,16 +46,9 @@ const Orders = () => {
         }
     };
 
-    const handleItemsPerPageChange = (e) => {
-        setSize(Number(e.target.value));
-        setCurrentPage(0);
-    };
-
     const handleOrderDetail= (order) => {
         navigate('/admin/orderDetail', { state: order });
     };
-
-    const paginatedCategories = orders.slice(currentPage * size, (currentPage + 1) * size);
 
     return (
         <div className="px-2 md:px-4">
@@ -106,7 +101,7 @@ const Orders = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {paginatedCategories.map((order) => (
+                            {orders.map((order) => (
                                 <TableRow key={order} 
                                 onClick={() => handleOrderDetail(order)}>
                                     <TableCell>{order.id}</TableCell>

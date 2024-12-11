@@ -16,14 +16,6 @@ const Register = () => {
     dob: '',
   });
 
-  // const [state, setState] = useState({
-  //   username: 'kimhong',
-  //   password: '12345678',
-  //   confirmPassword: '12345678',
-  //   email: 'nguyenkimhong0305@gmail.com',
-  //   dob: '',
-  // });
-
   const [showVerify, setShowVerify] = useState(false);
 
   const [errors, setErrors] = useState({

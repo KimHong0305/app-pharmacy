@@ -82,19 +82,86 @@ const HistoryOrder = () => {
                                 ) : (
                                     history.map((order) => (
                                         <div key={order.id} className="w-full py-4 border-b">
-                                            <p className="text-lg font-bold">Mã đơn hàng: {order.id}</p>
-                                            <p>Ngày đặt: {order.orderDate}</p>
-                                            <p>Tổng tiền: {order.totalPrice.toLocaleString()}đ</p>
-                                            <p>Phương thức thanh toán: {order.paymentMethod}</p>
-                                            <p>Trạng thái: {order.status}</p>
-                                            <div>
-                                                <p className="mt-2 font-semibold">Sản phẩm:</p>
-                                                {order.orderItemResponses.map((item, index) => (
-                                                    <div key={index} className="pl-4">
-                                                        <p>{item.productName} ({item.unitName}) x {item.quantity}</p>
-                                                        <p>Giá: {item.price.toLocaleString()}đ</p>
+                                            <div className="w-full py-5">
+                                                <div className="p-4 bg-white border border-gray-200 rounded-lg">
+                                                    <div className="flex justify-between pb-2 border-b border-gray-200 items-center">
+                                                        <div>
+                                                            <p className="text-lg font-semibold">Mã đơn hàng: {order.id}</p>
+                                                            <p className="text-sm text-gray-600">Ngày đặt: {order.orderDate}</p>
+                                                        </div>
+                                                        <span
+                                                            className={`px-3 py-1 text-sm rounded-lg ${
+                                                                order.isConfirm === false ? 'bg-yellow-200 text-yellow-800' : 'bg-blue-200 text-blue-800'
+                                                            }`}
+                                                        >
+                                                            {order.isConfirm === false ? 'Đang xử lý' : 'Đang giao hàng'}
+                                                        </span>
                                                     </div>
-                                                ))}
+
+                                                    <div className="mt-4 border-b border-gray-200">
+                                                    {order.orderItemResponses.length > 0 && (
+                                                        <div className="flex py-2">
+                                                        <div className="w-1/6">
+                                                            <img
+                                                            src={order.orderItemResponses[0].image}
+                                                            alt={order.orderItemResponses[0].productName}
+                                                            className="w-full h-auto object-cover"
+                                                            />
+                                                        </div>
+                                                        <div className="w-5/6 flex flex-col justify-start">
+                                                            <div className="flex justify-between">
+                                                            <div>
+                                                                <p className="font-medium">{order.orderItemResponses[0].productName}</p>
+                                                                <p className="text-sm text-gray-600">
+                                                                Số lượng: {order.orderItemResponses[0].quantity} {order.orderItemResponses[0].unitName}
+                                                                </p>
+                                                            </div>
+                                                            <p className="text-sm text-gray-600 ml-5">
+                                                                Giá: {order.orderItemResponses[0].price.toLocaleString()} VND
+                                                            </p>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {/* Hiển thị số lượng sản phẩm khác */}
+                                                    {order.orderItemResponses.length > 1 && (
+                                                        <p className="my-2 text-sm text-gray-500">
+                                                        {order.orderItemResponses.length - 1} sản phẩm khác
+                                                        </p>
+                                                    )}
+                                                    </div>
+
+
+                                                    <div className="mt-4 flex justify-between">
+                                                        <div>
+                                                            <p className="text-sm text-gray-600">
+                                                                Phương thức thanh toán: <span className="font-semibold">{order.paymentMethod}</span>
+                                                            </p>
+
+                                                            {/* Hiển thị trạng thái thanh toán */}
+                                                            <div className="mt-2">
+                                                                <span
+                                                                    className={`px-3 py-1 text-sm rounded-lg ${
+                                                                        order.status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' :
+                                                                        order.status === 'SUCCESS' ? 'bg-green-200 text-green-800' :
+                                                                        order.status === 'FAILED' ? 'bg-red-200 text-red-800' :
+                                                                        order.status === 'CANCELLED' ? 'bg-gray-200 text-gray-800' : ''
+                                                                    }`}
+                                                                >
+                                                                    {order.status === 'PENDING' && 'Chờ xử lý'}
+                                                                    {order.status === 'SUCCESS' && 'Đã thanh toán'}
+                                                                    {order.status === 'FAILED' && 'Thanh toán thất bại'}
+                                                                    {order.status === 'CANCELLED' && 'Đã hủy'}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <p className="text-lg font-semibold">
+                                                            Tổng tiền: {order.totalPrice.toLocaleString()} VND
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     ))

@@ -73,7 +73,7 @@ const ProductDetail = () => {
         if (token) {
             navigate('/orderUser', { state: selectedProduct })
         } else {
-            toast.warning("Vui lòng đăng nhập để mua hàng!");
+            navigate('/order', { state: selectedProduct })
         }
     }
 

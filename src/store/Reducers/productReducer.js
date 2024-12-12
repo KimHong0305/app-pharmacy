@@ -93,10 +93,36 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+export const getNewProducts = createAsyncThunk(
+  'product/getNewProducts',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('/home/top20');
+      return response.data.result;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getBestProducts = createAsyncThunk(
+  'product/getBestProducts',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('/home/bestSeller');
+      return response.data.result;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: 'product',
   initialState: {
     allProducts: [],
+    newProducts: [],
+    bestProducts: [],
     products: [],
     totalPages: 0,
     totalElements: 0,
@@ -179,6 +205,17 @@ const productSlice = createSlice({
       .addCase(deleteProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // new product
+      .addCase(getNewProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.newProducts = action.payload;
+      })
+      // best product
+      // new product
+      .addCase(getBestProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bestProducts = action.payload;
       })
   }
 });

@@ -7,10 +7,8 @@ import Login from "../pages/auth/Login";
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/Reducers/authReducer';
 import { MdLogout } from "react-icons/md";
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getCategoryNull } from '../store/Reducers/categoryReducer';
-import { getCartGuest, getCartUser } from '../store/Reducers/cartReducer';
 import { useNavigate } from 'react-router-dom';
 import { clearAddress } from '../store/Reducers/addressReducer';
 

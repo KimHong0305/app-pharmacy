@@ -48,6 +48,41 @@ export const getReplyFeedback = createAsyncThunk(
     }
 );
 
+export const getFeedbackByUser = createAsyncThunk(
+    "/getFeedbackByUser",
+    async (_, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.get('/feedback/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data.result;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const deleteFeedback = createAsyncThunk(
+    "/deleteFeedback",
+    async (id, { rejectWithValue }) => {
+        try {
+        const token = localStorage.getItem('token');
+        const response = await api.delete(`/feedback/user/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.result;
+        } catch (error) {
+        return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+
 // Gửi feedback mới
 export const createFeedback = createAsyncThunk(
     "user/createFeedback",
@@ -57,11 +92,24 @@ export const createFeedback = createAsyncThunk(
             const response = await api.post('/feedback', feedback, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log("Feedback created response: ", response.data.result);
             return response.data.result;
         } catch (error) {
-            console.error("Error creating feedback: ", error);
             return rejectWithValue(error.response?.data);
+        }
+    }
+);
+
+export const updateFeedback = createAsyncThunk(
+    "user/updateFeedback",
+    async (feedback, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.put('/feedback', feedback, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
         }
     }
 );
@@ -74,6 +122,7 @@ const feedbackSlice = createSlice({
         error: null,
         feedbacks: [],
         reply: {},
+        feedbackUser: [],
     },
     reducers: {
         // Set reply thông qua Redux state
@@ -98,6 +147,19 @@ const feedbackSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
                 console.error("Error loading feedbacks: ", action.payload);
+            })
+            //feedback by user
+            .addCase(getFeedbackByUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getFeedbackByUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.feedbackUser = action.payload;
+            })
+            .addCase(getFeedbackByUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             })
             // Load reply feedback
             .addCase(getReplyFeedback.pending, (state) => {

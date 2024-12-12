@@ -9,14 +9,17 @@ import { PiNewspaperClippingLight } from "react-icons/pi";
 import { useNavigate } from 'react-router-dom';
 import { getHistory } from '../../store/Reducers/order/orderUserReducer';
 import MembershipCard from "../../components/MembershipCard";
-import { createFeedback } from '../../store/Reducers/feedback/feedbackReducer';
+import { createFeedback, deleteFeedback, getFeedbackByUser, updateFeedback } from '../../store/Reducers/feedback/feedbackReducer';
 import { toast } from 'react-toastify';
+import { FaRegTrashCan } from "react-icons/fa6";
+import { GrEdit } from "react-icons/gr";
 
 const HistoryOrder = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { bio } = useSelector((state) => state.auth);   
     const { history } = useSelector((state) => state.orderUser);
+    const { feedbackUser } = useSelector((state) => state.feedback);
 
     const [activeTab, setActiveTab] = useState("processing");
     const [showReviewDialog, setShowReviewDialog] = useState(false);
@@ -24,9 +27,17 @@ const HistoryOrder = () => {
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
+    const [feedbackToDelete, setFeedbackToDelete] = useState(null);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+    const [selectedFeedback, setSelectedFeedback] = useState(null);
+    const [showEditDialog, setShowEditDialog] = useState(false);
+    const [updatedFeedback, setUpdatedFeedback] = useState("");
+
     useEffect(() => {
         dispatch(getUserInfo());
         dispatch(getHistory());
+        dispatch(getFeedbackByUser());
     }, [dispatch]);
 
     const handleAddress = () => {
@@ -51,7 +62,7 @@ const HistoryOrder = () => {
 
     const handleSubmitReview = async () => {
         const newFeedback = {
-            productId: selectedProduct.id,
+            productId: selectedProduct.productId,
             priceId: selectedProduct.priceId,
             feedback: reviewText
         }
@@ -59,11 +70,56 @@ const HistoryOrder = () => {
         try {
             await dispatch(createFeedback(newFeedback)).unwrap();
             toast.success('Feedback sản phẩm thành công!')
+            dispatch(getFeedbackByUser());
             handleCloseReviewDialog();
         } catch (error) {
             toast.error(error.message);
         }
     };
+
+    const handleDelete = (Id) => {
+        setFeedbackToDelete(Id);
+        setIsDeleteDialogOpen(true);
+    };
+    
+    const handleConfirmDelete = async () => {
+        if (feedbackToDelete) {
+            await dispatch(deleteFeedback(feedbackToDelete));
+            dispatch(getFeedbackByUser());
+            toast.success('Xóa feedback thành công');
+            setFeedbackToDelete(null);
+            setIsDeleteDialogOpen(false);
+        }
+    };
+    
+    const handleCancelDelete = () => {
+        setFeedbackToDelete(null);
+        setIsDeleteDialogOpen(false);
+    };
+
+    const handleUpdateClick = (feedbackId) => {
+        setSelectedFeedback(feedbackId);
+        setShowEditDialog(true);
+    };
+    
+
+    const handleSubmitUpdate = async (feedbackId) => {
+        const update = {
+            id: feedbackId, 
+            feedback: updatedFeedback
+        }
+        //console.log(update)
+        try {
+            await dispatch(updateFeedback(update)).unwrap();
+            toast.success("Cập nhật đánh giá thành công!");
+            setShowEditDialog(false);
+            setUpdatedFeedback("");
+            dispatch(getFeedbackByUser());
+        } catch (error) {
+            toast.error("Cập nhật đánh giá thất bại!");
+        }
+    };
+    
 
     const filteredHistory = history.filter((order) => {
         switch (activeTab) {
@@ -77,10 +133,14 @@ const HistoryOrder = () => {
                 return order.status === "PENDING" && order.paymentMethod !== "CASH";
             case "review":
                 return order.isConfirm  &&  (order.status === "SUCCESS" || order.paymentMethod === "CASH");
+            case "reviewed":
+                return false;
             default:
                 return true;
         }
     });
+
+    const filteredFeedbacks = activeTab === "reviewed" ? feedbackUser : [];
 
     if (!bio) {
         return <div>No user information available.</div>;
@@ -91,7 +151,7 @@ const HistoryOrder = () => {
     };
 
     const { username, point } = bio;
-
+    
     return (
         <div>
             <Header />
@@ -138,6 +198,7 @@ const HistoryOrder = () => {
                                         { label: "Đã hủy", value: "cancelled" },
                                         { label: "Chờ thanh toán", value: "pendingPayment" },
                                         { label: "Đánh giá", value: "review" },
+                                        { label: "Đã đánh giá", value: "reviewed" },
                                     ].map((tab) => (
                                         <button
                                             key={tab.value}
@@ -153,19 +214,69 @@ const HistoryOrder = () => {
                                     ))}
                                 </div>
 
+                                {activeTab === "reviewed" && (
+                                    <div className="w-full">
+                                        {filteredFeedbacks.length === 0 ? (
+                                            <div className="text-center py-10">
+                                                <p>Không có đánh giá nào.</p>
+                                            </div>
+                                        ) : (
+                                            filteredFeedbacks.map((feedback) => (
+                                                <div key={feedback.id} className="border p-4 rounded-md shadow-sm bg-gray-50">
+                                                     <div className='mb-2 p-2 bg-gray-200 rounded-lg'>
+                                                        <p className="text-sm font-medium text-gray-700">
+                                                            {feedback.productName}
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <div className='flex items-center'>
+                                                            <img
+                                                                src={feedback.avatar || "http://localhost:3000/images/avata_khach.jpg"}
+                                                                alt={feedback.username}
+                                                                className="w-10 h-10 rounded-full mr-3"
+                                                            />
+                                                            <p className="font-semibold">{feedback.username}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm text-gray-600">{feedback.createDate}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className='flex justify-between'>
+                                                        <p className="mt-1 text-sm text-gray-600">
+                                                            {feedback.feedback}
+                                                        </p>
+                                                        <div className='flex'>
+                                                            <button className="flex items-center justify-center p-2 rounded-lg bg-green-200 ml-2"
+                                                                onClick={() => handleUpdateClick(feedback.id)}
+                                                            >
+                                                                <GrEdit className="text-green-500" />
+                                                            </button>
+                                                            <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2"
+                                                                onClick={() => handleDelete(feedback.id)}
+                                                            >
+                                                                <FaRegTrashCan className="text-red-500" />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                )}
+
                                 {/* Nội dung hiển thị dựa trên tab */}
-                                {filteredHistory.length === 0 ? (
+                                {filteredHistory.length === 0 && activeTab !== "reviewed" ? (
                                     <div className="text-center py-10">
                                         <p>Không có đơn hàng nào.</p>
                                     </div>
                                 ) : (
                                     filteredHistory.map((order) => (
-                                        <div key={order.id} className="w-full py-4 cursor-pointer" onClick={() => handleOrderDetail(order)}>
+                                        <div key={order.id} className="w-full py-4">
                                             {/* Nội dung đơn hàng */}
                                             <div className="p-4 bg-white border border-gray-200 rounded-lg">
                                             <div className="flex justify-between pb-2 border-b border-gray-200 items-center">
                                                 <div>
-                                                    <p className="text-lg font-semibold">Mã đơn hàng: {order.id}</p>
+                                                    <p className="text-lg font-semibold cursor-pointer" onClick={() => handleOrderDetail(order)}>Mã đơn hàng: {order.id}</p>
                                                     <p className="text-sm text-gray-600">Ngày đặt: {order.orderDate}</p>
                                                 </div>
                                                 {order.status !== 'FAILED' && (
@@ -258,6 +369,7 @@ const HistoryOrder = () => {
                                         </div>
                                     ))
                                 )}
+                                
                             </div>
                             {/* Dialog đánh giá */}
                             {showReviewDialog && selectedOrder && (
@@ -272,7 +384,7 @@ const HistoryOrder = () => {
                                     onChange={(e) => setSelectedProduct(e.target.value)}
                                 >
                                     {selectedOrder.orderItemResponses.map((product) => (
-                                    <option key={product.id} value={product}>
+                                    <option key={product.id} value={product.id}>
                                         {product.productName}
                                     </option>
                                     ))}
@@ -300,6 +412,58 @@ const HistoryOrder = () => {
                                 </div>
                             </div>
                             )}
+
+                            {isDeleteDialogOpen && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                                    <div className="bg-white p-6 rounded-md shadow-lg">
+                                        <h3 className="text-lg font-bold mb-4">Xác nhận xóa</h3>
+                                        <p className="mb-6">Bạn có chắc chắn muốn xóa feedback này không?</p>
+                                        <div className="flex justify-end space-x-4">
+                                            <button
+                                                className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300"
+                                                onClick={handleCancelDelete}
+                                            >
+                                                Hủy
+                                            </button>
+                                            <button
+                                                className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                                                onClick={handleConfirmDelete}
+                                            >
+                                                Xác nhận
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {showEditDialog && (
+                                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                    <div className="bg-white p-6 rounded-lg shadow-lg w-[650px]">
+                                        <h2 className="text-2xl font-semibold mb-2">Chỉnh sửa đánh giá</h2>
+                                        <textarea
+                                            value={updatedFeedback}
+                                            onChange={(e) => setUpdatedFeedback(e.target.value)}
+                                            placeholder="Nhập đánh giá mới"
+                                            className="w-full p-2 border rounded-md mb-4"
+                                        />
+                                        <div className="flex justify-end space-x-2">
+                                            <button
+                                                className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300"
+                                                onClick={() => setShowEditDialog(false)}
+                                            >
+                                                Hủy
+                                            </button>
+                                            <button
+                                                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                                onClick={() => handleSubmitUpdate(selectedFeedback)}
+                                            >
+                                                Cập nhật
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                         </div>
                     </div>
                 </div>

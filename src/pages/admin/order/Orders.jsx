@@ -32,7 +32,7 @@ const Orders = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-    const { orders, loading, error, totalPages } = useSelector((state) => state.orderAdmin);
+    const { orders, totalPages } = useSelector((state) => state.orderAdmin);
     const { role } = useSelector((state) => state.auth); 
 
     console.log(orders)

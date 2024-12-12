@@ -54,7 +54,7 @@ const Address = () => {
         return <div>No user information available.</div>;
     }
 
-    const { username, image, point } = bio;
+    const { username, point } = bio;
     console.log('tai trang')
     return (
         <div>

@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getCategoryNull } from '../store/Reducers/categoryReducer';
 import { getCartGuest, getCartUser } from '../store/Reducers/cartReducer';
 import { useNavigate } from 'react-router-dom';
+import { clearAddress } from '../store/Reducers/addressReducer';
 
 const Header = () => {
   
@@ -36,6 +37,7 @@ const Header = () => {
   const handleLogout = () => {
     setShowMenu(false)
     dispatch(logout());
+    dispatch(clearAddress());
     navigate('/');
   };
 
@@ -171,7 +173,7 @@ const Header = () => {
                   <div>
                     <button onClick={() => setShowMenu(!showMenu)} type="button" className='h-10 px-3 rounded-lg bg-white text-black flex items-center justify-start' 
                     id="menu-button" aria-expanded="true" aria-haspopup="true">
-                      <img className='w-[30px] h-[30px] rounded-full overflow-hidden' src={bio?.image|| "https://via.placeholder.com/80"} alt="" />
+                      <img className='w-[30px] h-[30px] rounded-full overflow-hidden' src={bio?.image|| "http://localhost:3000/images/avata_khach.jpg"} alt="" />
                       <span className='ml-2 text-sm font-medium'>{bio?.username}</span>
                     </button>
                   </div>

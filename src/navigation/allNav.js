@@ -6,6 +6,8 @@ import { IoPricetagOutline } from "react-icons/io5";
 import { CiBoxes } from "react-icons/ci";
 import { BsCartCheck } from "react-icons/bs"; 
 import { PiTrademarkRegisteredLight } from "react-icons/pi";
+import { MdOutlineFeedback } from "react-icons/md";
+import { CiDeliveryTruck } from "react-icons/ci";
 
 export const allNav = [
     {
@@ -98,5 +100,19 @@ export const allNav = [
         icon : <BsCartCheck />,
         role : 'ROLE_EMPLOYEE',
         path: '/admin/orders'
+    },
+    {
+        id : 14,
+        title : 'Orders COD',
+        icon : <CiDeliveryTruck />,
+        role : 'ROLE_EMPLOYEE',
+        path: '/admin/orderCOD'
+    },
+    {
+        id : 15,
+        title : 'Feedbacks',
+        icon : <MdOutlineFeedback />,
+        role : 'ROLE_EMPLOYEE',
+        path: '/employee/feedback'
     },
 ]

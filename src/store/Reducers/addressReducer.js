@@ -124,7 +124,12 @@ const addressSlice = createSlice({
       loading: false,
       error: null,
     },
-    reducers: {},
+    reducers: {
+        clearAddress: (state) => {
+            state.address = [];
+            state.updateAddress = [];
+        }
+    },
     extraReducers: (builder) => {
         builder
         // get địa chỉ
@@ -193,3 +198,4 @@ const addressSlice = createSlice({
 });
 
 export default addressSlice.reducer;
+export const { clearAddress } = addressSlice.actions;

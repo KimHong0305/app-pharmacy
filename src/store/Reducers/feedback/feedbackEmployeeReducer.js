@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../../api/api";
 
-export const getOrders = createAsyncThunk(
-    "user/getOrders",
-    async ({page = 0, size = 5}, { rejectWithValue }) => {
+export const getAllFeedback = createAsyncThunk(
+    "employee/getAllFeedback",
+    async (_, { rejectWithValue }) => {
         try {
         const token = localStorage.getItem('token');
-        const response = await api.get(`/order/success?page=${page}&size=${size}`, {
+        const response = await api.get('/feedback/employee', {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -18,12 +18,12 @@ export const getOrders = createAsyncThunk(
     }
 );
 
-export const getOrderCOD = createAsyncThunk(
-    "user/getOrderCOD",
-    async ({page = 0, size = 5}, { rejectWithValue }) => {
+export const createFeedback = createAsyncThunk(
+    "employee/createFeedback",
+    async (feedback, { rejectWithValue }) => {
         try {
         const token = localStorage.getItem('token');
-        const response = await api.get(`/order/cod?page=${page}&size=${size}`, {
+        const response = await api.post('/feedback/employee', feedback, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -35,79 +35,70 @@ export const getOrderCOD = createAsyncThunk(
     }
 );
 
-export const confirmOrder = createAsyncThunk(
-    "employee/confirmOrder",
-    async (orderId, { rejectWithValue }) => {
+export const deleteFeedback = createAsyncThunk(
+    "employee/deleteFeedback",
+    async (id, { rejectWithValue }) => {
         try {
         const token = localStorage.getItem('token');
-        const response = await api.put(`/order/${orderId}`, {}, {
+        const response = await api.delete(`/feedback/employee/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
-        return response.data;
+        return response.data.result;
         } catch (error) {
         return rejectWithValue(error.response.data);
         }
     }
 );
 
-const orderAdminSlice = createSlice({
-    name: "orderAdmin",
+const feedbackEmployeeSlice = createSlice({
+    name: "feedbackEmployee",
     initialState: {
         loading: false,
         error: null,
-        orders: [],
-        totalPages: 0,
-        orderCOD: [],
-        totalCODPages: 0,
-        totalElements: 0,
-        currentPage: 0,
+        allFeedback:[],
     },
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getOrders.pending, (state) => {
+            .addCase(getAllFeedback.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(getOrders.fulfilled, (state, action) => {
+            .addCase(getAllFeedback.fulfilled, (state, action) => {
                 state.loading = false;
-                state.orders = action.payload.content;
-                state.totalPages = action.payload.totalPages;
+                state.allFeedback = action.payload;
             })
-            .addCase(getOrders.rejected, (state, action) => {
+            .addCase(getAllFeedback.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-            //cod
-            .addCase(getOrderCOD.pending, (state) => {
+            // create
+            .addCase(createFeedback.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(getOrderCOD.fulfilled, (state, action) => {
+            .addCase(createFeedback.fulfilled, (state, action) => {
                 state.loading = false;
-                state.orderCOD = action.payload.content;
-                state.totalCODPages = action.payload.totalPages;
             })
-            .addCase(getOrderCOD.rejected, (state, action) => {
+            .addCase(createFeedback.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-            // confirm 
-            .addCase(confirmOrder.pending, (state) => {
+            // delete
+            .addCase(deleteFeedback.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(confirmOrder.fulfilled, (state, action) => {
+            .addCase(deleteFeedback.fulfilled, (state, action) => {
                 state.loading = false;
             })
-            .addCase(confirmOrder.rejected, (state, action) => {
+            .addCase(deleteFeedback.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
     },
 });
 
-export default orderAdminSlice.reducer;
-
+export default feedbackEmployeeSlice.reducer;

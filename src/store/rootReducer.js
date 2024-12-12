@@ -3,6 +3,8 @@ import authReducer from "./Reducers/authReducer";
 import cartReducer from "./Reducers/cartReducer";
 import categoryReducer from "./Reducers/categoryReducer";
 import companyReducer from "./Reducers/companyReducer";
+import feedbackEmployeeReducer from "./Reducers/feedback/feedbackEmployeeReducer";
+import feedbackReducer from "./Reducers/feedback/feedbackReducer";
 import locationReducer from "./Reducers/locationReducer";
 import orderAdminReducer from "./Reducers/order/orderAdminReducer";
 import orderGuestReducer from "./Reducers/order/orderGuestReducer";
@@ -32,5 +34,7 @@ const rootReducer = {
     zaloPay: ZaloPayReducer,
     orderAdmin: orderAdminReducer,
     orderGuest: orderGuestReducer,
+    feedbackEmployee: feedbackEmployeeReducer,
+    feedback: feedbackReducer,
 }
 export default rootReducer;

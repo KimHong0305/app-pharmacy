@@ -23,7 +23,7 @@ const Authenticate = () => {
               await dispatch(loginGoogle(authCode)).unwrap();
               setIsLoggedin(true);
             } catch (error) {
-              toast.error(error.message);
+              // toast.error(error.message);
             }
           }
         };

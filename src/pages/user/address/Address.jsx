@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
-import { TbCoinYuanFilled } from "react-icons/tb";
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserInfo } from '../../../store/Reducers/authReducer';
 import { HiOutlineUserCircle } from "react-icons/hi2";
@@ -10,7 +9,7 @@ import { PiNewspaperClippingLight } from "react-icons/pi";
 import { useNavigate } from 'react-router-dom';
 import { getAddress, fetchAddressWithLocationNames } from '../../../store/Reducers/addressReducer';
 import { IoIosAddCircleOutline } from "react-icons/io";
-
+import MembershipCard from "../../../components/MembershipCard";
 const Address = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -65,19 +64,14 @@ const Address = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="md:col-span-1 space-y-8">
                             <div className="w-full bg-white rounded-lg shadow-xl flex flex-col p-5">
-                                <div className="flex items-center justify-start">
-                                    <img
-                                        className="w-[80px] h-[80px] rounded-full border-2 overflow-hidden"
-                                        src={image || "https://via.placeholder.com/80"}
-                                        alt=""
-                                    />
-                                    <div className="ml-4 flex flex-col items-start">
-                                        <p className="text-lg font-normal">{username}</p>
-                                        <div className="flex items-center justify-center mt-5">
-                                            <p className="text-lg font-normal mr-2">Số xu: {point}</p>
-                                            <TbCoinYuanFilled className="h-5 w-5 text-orange-500" />
-                                        </div>
+                                <div className='flex items-center justify-start ml-2'>
+                                    <img className='w-[80px] h-[80px] rounded-full border-2 overflow-hidden' src={bio.image || "http://localhost:3000/images/avata_khach.jpg"} alt="" />
+                                    <div className='ml-4 flex flex-col items-start'>
+                                        <p className='text-lg font-normal'>{username}</p>
                                     </div>
+                                </div>
+                                <div className='mt-5 flex items-center justify-center'>
+                                    <MembershipCard point={point} />
                                 </div>
                                 <div className="my-4 flex-grow border-t border-gray-300"></div>
                                 <div className="flex flex-col items-start justify-start space-y-4">

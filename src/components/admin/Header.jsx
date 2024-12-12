@@ -50,7 +50,7 @@ const Header = ({ showSidebar, setShowSidebar }) => {
               {role === 'ROLE_ADMIN' || role === 'ROLE_EMPLOYEE' ? (
                 <img
                   className="w-[45px] h-[45px] rounded-full overflow-hidden"
-                  src="http://localhost:3000/images/avata_1.jpg"
+                  src="http://localhost:3000/images/avata_1.png"
                   alt="Admin Avatar"
                 />
               ) : (

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../../api/api";
+import api_cartGuest from "../../../api/api_cartGuest";
 
 export const createOrderHomeGuest = createAsyncThunk(
     'guest/createOrderHomeGuest',
@@ -18,7 +19,7 @@ export const createOrderCartGuest = createAsyncThunk(
     'guest/createOrderCartGuest',
     async (item, { rejectWithValue }) => {
         try {
-            const response = await api.post('/order/guest/cart', item);
+            const response = await api_cartGuest.post('/order/guest/cart', item);
 
             return response.data;
         } catch (error) {

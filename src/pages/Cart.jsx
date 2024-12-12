@@ -52,10 +52,10 @@ const Cart = () => {
       const updatedItem = { priceId: existingItem.priceId, quantity: 1 };
 
       if (token) {
-        dispatch(updateCartUser(updatedItem)) // API cập nhật số lượng cho người dùng
+        dispatch(updateCartUser(updatedItem))
           .then(() => dispatch(getCartUser()));
       } else {
-        dispatch(updateCartGuest(updatedItem)) // API cập nhật số lượng cho khách
+        dispatch(updateCartGuest(updatedItem))
           .then(() => dispatch(getCartGuest()));
       }
     }
@@ -67,10 +67,10 @@ const Cart = () => {
       const updatedItem = { priceId: existingItem.priceId, quantity: -1 };
 
       if (token) {
-        dispatch(updateCartUser(updatedItem)) // API giảm số lượng cho người dùng
+        dispatch(updateCartUser(updatedItem))
           .then(() => dispatch(getCartUser()));
       } else {
-        dispatch(updateCartGuest(updatedItem)) // API giảm số lượng cho khách
+        dispatch(updateCartGuest(updatedItem))
           .then(() => dispatch(getCartGuest()));
       }
     }
@@ -80,9 +80,11 @@ const Cart = () => {
     if (token) {
       navigate('/orderCartUser', { state: cartItems })
     } else {
-      toast.warning("Vui lòng đăng nhập để mua hàng!");
+      navigate('/orderCart', { state: cartItems })
     }
-}
+  }
+
+  console.log('gio hang',cartItems)
 
   return (
     <div>

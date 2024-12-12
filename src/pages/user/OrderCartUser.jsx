@@ -29,25 +29,29 @@ const OrderCartUser = () => {
             setLoading(true);
             try {
                 await dispatch(getAddress());
-                if (address.length > 0) {
-                    dispatch(fetchAddressWithLocationNames(address));
-                }
             } catch (error) {
                 console.error("Error fetching address:", error);
             } finally {
                 setLoading(false);
             }
         };
-
+    
         fetchData();
     }, [dispatch]);
-
+    
     useEffect(() => {
+        if (address.length > 0) {
+            dispatch(fetchAddressWithLocationNames(address));
+        }
+    }, [address, dispatch]);  
+    
+    useEffect(() => {
+        console.log("Updated address:", updateAddress);
         const defaultAddr = updateAddress.find((addr) => addr.addressDefault);
         if (defaultAddr) {
             setDefaultAddress(defaultAddr);
         }
-    }, [address]);
+    }, [updateAddress]);
 
     const handleAddressClick = (addr) => {
         setDefaultAddress(addr);
@@ -113,7 +117,7 @@ const OrderCartUser = () => {
                         }
                     }
                     else{
-                        toast.error(`Đơn hàng đã được tạo với phương thức thanh toán: ${paymentMethod}`);
+                        toast.success(`Đặt hàng thành công !`);
                         navigate('/')
                     }
                 }
@@ -138,7 +142,7 @@ const OrderCartUser = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 my-5">
                     {/* Danh sách sản phẩm */}
                     <div className="md:col-span-3 p-4">
-                        <h2 className="text-2xl font-bold mb-4">Giỏ hàng</h2>
+                        <h2 className="text-2xl font-bold mb-4">Sản phẩm</h2>
                         {cartItems.map((item) => (
                             <div key={item.id} className="border-b py-4 flex items-center justify-between">
                                 <div className="flex">
@@ -160,33 +164,37 @@ const OrderCartUser = () => {
                         ))}
 
                         <h2 className="text-lg font-bold mt-6">Thông tin người nhận</h2>
-                        <div className="p-2 border-b border-gray-300 text-sm space-y-2">
-                            {defaultAddress && (
-                                <>
-                                    <div className='flex justify-between'>
-                                        <div className='flex'>
-                                            <p className='font-semibold text-black'>
-                                                {defaultAddress.fullname}
-                                            </p>
-                                            <div className="ml-2 mr-2 border-r border-gray-300"></div>
-                                            <p>
-                                                (+84) {defaultAddress.phone}
-                                            </p>
-                                        </div>
-                                        <p className="w-[90px] px-2 text-center rounded border border-blue-700 text-blue-700">
-                                            {defaultAddress.addressCategory === "HOUSE" ? "Nhà riêng" : 
-                                            defaultAddress.addressCategory === "COMPANY" ? "Văn phòng" : "Loại khác"}
-                                        </p>
+                        <div className="py-2 border-b border-gray-300 text-sm space-y-2">
+                        {!defaultAddress ? (
+                            <div className="text-gray-500">
+                                Không có địa chỉ nào. Vui lòng thêm địa chỉ mới.
+                            </div>
+                        ) : (
+                            <>
+                                <div className="flex justify-between">
+                                    <div className="flex">
+                                        <p className="font-semibold text-black">{defaultAddress.fullname}</p>
+                                        <div className="ml-2 mr-2 border-r border-gray-300"></div>
+                                        <p>(+84) {defaultAddress.phone}</p>
                                     </div>
-                                    <p>{defaultAddress.address}</p>
-                                    <p>{defaultAddress.villageName}</p>
-                                    {defaultAddress.addressDefault && (
-                                        <p className='w-[80px] px-2 text-center rounded border border-red-600 text-red-600'>
-                                            Mặc định
-                                        </p>
-                                    )}
-                                </>
+                                    <p className="w-[90px] px-2 text-center rounded border border-blue-700 text-blue-700">
+                                        {defaultAddress.addressCategory === "HOUSE"
+                                            ? "Nhà riêng"
+                                            : defaultAddress.addressCategory === "COMPANY"
+                                            ? "Văn phòng"
+                                            : "Loại khác"}
+                                    </p>
+                                </div>
+                                <p>{defaultAddress.address}</p>
+                                <p>{defaultAddress.villageName}</p>
+                                {defaultAddress.addressDefault && (
+                                    <p className="w-[80px] px-2 text-center rounded border border-red-600 text-red-600">
+                                        Mặc định
+                                    </p>
+                                )}
+                            </>
                             )}
+
                             <button
                                 className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
                                 onClick={() => setShowAddressList((prev) => !prev)}
@@ -194,6 +202,7 @@ const OrderCartUser = () => {
                                 {showAddressList ? "Đóng danh sách địa chỉ" : "Chọn địa chỉ khác"}
                             </button>
                         </div>
+
 
                         {/* Phương thức thanh toán */}
                         <div className="mt-6">

@@ -7,14 +7,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProductById } from '../store/Reducers/productReducer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PiTrademarkDuotone } from "react-icons/pi";
-import { addCartGuest, addCartUser, messageClear } from '../store/Reducers/cartReducer';
+import { addCartGuest, addCartUser} from '../store/Reducers/cartReducer';
 import { toast } from 'react-toastify';
-
+import { getFeedbackByProduct, getReplyFeedback, setReply } from '../store/Reducers/feedback/feedbackReducer';
 const ProductDetail = () => {
     const token = localStorage.getItem('token');
-
-    // const [feedbackList, setFeedbackList] = useState([]);
-
 
     const slider1Ref = useRef(null);
     const slider2Ref = useRef(null);
@@ -26,7 +23,7 @@ const ProductDetail = () => {
     const { productId } = useParams();
 
     const { product } = useSelector((state) => state.product);
-    const { message, messageError } = useSelector((state) => state.cart);
+    const { feedbacks, reply } = useSelector((state) => state.feedback);
 
     const [quantity, setQuantity] = useState(1);
     const [selectedUnit, setSelectedUnit] = useState(null);
@@ -54,16 +51,36 @@ const ProductDetail = () => {
 
     useEffect(() => {
         dispatch(getProductById(productId));
+        dispatch(getFeedbackByProduct(productId));
     }, [dispatch, productId]);
 
-    console.log(product)
-
     useEffect(() => {
-        if (product?.length > 0) {
+        if (feedbacks?.length) {
+            feedbacks.forEach((feedback) => {
+                dispatch(getReplyFeedback(feedback.id)).then((response) => {
+                    const replyData = response?.result?.[0];
+                    if (replyData) {
+                        dispatch(setReply({
+                            feedbackId: feedback.id,
+                            reply: replyData.feedback,
+                            username: replyData.username,
+                            avatar: replyData.avatar,
+                            createDate: replyData.createDate
+                        }));
+                    }
+                });
+            });
+            console.log('reply', reply)
+        }
+    }, [feedbacks, dispatch]);
+    
+    useEffect(() => {
+        if (product?.length > 0) {  
             setProductImages(product[0].images);
             setSelectedUnit(product[0].price.unit.name);
         }
     }, [product]);
+    
 
     const handleAddToCart = () => {
         const selectedProduct = product.find((p) => p.price.unit.name === selectedUnit);
@@ -73,8 +90,10 @@ const ProductDetail = () => {
         };
         if (token) {
             dispatch(addCartUser({ item: newItem, token }));
+            toast.success('Thêm vào giỏ hàng thành công');
         } else {
             dispatch(addCartGuest(newItem));
+            toast.success('Thêm vào giỏ hàng thành công');
         }
     };
 
@@ -105,17 +124,6 @@ const ProductDetail = () => {
         setQuantity(quantity + 1);
     };
 
-    useEffect(() => {
-        if (message) {
-            toast.success('Thêm vào giỏ hàng thành công');
-            dispatch(messageClear());
-        }
-        if (messageError) {
-            toast.error(messageError);
-            dispatch(messageClear());
-        }
-    }, [message, messageError, dispatch]);
-
     const renderTextWithLineBreaks = (text) => {
         if (!text) return null;
         // Thay \\n bằng \n và chia nhỏ thành dòng
@@ -140,19 +148,6 @@ const ProductDetail = () => {
     const validTabs = tabs.filter(
         (tab) => product?.[0]?.[tab.key]?.trim()
     );
-
-    const feedbackList = {
-        result: [
-          {
-            id: "81db29bf-2d1f-44e0-a174-d1ffbe2b10fa",
-            username: "kimhong",
-            avatar: "https://res.cloudinary.com/dvyvp4n4p/image/upload/v1733522479/iw8oagqw9ttba8hyl3en.jpg",
-            productName: "Sữa Tắm Gội Toàn Thân Cho Bé JOHNSON'S Top To Toe Baby Wash (500ml)",
-            feedback: "Sản phẩm dịu nhẹ",
-            createDate: "2024-12-11"
-          }
-        ]
-    };
 
     return (
         <div>
@@ -330,31 +325,55 @@ const ProductDetail = () => {
                 <div className='w-5/6 border-t border-gray-300 py-4'>
                     <p className="text-xl font-semibold my-2">Đánh giá</p>
                     <div>
-                        {feedbackList?.result?.length > 0 ? (
-                            feedbackList.result.map((feedback) => (
+                        {feedbacks?.length > 0 ? (
+                        feedbacks.map((feedback) => (
                             <div key={feedback.id} className="feedback-item border p-3 rounded-md shadow-sm mb-3">
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className='flex items-center'>
-                                        <img
-                                            src={feedback.avatar}
-                                            alt={feedback.username}
-                                            className="w-10 h-10 rounded-full mr-3"
-                                        />
-                                        <p className="font-semibold">{feedback.username}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-600">{feedback.createDate}</p>
-                                    </div>
+                            <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center">
+                                <img
+                                    src={feedback.avatar}
+                                    alt={feedback.username}
+                                    className="w-10 h-10 rounded-full mr-3"
+                                />
+                                <p className="font-semibold">{feedback.username}</p>
                                 </div>
-                                <p className="text-sm">{feedback.feedback}</p>
+                                <div>
+                                <p className="text-sm text-gray-600">{feedback.createDate}</p>
+                                </div>
                             </div>
-                            ))
-                        ) : (
-                            <p>Chưa có đánh giá nào</p>
-                        )}
+                            <p className="text-base">{feedback.feedback}</p>
+                            {/* Reply Section */}
+                            <div className="reply-section mt-3 p-3 bg-sky-100 border rounded-md">
+                            {reply?.[feedback.id] ? (
+                                <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center">
+                                            <img
+                                                src="http://localhost:3000/images/avata_1.png"
+                                                alt={reply[feedback.id].username}
+                                                className="w-10 h-10 rounded-full mr-3"
+                                            />
+                                            <p className="font-semibold">{reply[feedback.id].username}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-gray-600">{reply[feedback.id].createDate}</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-base">{reply[feedback.id].reply}</p>
+                                </div>
+                            ) : (
+                                <p className="text-sm text-gray-400">Chưa có phản hồi</p>
+                            )}
 
                         </div>
+                        </div>
+                        ))
+                        ) : (
+                        <p>Chưa có đánh giá nào</p>
+                        )}
                     </div>
+                    </div>
+
 
                 </div>
             <Footer />

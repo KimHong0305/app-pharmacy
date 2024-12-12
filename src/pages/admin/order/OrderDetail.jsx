@@ -134,21 +134,23 @@ const OrderDetail = () => {
                                         </p>
 
                                         {/* Hiển thị trạng thái thanh toán */}
-                                        <div className="mt-2">
-                                            <span
-                                                className={`px-3 py-1 text-sm rounded-lg ${
-                                                    status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' :
-                                                    status === 'SUCCESS' ? 'bg-green-200 text-green-800' :
-                                                    status === 'FAILED' ? 'bg-red-200 text-red-800' :
-                                                    status === 'CANCELLED' ? 'bg-gray-200 text-gray-800' : ''
-                                                }`}
-                                            >
-                                                {status === 'PENDING' && 'Chờ xử lý'}
-                                                {status === 'SUCCESS' && 'Đã thanh toán'}
-                                                {status === 'FAILED' && 'Thanh toán thất bại'}
-                                                {status === 'CANCELLED' && 'Đã hủy'}
-                                            </span>
-                                        </div>
+                                        {paymentMethod !== 'CASH' && (
+                                            <div className="mt-2">
+                                                <span
+                                                    className={`px-3 py-1 text-sm rounded-lg ${
+                                                        status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' :
+                                                        status === 'SUCCESS' ? 'bg-green-200 text-green-800' :
+                                                        status === 'FAILED' ? 'bg-red-200 text-red-800' :
+                                                        status === 'CANCELLED' ? 'bg-gray-200 text-gray-800' : ''
+                                                    }`}
+                                                >
+                                                    {status === 'PENDING' && 'Chờ xử lý'}
+                                                    {status === 'SUCCESS' && 'Đã thanh toán'}
+                                                    {status === 'FAILED' && 'Thanh toán thất bại'}
+                                                    {status === 'CANCELLED' && 'Đã hủy'}
+                                                </span>
+                                            </div>
+                                            )}
                                     </div>
 
                                     <p className="text-lg font-semibold">

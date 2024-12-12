@@ -18,11 +18,11 @@ import {
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { confirmOrder, getOrders } from '../../../store/Reducers/order/orderAdminReducer';
+import { confirmOrder, getOrderCOD } from '../../../store/Reducers/order/orderAdminReducer';
 import { IoPrintOutline } from "react-icons/io5";
 import { FaRegSquareCheck } from "react-icons/fa6";
 
-const Orders = () => {
+const OrderCOD = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -32,21 +32,20 @@ const Orders = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-    const { orders, loading, error, totalPages } = useSelector((state) => state.orderAdmin);
+    const { orderCOD, loading, error, totalCODPages } = useSelector((state) => state.orderAdmin);
     const { role } = useSelector((state) => state.auth); 
 
-    console.log(orders)
     useEffect(() => {
-        dispatch(getOrders({ page: currentPage, size }));
+        dispatch(getOrderCOD({ page: currentPage, size }));
     }, [dispatch, currentPage, size]);
 
     const handleItemsPerPageChange = (e) => {
         setSize(Number(e.target.value)); 
-        dispatch(getOrders({ page: 0, size: Number(e.target.value) }));
+        dispatch(getOrderCOD({ page: 0, size: Number(e.target.value) }));
     };
 
     const handlePageChange = (page) => {
-        if (page >= 0 && page < totalPages) {
+        if (page >= 0 && page < totalCODPages) {
             setCurrentPage(page);
         }
     };
@@ -60,7 +59,7 @@ const Orders = () => {
         try {
             await dispatch(confirmOrder(orderId)).unwrap();
             toast.success('Cập nhật trạng thái đơn hàng thành công!');
-            dispatch(getOrders({ page: currentPage, size }));
+            dispatch(getOrderCOD({ page: currentPage, size }));
           } catch (error) {
             toast.error(error.message);
         }
@@ -123,7 +122,7 @@ const Orders = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {orders.map((order) => (
+                            {orderCOD.map((order) => (
                                 <TableRow key={order} >
                                     <TableCell className="cursor-pointer" onClick={() => handleOrderDetail(order)}>{order.id}</TableCell>
                                     <TableCell>{order.orderDate}</TableCell>
@@ -169,7 +168,7 @@ const Orders = () => {
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 0}
                         />
-                        {Array.from({ length: totalPages }).map((_, idx) => (
+                        {Array.from({ length: totalCODPages }).map((_, idx) => (
                             <PaginationItem className="list-none" key={idx}>
                                 <PaginationLink
                                     isActive={currentPage === idx}
@@ -181,7 +180,7 @@ const Orders = () => {
                         ))}
                         <PaginationNext
                             onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages - 1}
+                            disabled={currentPage === totalCODPages - 1}
                         />
                     </Pagination>
                 </div>
@@ -214,4 +213,4 @@ const Orders = () => {
     );
 };
 
-export default Orders;
+export default OrderCOD;

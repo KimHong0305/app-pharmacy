@@ -119,21 +119,23 @@ const SearchOrder = () => {
                                                 </p>
 
                                                 {/* Hiển thị trạng thái thanh toán */}
-                                                <div className="mt-2">
-                                                    <span
-                                                        className={`px-3 py-1 text-sm rounded-lg ${
-                                                            result.status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' :
-                                                            result.status === 'SUCCESS' ? 'bg-green-200 text-green-800' :
-                                                            result.status === 'FAILED' ? 'bg-red-200 text-red-800' :
-                                                            result.status === 'CANCELLED' ? 'bg-gray-200 text-gray-800' : ''
-                                                        }`}
-                                                    >
-                                                        {result.status === 'PENDING' && 'Chờ xử lý'}
-                                                        {result.status === 'SUCCESS' && 'Đã thanh toán'}
-                                                        {result.status === 'FAILED' && 'Thanh toán thất bại'}
-                                                        {result.status === 'CANCELLED' && 'Đã hủy'}
-                                                    </span>
-                                                </div>
+                                                {result.paymentMethod !== 'CASH' && (
+                                                    <div className="mt-2">
+                                                        <span
+                                                            className={`px-3 py-1 text-sm rounded-lg ${
+                                                                result.status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' :
+                                                                result.status === 'SUCCESS' ? 'bg-green-200 text-green-800' :
+                                                                result.status === 'FAILED' ? 'bg-red-200 text-red-800' :
+                                                                result.status === 'CANCELLED' ? 'bg-gray-200 text-gray-800' : ''
+                                                            }`}
+                                                        >
+                                                            {result.status === 'PENDING' && 'Chờ xử lý'}
+                                                            {result.status === 'SUCCESS' && 'Đã thanh toán'}
+                                                            {result.status === 'FAILED' && 'Thanh toán thất bại'}
+                                                            {result.status === 'CANCELLED' && 'Đã hủy'}
+                                                        </span>
+                                                    </div>
+                                                )}
                                             </div>
 
                                             <p className="text-lg font-semibold">

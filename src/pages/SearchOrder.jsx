@@ -5,9 +5,11 @@ import { FaSearch } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { getOrder } from '../store/Reducers/order/orderGuestReducer';
+import { useNavigate } from 'react-router-dom';
 
 const SearchOrder = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [searchQuery, setSearchQuery] = useState('');
     const [result, setResult] = useState(null);
@@ -31,6 +33,10 @@ const SearchOrder = () => {
         if (e.key === 'Enter') {
             handleSearch();
         }
+    };
+
+    const handleOrderDetail= (order) => {
+        navigate('/orderDetail', { state: order });
     };
 
     return (
@@ -61,7 +67,7 @@ const SearchOrder = () => {
 
                             {/* Hiển thị kết quả */}
                             {result && (
-                                <div className="w-full py-5 px-10">
+                                <div className="w-full py-5 px-10 cursor-pointer" onClick={() => handleOrderDetail(result)}>
                                     <div className="p-4 bg-white border border-gray-200 rounded-lg">
                                         <div className="flex justify-between pb-2 border-b border-gray-200 items-center">
                                             <div>

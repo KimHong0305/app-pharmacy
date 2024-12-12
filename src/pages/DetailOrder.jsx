@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IoReturnDownBackSharp } from "react-icons/io5";
-import { fetchAddressWithLocationNames } from '../../../store/Reducers/addressReducer';
+import { fetchAddressWithLocationNames } from '../store/Reducers/addressReducer';
 import { useDispatch, useSelector } from 'react-redux';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
-const OrderDetail = () => {
+const DetailOrder = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -55,7 +57,9 @@ const OrderDetail = () => {
     console.log('dia chi',updateAddress)
 
     return (
-        <div className="px-2 md:px-4">
+        <div className='bg-gray-50'>
+            <Header/>
+        <div className="px-4 md:px-8 lg:px-48 container mx-auto my-10">
             <div className="p-4 rounded bg-white shadow-lg">
                 <div className="min-h-96">
                     <span onClick={handleGoBack} className="inline-block cursor-pointer">
@@ -178,7 +182,9 @@ const OrderDetail = () => {
                 </div>
             </div>
         </div>
+        <Footer/>
+        </div>
     );
 };
 
-export default OrderDetail;
+export default DetailOrder;

@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import OrderCart from "../../pages/OrderCart";
+import DetailOrder from "../../pages/DetailOrder";
 const Authenticate = lazy(() => import("../../pages/auth/Authenticate"));
 const PaymentCallback = lazy(() => import("../../pages/PaymentCallback"));
 const SearchOrder = lazy(() => import("../../pages/SearchOrder"));
@@ -11,7 +12,6 @@ const Register = lazy(() => import('../../pages/auth/Register'));
 const ForgotPassword = lazy(() => import('../../pages/auth/ForgotPassword'));
 const SearchProduct = lazy(() => import('../../pages/SearchProduct'));
 const Order = lazy(() => import('../../pages/Order'));
-
 
 const publicRoutes = [
     {
@@ -61,6 +61,10 @@ const publicRoutes = [
     {
         path: '/searchOrder',
         element : <SearchOrder/>, 
+    },
+    {
+        path: '/orderDetail',
+        element : <DetailOrder/>,
     },
 ]
 

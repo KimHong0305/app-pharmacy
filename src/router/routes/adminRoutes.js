@@ -1,6 +1,5 @@
 import { lazy } from "react";
-import OrderDetail from "../../pages/admin/order/OrderDetail";
-
+const OrderDetail = lazy(() => import("../../pages/admin/order/OrderDetail"));
 const AddPrice = lazy(() => import("../../pages/admin/price/AddPrice"));
 const AdminDashboard = lazy(() => import("../../pages/admin/AdminDashboard"));
 const Categories = lazy(() => import("../../pages/admin/category/Categories"));

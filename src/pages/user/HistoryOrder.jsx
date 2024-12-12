@@ -56,13 +56,13 @@ const HistoryOrder = () => {
             feedback: reviewText
         }
         console.log(newFeedback)
-        // try {
-        //     await dispatch(createFeedback(newFeedback)).unwrap();
-        //     toast.success('Feedback sản phẩm thành công!')
-        //     handleCloseReviewDialog();
-        // } catch (error) {
-        //     toast.error(error.message);
-        // }
+        try {
+            await dispatch(createFeedback(newFeedback)).unwrap();
+            toast.success('Feedback sản phẩm thành công!')
+            handleCloseReviewDialog();
+        } catch (error) {
+            toast.error(error.message);
+        }
     };
 
     const filteredHistory = history.filter((order) => {
@@ -85,6 +85,10 @@ const HistoryOrder = () => {
     if (!bio) {
         return <div>No user information available.</div>;
     }
+
+    const handleOrderDetail= (order) => {
+        navigate('/orderDetail', { state: order });
+    };
 
     const { username, point } = bio;
 
@@ -156,7 +160,7 @@ const HistoryOrder = () => {
                                     </div>
                                 ) : (
                                     filteredHistory.map((order) => (
-                                        <div key={order.id} className="w-full py-4">
+                                        <div key={order.id} className="w-full py-4 cursor-pointer" onClick={() => handleOrderDetail(order)}>
                                             {/* Nội dung đơn hàng */}
                                             <div className="p-4 bg-white border border-gray-200 rounded-lg">
                                             <div className="flex justify-between pb-2 border-b border-gray-200 items-center">

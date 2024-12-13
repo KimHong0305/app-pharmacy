@@ -4,6 +4,7 @@ import Banner from '../components/Banner';
 import NewProducts from '../components/Products/NewProducts';
 import BestProducts from '../components/Products/BestProducts';
 import Footer from '../components/Footer';
+import TopCompany from '../components/Products/TopCompany';
 
 const Home = () => {
   return (
@@ -15,6 +16,7 @@ const Home = () => {
           {/* Sản phẩm mới */}
           <NewProducts/>
           <BestProducts/>
+          <TopCompany/>
         </div>
       </div>
     <Footer/>

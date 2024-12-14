@@ -17,7 +17,7 @@ export const getTopCompanies = createAsyncThunk(
   "/getTopCompanies",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/home/topCompany');
+      const response = await api.get('/home/user/topCompany');
       return response.data.result;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -31,6 +31,23 @@ export const createCompany = createAsyncThunk(
     try {
       const token = localStorage.getItem('token');
       const response = await api.post('/company', newCompany, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const deleteCompany = createAsyncThunk(
+  "/deleteCompany",
+  async (companyId, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.delete(`/company/${companyId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

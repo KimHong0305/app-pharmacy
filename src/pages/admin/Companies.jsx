@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { createCompany, getCompanies } from '../../store/Reducers/companyReducer';
+import { createCompany, deleteCompany, getCompanies } from '../../store/Reducers/companyReducer';
 import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "../../components/ui/table";
 import {
     Pagination,
-    PaginationContent,
     PaginationItem,
     PaginationLink,
     PaginationPrevious,
     PaginationNext,
-    PaginationEllipsis,
 } from "../../components/ui/pagination";  
 import { FaSearch, FaRegEdit } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -24,6 +22,9 @@ const Companies = () => {
   const [logo, setLogo] = useState(null)
   const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20];
   const [logoPreview, setLogoPreview] = useState(null);
+
+  const [companyToDelete, setCompanyToDelete] = useState(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
 
@@ -78,6 +79,30 @@ const Companies = () => {
     } catch (error) {
       console.error('Error creating company:', error);
     }
+  };
+
+  const handleDeleteClick = (productId) => {
+    setCompanyToDelete(productId);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+      if (companyToDelete) {
+          try {
+              await dispatch(deleteCompany(companyToDelete));
+              dispatch(getCompanies({ page: currentPage, size }));
+              toast.success('Xóa công ty thành công');
+              setCompanyToDelete(null);
+              setIsDeleteDialogOpen(false);
+            } catch (error) {
+              toast.error(error.message);
+          }
+      }
+  };
+
+  const handleCancelDelete = () => {
+      setCompanyToDelete(null);
+      setIsDeleteDialogOpen(false);
   };
 
   return (
@@ -156,7 +181,8 @@ const Companies = () => {
                                 <button className="flex items-center justify-center p-2 rounded-lg bg-sky-200">
                                     <FaRegEdit className="text-sky-400" /> 
                                 </button>
-                                <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2">
+                                <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2"
+                                onClick={() => handleDeleteClick(company.id)}>
                                     <FaRegTrashCan className="text-red-500" /> 
                                 </button>
                             </div>
@@ -267,6 +293,28 @@ const Companies = () => {
                 </form>
             </div>
         </div>
+        {isDeleteDialogOpen && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div className="bg-white p-6 rounded-md shadow-lg">
+                    <h3 className="text-lg font-bold mb-4">Xác nhận xóa</h3>
+                    <p className="mb-6">Bạn có chắc chắn muốn xóa công ty này không?</p>
+                    <div className="flex justify-end space-x-4">
+                        <button
+                            className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300"
+                            onClick={handleCancelDelete}
+                        >
+                            Hủy
+                        </button>
+                        <button
+                            className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                            onClick={handleConfirmDelete}
+                        >
+                            Xác nhận
+                        </button>
+                    </div>
+                </div>
+            </div>
+            )}
     </div>
   </div>
   );

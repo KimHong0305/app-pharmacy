@@ -47,6 +47,23 @@ export const updatePrice = createAsyncThunk(
   }
 );
 
+export const deletePrice = createAsyncThunk(
+  "price/deletePrice",
+  async (priceId, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.delete(`/price/${priceId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const priceSlice = createSlice({
   name: "price",
   initialState: {

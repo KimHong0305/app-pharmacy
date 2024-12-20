@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProductById } from '../store/Reducers/productReducer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PiTrademarkDuotone } from "react-icons/pi";
-import { addCartGuest, addCartUser} from '../store/Reducers/cartReducer';
+import { addCartGuest, addCartUser, getCartGuest, getCartUser } from '../store/Reducers/cartReducer';
 import { toast } from 'react-toastify';
 import { getFeedbackByProduct, getReplyFeedback, setReply } from '../store/Reducers/feedback/feedbackReducer';
 const ProductDetail = () => {
@@ -70,7 +70,6 @@ const ProductDetail = () => {
                     }
                 });
             });
-            console.log('reply', reply)
         }
     }, [feedbacks, dispatch]);
     
@@ -89,10 +88,14 @@ const ProductDetail = () => {
             quantity,
         };
         if (token) {
-            dispatch(addCartUser({ item: newItem, token }));
+            dispatch(addCartUser(newItem)).then(() => {
+                dispatch(getCartUser());
+            });
             toast.success('Thêm vào giỏ hàng thành công');
         } else {
-            dispatch(addCartGuest(newItem));
+            dispatch(addCartGuest(newItem)).then(() => {
+                dispatch(getCartGuest());
+            });
             toast.success('Thêm vào giỏ hàng thành công');
         }
     };

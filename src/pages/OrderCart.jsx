@@ -89,7 +89,6 @@ const OrderCart = () => {
             addressCategory: addressType === "Nhà riêng" ? "HOUSE" : "COMPANY",
             paymentMethod: paymentMethod,
         };
-        console.log('don hang',order)
         try{
             const result = await dispatch(createOrderCartGuest(order)).unwrap();
             toast.success("Đặt hàng thành công!");

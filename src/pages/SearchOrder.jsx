@@ -26,6 +26,8 @@ const SearchOrder = () => {
             setSearchQuery('');
         } catch (error) {
             toast.error(error.message || 'Không tìm thấy đơn hàng.');
+            setResult('');
+            setSearchQuery('');
         }
     };
 

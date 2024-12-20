@@ -202,7 +202,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.user = action.payload.result.authenticated;
       state.token = action.payload.result.token;
-      state.successMessage = action.payload.result.message;
+      state.successMessage = action.payload.message;
       state.redirectToHome = true;
 
       state.role = returnRole(action.payload.result.token);

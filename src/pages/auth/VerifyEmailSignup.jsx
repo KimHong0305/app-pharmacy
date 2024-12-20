@@ -45,8 +45,6 @@ const VerifyEmailSignup = ({ isVisible, onClose, email }) => {
   }, [otpInputsRef]);
 
   const handleVerify = () => {
-    console.log(email)
-    console.log(otpValue)
     dispatch(verifySignUp({ email, otp: otpValue }))
       .unwrap()
       .then(() => {
@@ -89,7 +87,9 @@ const VerifyEmailSignup = ({ isVisible, onClose, email }) => {
               />
             ))}
           </div>
-            <button className="w-1/2 bg-sky-500 hover:bg-sky-700 text-white text-lg font-semibold py-2 px-4 rounded" onClick={handleVerify}>
+            <button className="w-1/2 bg-sky-500 hover:bg-sky-700 text-white text-lg font-semibold py-2 px-4 rounded" onClick={handleVerify}
+            disabled={!otpValue.trim()}  
+            >
                 XÁC THỰC
             </button>
         </div>

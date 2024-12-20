@@ -196,7 +196,7 @@ const Header = () => {
           </div>
         </div>
         <div className='px-4 md:px-8 lg:px-48'>
-          <div className='mt-[79px] flex items-center justify-center'>
+          <div className='mt-[80px] flex items-center justify-center'>
             {Array.isArray(categories) && categories.length > 0 ? (
                 <div className='flex items-center whitespace-nowrap'>
                     {categories.map((category) => (

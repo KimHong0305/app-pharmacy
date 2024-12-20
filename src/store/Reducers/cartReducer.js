@@ -56,7 +56,7 @@ export const deleteCartGuest = createAsyncThunk(
 
 export const addCartUser = createAsyncThunk(
     "user/add_cart",
-    async ({ item }, { rejectWithValue }) => {
+    async (item, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token');
             const response = await api.post("/cart", item, {

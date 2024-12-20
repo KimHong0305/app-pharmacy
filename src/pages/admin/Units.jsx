@@ -57,10 +57,14 @@ const Units = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (unitName.trim()) {
-            await dispatch(createUnit({ name: unitName }));
-            dispatch(getUnits({ page: currentPage, size }));
-            toast.success('Thêm đơn vị thành công');
-            setUnitName("");
+            try {
+                await dispatch(createUnit({ name: unitName })).unwrap();
+                dispatch(getUnits({ page: currentPage, size }));
+                toast.success('Thêm đơn vị thành công');
+                setUnitName("");
+            } catch (error) {
+                toast.error(error.message);
+            }
         }
     };
 
@@ -97,11 +101,15 @@ const Units = () => {
                 id: editUnit.id,
                 name: unitNameUpdate
             }
-            await dispatch(updateUnit(unit));
-            dispatch(getUnits({ page: currentPage, size }));
-            toast.success('Thêm đơn vị thành công');
-            setEditUnit(null);
-            setUnitUpdateName("");
+            try {
+                await dispatch(updateUnit(unit)).unwrap();
+                dispatch(getUnits({ page: currentPage, size }));
+                toast.success('Cập nhật đơn vị thành công');
+                setEditUnit(null);
+                setUnitUpdateName("");
+            } catch (error) {
+                toast.error(error.message);
+            }
         }
     };
 

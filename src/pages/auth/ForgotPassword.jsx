@@ -54,6 +54,10 @@ const ForgotPassword = () => {
 
   const handleResetPassword = (e) => {
     e.preventDefault();
+    if (/[^0-9]/.test(otp)) {
+      toast.error("Định dạng OTP không hợp lệ!");
+      return;
+    }
     const info = {
       email: email,    
       otp: otp,       

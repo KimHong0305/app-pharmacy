@@ -4,7 +4,6 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { register, messageClear } from '../../store/Reducers/authReducer';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 import VerifyEmailSignup from './VerifyEmailSignup';
 
 const Register = () => {
@@ -28,7 +27,6 @@ const Register = () => {
 
   const { successRegMessage, errorRegMessage } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const inputHandle = (e) => {
     const { name, value } = e.target;
@@ -56,6 +54,9 @@ const Register = () => {
     };
     setErrors(newErrors);
     if (Object.values(newErrors).some((error) => error)) {
+      if (newErrors.dob) {
+        toast.error("Ngày sinh không tồn tại");
+      }
       return;
     }
     const formattedDob = formatDate(state.dob);

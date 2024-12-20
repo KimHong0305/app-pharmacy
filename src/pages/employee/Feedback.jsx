@@ -183,11 +183,13 @@ const Feedback = () => {
                                                 className="border p-2 rounded-lg w-full"
                                             />
                                             <button
-                                                className="ml-2 bg-sky-200 text-sky-600 font-semibold px-4 rounded-lg"
+                                                className={`ml-2 px-4 rounded-lg font-semibold ${replyContent.trim() ? 'bg-sky-200 text-sky-600' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                                                 onClick={() => handleSubmitReply(feedback)}
+                                                disabled={!replyContent.trim()}
                                             >
                                                 Gửi
                                             </button>
+
                                         </div>
                                     </div>
                                 )}

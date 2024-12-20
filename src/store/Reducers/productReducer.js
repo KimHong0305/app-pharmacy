@@ -109,7 +109,7 @@ export const getBestProducts = createAsyncThunk(
   'product/getBestProducts',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/home/bestSeller');
+      const response = await api.get('/home/user/bestSeller');
       return response.data.result;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -212,7 +212,6 @@ const productSlice = createSlice({
         state.newProducts = action.payload;
       })
       // best product
-      // new product
       .addCase(getBestProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.bestProducts = action.payload;

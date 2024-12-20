@@ -52,9 +52,9 @@ const Products = () => {
     const truncateText = (text, maxLength) => 
         text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;      
 
-    const handleEditProduct= (id) => {
-        console.log(id)
-        navigate('/admin/editProduct', { state: id });
+    const handleEditProduct= (product) => {
+        console.log(product)
+        navigate('/admin/editProduct', { state: product });
     };
 
     const handleDeleteClick = (productId) => {
@@ -168,7 +168,7 @@ const Products = () => {
                         <TableCell>
                             <div className='flex'>
                                 <button className="flex items-center justify-center p-2 rounded-lg bg-sky-200"
-                                onClick={() => handleEditProduct(product.id)}>
+                                onClick={() => handleEditProduct(product)}>
                                     <FaRegEdit className="text-sky-400" /> 
                                 </button>
                                 <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2"

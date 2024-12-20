@@ -9,7 +9,7 @@ import PrivateRoute from './router/routes/PrivateRoute';
 import MainLayout from './components/admin/MainLayout';
 import employeeRoutes from './router/routes/employeeRoutes';
 import { getUserInfo } from './store/Reducers/authReducer';
-import { getCartGuest, getCartUser } from './store/Reducers/cartReducer';
+import { getCartGuest, getCartUser, transfer } from './store/Reducers/cartReducer';
 
 function App() {
   const { role } = useSelector((state) => state.auth); 
@@ -18,8 +18,10 @@ function App() {
 
   useEffect(() => {
     if (token) {
-        dispatch(getUserInfo())
-        dispatch(getCartUser());
+      dispatch(getUserInfo())
+      dispatch(transfer()).then(() => {
+        dispatch(getCartUser()); 
+      });
     }else {
       dispatch(getCartGuest());
     }

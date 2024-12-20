@@ -4,18 +4,16 @@ import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { useNavigate } from 'react-router-dom';
-import { getAllProducts } from '../../store/Reducers/productReducer';
+import { getBestProducts } from '../../store/Reducers/productReducer';
 import { useDispatch, useSelector } from 'react-redux';
 
 const BestProducts = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { allProducts } = useSelector((state) => state.product);
+  const { bestProducts } = useSelector((state) => state.product);
 
-  const page = 0;
-  const size = 10;
   useEffect(() => {
-    dispatch(getAllProducts({ page, size }));
+    dispatch(getBestProducts());
   }, [dispatch]);
 
   const handleProductClick = (productId) => {
@@ -52,7 +50,7 @@ const BestProducts = () => {
         }}
         className="my-5"
         >
-        {allProducts.map((product) => (
+        {bestProducts.map((product) => (
           <SwiperSlide key={product.id}>
             <div
               className="static flex flex-col items-center justify-center border border-gray-300 w-[200px] h-[280px] 

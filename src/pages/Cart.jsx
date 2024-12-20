@@ -8,24 +8,20 @@ import {
   deleteCartGuest, 
   getCartUser, 
   updateCartUser, 
-  deleteCartUser, 
-  transfer
+  deleteCartUser,
 } from "../store/Reducers/cartReducer";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { cartItems, totalPrice, loading, message } = useSelector((state) => state.cart);
+  const { cartItems, totalPrice, loading } = useSelector((state) => state.cart);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (token) {
-      dispatch(transfer())
       dispatch(getCartUser());
-      console.log('gio hang user')
     } else {
       dispatch(getCartGuest());
     }
@@ -198,7 +194,6 @@ const Cart = () => {
         ) : (
           <div className="bg-white shadow-md rounded-lg p-6 text-center">
             <h2 className="text-xl font-bold mb-4">Giỏ hàng trống</h2>
-            <p className="text-gray-500 mb-6">{message}</p>
             <a
               href="/"
               className="bg-sky-500 hover:bg-sky-700 text-white font-medium py-2 px-4 rounded"

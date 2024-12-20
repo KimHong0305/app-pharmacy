@@ -53,11 +53,15 @@ const NewProducts = () => {
         {newProducts.map((product) => (
           <SwiperSlide key={product.id}>
             <div
-              className="static flex flex-col items-center justify-center border border-gray-300 w-[200px] h-[280px] 
+              className="relative flex flex-col items-center justify-center border border-gray-300 w-[200px] h-[280px] 
               shadow-lg hover:shadow-2xl bg-[#ffffff] mr-5 rounded-lg"
               onClick={() => handleProductClick(product.id)}
             >
-              <img className="size-[130px]" src={product.image} alt={product.name}/>
+              <div className="absolute top-0 left-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg">
+                New
+              </div>
+              {/* Ảnh sản phẩm */}
+              <img className="size-[130px]" src={product.image} alt={product.name} />
               <span className={`mt-1 font-sans font-medium px-2 w-full overflow-hidden text-ellipsis line-clamp-2 text-center 
                 ${product.name.split('\n').length > 1 ? '' : 'h-12'}`}>
                 {product.name}

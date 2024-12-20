@@ -69,6 +69,79 @@ export const getTotalCategory = createAsyncThunk(
     }
 );
 
+// API lấy doanh thu theo ngày
+export const getRevenueByDate = createAsyncThunk(
+    "/getRevenueByDate",
+    async (date, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.get(`/home/admin/revenue/date?date=${date}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data.result;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+// API lấy doanh thu theo tháng
+export const getRevenueByMonth = createAsyncThunk(
+    "/getRevenueByMonth",
+    async (month, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.get(`/home/admin/revenue/month?month=${month}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data.result;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+// API lấy doanh thu theo năm
+export const getRevenueByYear = createAsyncThunk(
+    "/getRevenueByYear",
+    async (year, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.get(`/home/admin/revenue/year?year=${year}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data.result;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+// API lấy doanh thu theo khoảng thời gian
+export const getRevenueByRange = createAsyncThunk(
+    "/getRevenueByRange",
+    async ({ startDate, endDate }, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.get(`/home/admin/revenue/range?startDate=${startDate}&endDate=${endDate}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data.result;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+
 const dashboardSlice = createSlice({
     name: "dashboard",
     initialState: {
@@ -76,6 +149,10 @@ const dashboardSlice = createSlice({
         totalCompany: 0,
         totalProduct: 0,
         totalCategory: 0,
+        revenueByDate: 0,
+        revenueByMonth: 0,
+        revenueByYear: 0,
+        revenueByRange: 0,
         loading: false,
         error: null,
     },
@@ -97,6 +174,22 @@ const dashboardSlice = createSlice({
             .addCase(getTotalCategory.fulfilled, (state, action) => {
                 state.loading = false;
                 state.totalCategory = action.payload;
+            })
+            .addCase(getRevenueByDate.fulfilled, (state, action) => {
+                state.loading = false;
+                state.revenueByDate = action.payload;
+            })
+            .addCase(getRevenueByMonth.fulfilled, (state, action) => {
+                state.loading = false;
+                state.revenueByMonth = action.payload;
+            })
+            .addCase(getRevenueByYear.fulfilled, (state, action) => {
+                state.loading = false;
+                state.revenueByYear = action.payload;
+            })
+            .addCase(getRevenueByRange.fulfilled, (state, action) => {
+                state.loading = false;
+                state.revenueByRange = action.payload;
             })
         
     },

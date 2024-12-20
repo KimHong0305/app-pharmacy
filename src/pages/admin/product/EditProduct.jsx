@@ -4,7 +4,7 @@ import { IoReturnDownBackSharp } from "react-icons/io5";
 import { useSelector, useDispatch } from 'react-redux';
 import { getCompanies } from '../../../store/Reducers/companyReducer';
 import { getAllCategory } from '../../../store/Reducers/categoryReducer';
-import { getProductById, updateProduct } from '../../../store/Reducers/productReducer';
+import { updateProduct } from '../../../store/Reducers/productReducer';
 import { toast } from 'react-toastify';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoCloseSharp } from "react-icons/io5";
@@ -16,30 +16,29 @@ const EditProduct = () => {
 
     const { allCategory } = useSelector((state) => state.category);
     const { companies } = useSelector((state) => state.company);
-    const { product } = useSelector((state) => state.product)
 
-    const id = location.state;
-
-    const [productName, setProductName] = useState(product?.[0]?.name);
-    const [quantity, setQuantity] = useState(product?.[0]?.quantity);
-    const [categoryName, setCategoryName] = useState(product?.[0]?.category.id);
-    const [company, setCompany] = useState(product?.[0]?.company.id);
-    const [benefits, setBenefits] = useState(product?.[0]?.benefits);
-    const [ingredients, setIngredients] = useState(product?.[0]?.ingredients);
-    const [constraindication, setConstraindication] = useState(product?.[0]?.constraindication);
-    const [object_use, setObject_use] = useState(product?.[0]?.object_use);
-    const [instruction, setInstruction] = useState(product?.[0]?.instruction);
-    const [preserve, setPreserve] = useState(product?.[0]?.preserve);
-    const [note, setNote] = useState(product?.[0]?.note);
-    const [dateExpiration, setDateExpiration] = useState(product?.[0]?.dateExpiration);
-    const [doctor_advice, setDoctor_advice] = useState(product?.[0]?.doctor_advice);
-
-    const [images, setImages] = useState(product?.[0]?.images);
-
+    const product = location.state;
+    
     const convertToISODate = (dateString) => {
-    const [day, month, year] = dateString.split("/");
-    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+        const [day, month, year] = dateString.split("/");
+            return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     };
+
+    const [productName, setProductName] = useState(product.name);
+    const [quantity, setQuantity] = useState(product.quantity);
+    const [categoryName, setCategoryName] = useState(product.category.id);
+    const [company, setCompany] = useState(product.company.id);
+    const [benefits, setBenefits] = useState(product.benefits);
+    const [ingredients, setIngredients] = useState(product.ingredients);
+    const [constraindication, setConstraindication] = useState(product.constraindication);
+    const [object_use, setObject_use] = useState(product.object_use);
+    const [instruction, setInstruction] = useState(product.instruction);
+    const [preserve, setPreserve] = useState(product.preserve);
+    const [note, setNote] = useState(product.note);
+    const [dateExpiration, setDateExpiration] = useState(convertToISODate(product.dateExpiration));
+    const [doctor_advice, setDoctor_advice] = useState(product.doctor_advice);
+
+    const [images, setImages] = useState(product.images);
 
     const handleGoBack = () => {
         navigate(-1);
@@ -48,12 +47,7 @@ const EditProduct = () => {
     useEffect(() => {
         dispatch(getCompanies({ page: 0, size: 100 }));
         dispatch(getAllCategory({ page: 0, size: 100 }));
-        dispatch(getProductById(id))
-        if (product?.[0]?.dateExpiration) {
-            const isoDate = convertToISODate(product[0].dateExpiration);
-            setDateExpiration(isoDate);
-        }
-    }, [dispatch, id]);
+    }, [dispatch]);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -88,7 +82,7 @@ const EditProduct = () => {
         const formattedDateExpiration = dateExpiration ? formatDate(dateExpiration) : "";
     
         const update = {
-            id: product?.[0]?.id,
+            id: product.id,
             name: productName || "",
             quantity,
             categoryId: categoryName,
@@ -190,8 +184,8 @@ const EditProduct = () => {
                                             className="mt-2 h-12 border border-gray-300 text-gray-700 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none"
                                             onChange={(e) => setCategoryName(e.target.value)}
                                         >
-                                            <option value={product?.[0]?.category.id} disabled selected>
-                                                {product?.[0]?.category.name}
+                                            <option value={product.category.id} disabled selected>
+                                                {product.category.name}
                                             </option>
                                             {allCategory.map((category) => (
                                                 <option key={category.id} value={category.id}>
@@ -226,8 +220,8 @@ const EditProduct = () => {
                                             className="mt-2 h-12 border border-gray-300 text-gray-700 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none"
                                             onChange={(e) => setCompany(e.target.value)}
                                         >
-                                            <option value={product?.[0]?.company.id} disabled selected>
-                                                {product?.[0]?.company.name}
+                                            <option value={product.company.id} disabled selected>
+                                                {product.company.name}
                                             </option>
                                             {companies.map((company) => (
                                                 <option key={company.id} value={company.id}>

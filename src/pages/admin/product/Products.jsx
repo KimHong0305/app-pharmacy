@@ -4,7 +4,6 @@ import { deleteProduct, getAllProducts } from "../../../store/Reducers/productRe
 import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "../../../components/ui/table";
 import {
   Pagination,
-  PaginationContent,
   PaginationItem,
   PaginationLink,
   PaginationPrevious,
@@ -158,7 +157,7 @@ const Products = () => {
                     allProducts.map((product) => (
                     <TableRow key={product.id}>
                         <TableCell>
-                            <img className="size-[50px]" src={product.image}/>
+                            <img className="size-[50px]" alt="" src={product.image}/>
                         </TableCell>
                         <TableCell>{truncateText(product.name, 35)}</TableCell>
                         <TableCell>{product.category.name}</TableCell>

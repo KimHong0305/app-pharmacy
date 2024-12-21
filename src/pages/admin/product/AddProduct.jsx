@@ -8,6 +8,10 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoCloseSharp } from "react-icons/io5";
 import { createProduct } from '../../../store/Reducers/productReducer';
 import { toast } from 'react-toastify';
+import { getUnits } from '../../../store/Reducers/unitReducer';
+import { FaRegTrashCan } from "react-icons/fa6";
+import { MdAdd } from "react-icons/md";
+import { createPrice } from '../../../store/Reducers/priceReducer';
 
 const AddProduct = () => {
 
@@ -35,6 +39,24 @@ const AddProduct = () => {
 
     const { allCategory } = useSelector((state) => state.category);
     const { companies } = useSelector((state) => state.company);
+    const { units } = useSelector((state) => state.unit);
+
+    const [rows, setRows] = useState([{ unit: '', price: '' }]);
+
+    const handleAddRow = () => {
+        setRows([...rows, { unit: '', price: '' }]);
+    };
+
+    const handleRemoveRow = (index) => {
+        setRows(rows.filter((_, i) => i !== index));
+    };
+
+    const handleRowChange = (index, field, value) => {
+        const updatedRows = [...rows];
+        updatedRows[index][field] = value;
+        setRows(updatedRows);
+    };
+
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -56,11 +78,13 @@ const AddProduct = () => {
     useEffect(() => {
         dispatch(getCompanies({ page: 0, size: 100 }));
         dispatch(getAllCategory({ page: 0, size: 100 }));
+        dispatch(getUnits({ page: 0, size: 100 }));
     }, [dispatch]);
 
     const handleToggle = () => {
         setDoctor_advice(!doctor_advice);
     };
+    
 
 
     const handleSubmit = async (e) => {
@@ -123,11 +147,27 @@ const AddProduct = () => {
         }
 
         try {
-            await dispatch(createProduct(formData)).unwrap();
-            toast.success('Thêm sản phẩm thành công')
+            const result = await dispatch(createProduct(formData)).unwrap();
+            console.log(result);
+    
+            const pricePromises = rows.map((row) => {
+                console.log("Đơn vị:", row.unit, "Giá:", row.price);
+    
+                const priceData = {
+                    productId: result.result.id,
+                    unitId: row.unit,
+                    price: row.price,
+                };
+    
+                return dispatch(createPrice(priceData)).unwrap();
+            });
+    
+            await Promise.all(pricePromises);
+    
+            toast.success("Thêm sản phẩm và giá thành công");
             navigate(-1);
         } catch (error) {
-            toast.error(error.message);
+            toast.error(`Lỗi khi tạo sản phẩm hoặc giá: ${error.message}`);
         }
     };
     
@@ -377,6 +417,76 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                 </div>
+
+                                <div className="my-5">
+                                    <label className="font-medium text-gray-700">
+                                        Bảng đơn vị và giá <span className="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <div className="mt-2">
+                                        <table className="w-full border-collapse border border-gray-300">
+                                            <thead>
+                                                <tr className="bg-gray-100">
+                                                    <th className="border border-gray-300 px-4 py-2 text-left w-2/5">Đơn vị</th>
+                                                    <th className="border border-gray-300 px-4 py-2 text-left w-2/5">Giá</th>
+                                                    <th className="border border-gray-300 px-4 py-2 w-1/12"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {rows.map((row, index) => (
+                                                    <tr key={index}>
+                                                        <td className="border border-gray-300 px-4 py-2 w-2/5">
+                                                            <select
+                                                                value={row.unit}
+                                                                onChange={(e) => handleRowChange(index, 'unit', e.target.value)}
+                                                                className="w-full px-2 h-10 bg-white border border-gray-300 rounded-md"
+                                                            >
+                                                                <option value="">Chọn đơn vị</option>
+                                                                {units.map((unit) => (
+                                                                    <option key={unit.id} value={unit.id}>
+                                                                        {unit.name}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </td>
+                                                        <td className="border border-gray-300 px-4 py-2 w-2/5">
+                                                            <div className='flex items-center border border-gray-300 rounded-md px-3 py-2'>
+                                                                <input
+                                                                    type="text"
+                                                                    value={row.price ? new Intl.NumberFormat("vi-VN").format(row.price) : ''}
+                                                                    onChange={(e) => {
+                                                                        let value = e.target.value.replace(/[^\d]/g, "");
+                                                                        
+                                                                        handleRowChange(index, 'price', value);
+
+                                                                        const formattedValue = new Intl.NumberFormat("vi-VN").format(value);
+                                                                        e.target.value = formattedValue;
+                                                                    }}
+                                                                    className="flex-1 bg-transparent focus:outline-none text-gray-900 placeholder-gray-500 w-0"
+                                                                    placeholder="Nhập giá"
+                                                                />
+                                                                <span className="text-gray-500 ml-1">đ</span>
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="border border-gray-300 px-4 py-2 text-center w-1/12">
+                                                            <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2"
+                                                            type="button"
+                                                            onClick={() => handleRemoveRow(index)}>
+                                                                <FaRegTrashCan className="text-red-500" /> 
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        <button className="bg-green-500 text-white p-2 rounded-full hover:bg-green-600 mt-2"
+                                        type="button"
+                                        onClick={handleAddRow}>
+                                            <MdAdd className='w-4 h-4'/>
+                                        </button>
+                                    </div>
+                                </div>
+
             
                                 <div className='flex items-center justify-end'>
                                     <button

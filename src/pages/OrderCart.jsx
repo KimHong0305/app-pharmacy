@@ -9,6 +9,7 @@ import { createOrderCartGuest } from "../store/Reducers/order/orderGuestReducer"
 import { createPaymentVNPay } from "../store/Reducers/payment/VNPayReducer";
 import { createPaymentMoMo } from "../store/Reducers/payment/MoMoReducer";
 import { createPaymentZaloPay } from "../store/Reducers/payment/ZaloPayReducer";
+import { getCartGuest } from "../store/Reducers/cartReducer";
 
 const OrderCart = () => {
     const dispatch = useDispatch();
@@ -16,7 +17,7 @@ const OrderCart = () => {
     const navigate = useNavigate();
 
     const cartItems = location.state;
-    const { provinces, districts, villages, loading } = useSelector((state) => state.location);
+    const { provinces, districts, villages } = useSelector((state) => state.location);
 
     const [selectedProvince, setSelectedProvince] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
@@ -92,6 +93,7 @@ const OrderCart = () => {
         try{
             const result = await dispatch(createOrderCartGuest(order)).unwrap();
             toast.success("Đặt hàng thành công!");
+            await dispatch(getCartGuest());
             if (result.result.paymentMethod === "VNPAY") {
                 try {
                     const data = await dispatch(createPaymentVNPay(result.result.id)).unwrap();
@@ -135,7 +137,6 @@ const OrderCart = () => {
                     }
                     else{
                         if (result.result.paymentMethod === "CASH") {
-                            toast.success("Đặt hàng thành công!");
                             setOrderId(result.result.id); 
                             setIsDialogOpen(true);
                         } else {

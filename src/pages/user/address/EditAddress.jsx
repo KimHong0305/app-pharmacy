@@ -37,7 +37,7 @@ const AddAddress = () => {
         if (selectedDistrict) {
             dispatch(getVillages(selectedDistrict));
         }
-    }, [dispatch]);
+    }, [dispatch, selectedDistrict, selectedProvince]);
 
     const handleProvinceChange = async (e) => {
         const provinceId = Number(e.target.value);

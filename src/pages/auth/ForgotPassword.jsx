@@ -50,7 +50,7 @@ const ForgotPassword = () => {
       dispatch(messageClear());
     }
 
-  }, [successPassMessage, errorPassMessage, successResetMessage, errorResetMessage]);
+  }, [dispatch, navigate, successPassMessage, errorPassMessage, successResetMessage, errorResetMessage]);
 
   const handleResetPassword = (e) => {
     e.preventDefault();

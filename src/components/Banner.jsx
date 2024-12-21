@@ -27,7 +27,7 @@ const Banner = () => {
           <div key={index}>
             <img
               src={imageUrl}
-              alt={`Description of image ${index + 1}`}
+              alt=""
               className="w-full h-full object-cover"
             />
           </div>

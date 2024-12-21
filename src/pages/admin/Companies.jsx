@@ -172,7 +172,7 @@ const Companies = () => {
                 companies.map((company) => (
                     <TableRow key={company.id}>
                         <TableCell>
-                            <img className="size-[50px]" src={company.image}/>
+                            <img className="size-[50px]" alt="" src={company.image}/>
                         </TableCell>
                         <TableCell>{company.name}</TableCell>
                         <TableCell>{company.origin}</TableCell> 

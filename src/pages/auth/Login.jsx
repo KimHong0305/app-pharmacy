@@ -70,7 +70,7 @@ const Login = ({isVisible, onClose}) => {
       toast.error(errorMessage);
       dispatch(messageClear());
     }
-  }, [successMessage, errorMessage, navigate, dispatch, onClose]);
+  }, [successMessage, role, errorMessage, navigate, dispatch, onClose]);
 
   if (!isVisible) return null;
 

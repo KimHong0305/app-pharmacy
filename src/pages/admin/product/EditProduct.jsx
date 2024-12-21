@@ -38,7 +38,7 @@ const EditProduct = () => {
     const [dateExpiration, setDateExpiration] = useState(convertToISODate(product.dateExpiration));
     const [doctor_advice, setDoctor_advice] = useState(product.doctor_advice);
 
-    const [images, setImages] = useState(product.images);
+    const [images, setImages] = useState([]);
 
     const handleGoBack = () => {
         navigate(-1);

@@ -16,13 +16,16 @@ const Order = () => {
     const navigate = useNavigate();
 
     const selectedProduct = location.state;
-    const { provinces, districts, villages, loading } = useSelector((state) => state.location);
+    const { provinces, districts, villages } = useSelector((state) => state.location);
 
     const [selectedProvince, setSelectedProvince] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedVillage, setSelectedVillage] = useState(null);
     const [addressType, setAddressType] = useState('Nhà riêng');
     const [paymentMethod, setPaymentMethod] = useState("CASH");
+
+    const [orderId, setOrderId] = useState(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     useEffect(() => {
         dispatch(getProvinces());
@@ -134,8 +137,12 @@ const Order = () => {
                         }
                     }
                     else{
-                        toast.success(`Đặt hàng thành công !`);
-                        navigate('/')
+                        if (result.result.paymentMethod === "CASH") {
+                            setOrderId(result.result.id); 
+                            setIsDialogOpen(true);
+                        } else {
+                            toast.error("Đặt hàng không thành công!");
+                        }
                     }
                 }
             }
@@ -144,6 +151,11 @@ const Order = () => {
         }
 
     }
+
+    const closeDialog = () => {
+        setIsDialogOpen(false);
+        navigate("/");
+    };
 
     return (
         <div>
@@ -412,6 +424,22 @@ const Order = () => {
                         </button>
                     </div>
                 </div>
+                {isDialogOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-6 rounded-md shadow-lg">
+                        <h3 className="text-lg font-bold mb-4">Hãy lưu lại mã đơn hàng để có thể theo dõi</h3>
+                        <p className="mb-6 text-green-600">Mã đơn hàng của bạn là: <strong>{orderId}</strong></p>
+                        <div className="flex justify-end">
+                            <button
+                                className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                                onClick={closeDialog}
+                            >
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                )}
             </div>
             <Footer />
         </div>

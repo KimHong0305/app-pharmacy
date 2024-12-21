@@ -4,12 +4,10 @@ import { banUsers, getUsers, unBanUsers } from '../../store/Reducers/userReducer
 import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead, } from "../../components/ui/table"
 import {
     Pagination,
-    PaginationContent,
     PaginationItem,
     PaginationLink,
     PaginationPrevious,
     PaginationNext,
-    PaginationEllipsis,
     } from "../../components/ui/pagination";  
 import { FaSearch } from "react-icons/fa";
 import { FiUserCheck, FiUserX } from 'react-icons/fi';

@@ -4,7 +4,6 @@ import { getUnits, createUnit, deleteUnit, updateUnit } from "../../store/Reduce
 import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "../../components/ui/table";
 import {
   Pagination,
-  PaginationContent,
   PaginationItem,
   PaginationLink,
   PaginationPrevious,

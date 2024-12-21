@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { createPaymentVNPay } from "../../store/Reducers/payment/VNPayReducer";
 import { createPaymentMoMo } from "../../store/Reducers/payment/MoMoReducer";
 import { createPaymentZaloPay } from "../../store/Reducers/payment/ZaloPayReducer";
+import { getCartUser } from "../../store/Reducers/cartReducer";
 
 const OrderCartUser = () => {
     const dispatch = useDispatch();
@@ -75,6 +76,7 @@ const OrderCartUser = () => {
         try{
             const result = await dispatch(createOrderCartUser(order)).unwrap();
             toast.success("Đặt hàng thành công!");
+            await dispatch(getCartUser());
             if (result.result.paymentMethod === "VNPAY") {
                 try {
                     const data = await dispatch(createPaymentVNPay(result.result.id)).unwrap();

@@ -30,6 +30,8 @@ const ProductDetail = () => {
     const [productImages, setProductImages] = useState([]);
     const [activeTab, setActiveTab] = useState('benefits');
 
+    console.log(product)
+
     const settings1 = {
         slidesToShow: 1,
         slidesToScroll: 1,
@@ -277,15 +279,24 @@ const ProductDetail = () => {
                             </button>
                         </div>
                         <div className='mx-5'>
-                            <button className="mt-5 w-full bg-sky-500 hover:bg-sky-700 text-white font-medium py-2 px-4 rounded"
-                            onClick={handleOrder}>
-                                Mua ngay
-                            </button>
-                            <button className="my-5 w-full font-medium text-inherit hover:bg-slate-200 py-2 px-4 rounded border border-inherit"
-                            onClick={handleAddToCart}>
-                                Thêm vào giỏ
-                            </button>
+                            {product?.[0]?.doctor_advice ? (
+                                <button className="my-5 w-[220px] bg-gray-500 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded">
+                                    Tư vấn bác sĩ
+                                </button>
+                            ) : (
+                                <>
+                                    <button className="mt-5 w-full bg-sky-500 hover:bg-sky-700 text-white font-medium py-2 px-4 rounded"
+                                        onClick={handleOrder}>
+                                        Mua ngay
+                                    </button>
+                                    <button className="my-5 w-full font-medium text-inherit hover:bg-slate-200 py-2 px-4 rounded border border-inherit"
+                                        onClick={handleAddToCart}>
+                                        Thêm vào giỏ
+                                    </button>
+                                </>
+                            )}
                         </div>
+
                     </div>
                     <div className='md:col-span-1'>
 

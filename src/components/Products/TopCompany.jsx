@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getTopCompanies } from '../../store/Reducers/companyReducer';
 
 const TopCompany = () => {
-    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { topCompanies } = useSelector((state) => state.company);
 

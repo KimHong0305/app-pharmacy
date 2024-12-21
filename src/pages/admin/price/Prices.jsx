@@ -147,7 +147,7 @@ const Prices = () => {
                     prices.map((price) => (
                     <TableRow key={price.id}>
                         <TableCell>
-                            <img className="size-[50px]" src={price.image}/>
+                            <img className="size-[50px]" alt="" src={price.image}/>
                         </TableCell>
                         <TableCell>{price.product.name}</TableCell>
                         <TableCell>{new Intl.NumberFormat('vi-VN').format(price.price)} đ</TableCell>

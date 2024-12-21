@@ -26,7 +26,7 @@ function App() {
       dispatch(getCartGuest());
     }
 
-  },[token])
+  },[dispatch, token])
 
   return (
     <Routes>

@@ -52,6 +52,23 @@ export const getTotalProduct = createAsyncThunk(
     }
 );
 
+export const getTotalOrderNotConfirm = createAsyncThunk(
+    "/getTotalOrderNotConfirm",
+    async (_, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.get('/home/employee/totalOrderNotConfirm', {
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data.result;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 export const getTotalCategory = createAsyncThunk(
     "/getTotalCategory",
     async (_, { rejectWithValue }) => {
@@ -153,6 +170,7 @@ const dashboardSlice = createSlice({
         revenueByMonth: 0,
         revenueByYear: 0,
         revenueByRange: 0,
+        totalOrderNotConfirm: 0,
         loading: false,
         error: null,
     },
@@ -166,6 +184,10 @@ const dashboardSlice = createSlice({
             .addCase(getTotalCompany.fulfilled, (state, action) => {
                 state.loading = false;
                 state.totalCompany = action.payload;
+            })
+            .addCase(getTotalOrderNotConfirm.fulfilled, (state, action) => {
+                state.loading = false;
+                state.totalOrderNotConfirm = action.payload;
             })
             .addCase(getTotalProduct.fulfilled, (state, action) => {
                 state.loading = false;

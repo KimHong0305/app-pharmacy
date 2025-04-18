@@ -3,7 +3,7 @@ import api from "../../api/api";
 
 export const getAllProducts = createAsyncThunk(
   'product/fetchProducts',
-  async ({ page = 0, size = 5, sortOrder = 'asc' }, { rejectWithValue }) => {
+  async ({ page = 0, size = 1000, sortOrder = 'asc' }, { rejectWithValue }) => {
     try {
       const response = await api.get(`product?page=${page}&size=${size}&sortOrder=${sortOrder}`);
       console.log(response.data.result)
@@ -29,14 +29,15 @@ export const getProductById = createAsyncThunk(
 
 export const getProductByCategory = createAsyncThunk(
   'product/fetchProductByCategory',
-  async ({categoryId, sortOrder = 'asc'}, { rejectWithValue }) => {
+  async ({ page = 0, size = 1000, categoryId, sortOrder = 'asc' }, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/product/category/${categoryId}`, {
-        params: { sortOrder },
+      const { data } = await api.get(`/product/category/${categoryId}`, {
+        params: { page, size, sortOrder },
       });
-      return response.data.result;
+      return data.result;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      const errorMessage = error.response?.data || 'An unexpected error occurred';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -140,7 +141,6 @@ const productSlice = createSlice({
       })
       .addCase(getAllProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload.content;
         state.allProducts = action.payload.content;
         state.totalPages = action.payload.totalPages;
         state.totalElements = action.payload.totalElements;

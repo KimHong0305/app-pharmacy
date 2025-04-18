@@ -72,6 +72,12 @@ export const getDistrictName = createAsyncThunk(
 export const getVillageName = createAsyncThunk(
     'location/getVillageName',
     async (villageId) => {
+        // Kiểm tra nếu villageId có ít hơn 5 chữ số
+        if (villageId.length < 5) {
+            // Thêm số 0 vào phía trước nếu villageId có ít hơn 5 chữ số
+            villageId = villageId.padStart(5, '0');
+        }
+
         const response = await axios.get(`${API_BASE_URL}/api-tinhthanh/5/${villageId}.htm`);
         if (response.data.error === 0) {
             return response.data.data.full_name; // Lấy tên phường từ dữ liệu trả về
@@ -80,6 +86,7 @@ export const getVillageName = createAsyncThunk(
         }
     }
 );
+
 
 // Slice xử lý trạng thái location
 const locationSlice = createSlice({

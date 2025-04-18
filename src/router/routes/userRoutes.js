@@ -1,5 +1,6 @@
 import { lazy } from "react";
 
+const ListCoupon = lazy(() => import("../../pages/user/coupon/ListCoupon"));
 const Profile = lazy(() => import("../../pages/user/Profile"));
 const Address = lazy(() => import("../../pages/user/address/Address"));
 const EditAddress = lazy(() => import("../../pages/user/address/EditAddress"));
@@ -43,6 +44,11 @@ const userRoutes = [
     {
         path: '/orderCartUser',
         element : <OrderCartUser/>, 
+        role:'ROLE_USER'
+    },
+    {
+        path: '/coupon',
+        element : <ListCoupon/>, 
         role:'ROLE_USER'
     },
 ]

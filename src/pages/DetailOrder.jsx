@@ -54,7 +54,8 @@ const DetailOrder = () => {
         isConfirm
     } = order;
 
-    console.log('dia chi',updateAddress)
+    /// sua
+    console.log('dia chi',order.address)
 
     return (
         <div className='bg-gray-50'>
@@ -112,36 +113,33 @@ const DetailOrder = () => {
                                 </div>  
 
                                 <div className="mt-4 border-b border-gray-200">
-                                {orderItemResponses.length > 0 && (
-                                    <div className="flex py-2">
-                                    <div className="w-1/6">
-                                        <img
-                                        src={orderItemResponses[0].image}
-                                        alt={orderItemResponses[0].productName}
-                                        className="w-full h-auto object-cover"
-                                        />
-                                    </div>
-                                    <div className="w-5/6 px-4 flex flex-col justify-start">
-                                        <div className="flex justify-between">
-                                        <div>
-                                            <p className="font-medium">{orderItemResponses[0].productName}</p>
-                                            <p className="text-sm text-gray-600">
-                                            Số lượng: {orderItemResponses[0].quantity} {orderItemResponses[0].unitName}
-                                            </p>
+                                {orderItemResponses.length > 0 ? (
+                                    orderItemResponses.map((item, index) => (
+                                        <div className="flex py-2 border-b border-gray-200" key={index}>
+                                            <div className="w-1/6">
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.productName}
+                                                    className="w-full h-auto object-cover"
+                                                />
+                                            </div>
+                                            <div className="w-5/6 px-4 flex flex-col justify-start">
+                                                <div className="flex justify-between">
+                                                    <div>
+                                                        <p className="font-medium">{item.productName}</p>
+                                                        <p className="text-sm text-gray-600">
+                                                            Số lượng: {item.quantity} {item.unitName}
+                                                        </p>
+                                                    </div>
+                                                    <p className="text-sm text-gray-600">
+                                                        Giá: {item.price.toLocaleString()} VND
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <p className="text-sm text-gray-600">
-                                            Giá: {orderItemResponses[0].price.toLocaleString()} VND
-                                        </p>
-                                        </div>
-                                    </div>
-                                    </div>
-                                )}
-                                
-                                {/* Hiển thị số lượng sản phẩm khác */}
-                                {orderItemResponses.length > 1 && (
-                                    <p className="my-2 text-sm text-gray-500">
-                                        {orderItemResponses.length - 1} sản phẩm khác
-                                    </p>
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-500">Không có sản phẩm nào trong đơn hàng.</p>
                                 )}
                                 </div>
 

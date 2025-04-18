@@ -8,7 +8,7 @@ const SearchProduct = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
-  const products = useSelector((state) => state.product.products);
+  const products = useSelector((state) => state.product.allProducts);
 
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");

@@ -30,7 +30,7 @@ const Footer = () => {
         </div>
         <div className="mt-6 text-center text-sm">Design by Nguyen Kim Hong & Nguyen Nhat Huy</div>
         <div className="mt-6 text-center text-sm">
-          &copy; {new Date().getFullYear()} Your Company. All rights reserved.
+          &copy; {new Date().getFullYear()} Salus. All rights reserved.
         </div>
       </div>
     </footer>

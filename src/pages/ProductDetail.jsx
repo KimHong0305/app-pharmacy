@@ -141,13 +141,13 @@ const ProductDetail = () => {
     };    
 
     const tabs = [
-        { key: "benefits", label: "Lợi ích" },
+        { key: "benefits", label: "Công dụng" },
         { key: "ingredients", label: "Thành phần" },
         { key: "constraindication", label: "Chống chỉ định" },
         { key: "object_use", label: "Đối tượng sử dụng" },
         { key: "instruction", label: "Hướng dẫn sử dụng" },
         { key: "preserve", label: "Bảo quản" },
-        { key: "note", label: "Ghi chú" },
+        { key: "note", label: "Lưu ý" },
     ];
     
     const validTabs = tabs.filter(

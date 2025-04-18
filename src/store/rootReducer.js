@@ -3,6 +3,7 @@ import authReducer from "./Reducers/authReducer";
 import cartReducer from "./Reducers/cartReducer";
 import categoryReducer from "./Reducers/categoryReducer";
 import companyReducer from "./Reducers/companyReducer";
+import couponReducer from "./Reducers/couponReducer";
 import dashboardReducer from "./Reducers/dashboardReducer";
 import feedbackEmployeeReducer from "./Reducers/feedback/feedbackEmployeeReducer";
 import feedbackReducer from "./Reducers/feedback/feedbackReducer";
@@ -38,5 +39,6 @@ const rootReducer = {
     feedbackEmployee: feedbackEmployeeReducer,
     feedback: feedbackReducer,
     dashboard: dashboardReducer,
+    coupon: couponReducer,
 }
 export default rootReducer;

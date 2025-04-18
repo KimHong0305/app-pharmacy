@@ -74,47 +74,44 @@ export const deleteAddress = createAsyncThunk(
 export const fetchAddressWithLocationNames = createAsyncThunk(
     "address/fetchAddressWithLocationNames",
     async (address, { dispatch, rejectWithValue }) => {
-      try {
-        if (Array.isArray(address)) {
-          // Nếu là mảng địa chỉ
-          const updatedAddresses = await Promise.all(
-            address.map(async (addr) => {
-              const [provinceName, districtName, villageName] = await Promise.all([
-                dispatch(getProvinceName(addr.province)).unwrap(),
-                dispatch(getDistrictName(addr.district)).unwrap(),
-                dispatch(getVillageName(addr.village)).unwrap(),
-              ]);
-  
-              return {
-                ...addr,
-                provinceName,
-                districtName,
-                villageName,
-              };
-            })
-          );
-  
-          return updatedAddresses;
-        } else {
-          // Nếu chỉ là một địa chỉ đơn lẻ
-          const [provinceName, districtName, villageName] = await Promise.all([
-            dispatch(getProvinceName(address.province)).unwrap(),
-            dispatch(getDistrictName(address.district)).unwrap(),
-            dispatch(getVillageName(address.village)).unwrap(),
-          ]);
-  
-          return {
-            ...address,
-            provinceName,
-            districtName,
-            villageName,
-          };
+        try {
+            console.log("Received address in fetchAddressWithLocationNames:", address);
+            if (Array.isArray(address)) {
+                const updatedAddresses = await Promise.all(
+                    address.map(async (addr) => {
+                        const [provinceName, districtName, villageName] = await Promise.all([
+                            dispatch(getProvinceName(addr.province)).unwrap(),
+                            dispatch(getDistrictName(addr.district)).unwrap(),
+                            dispatch(getVillageName(addr.village)).unwrap(),
+                        ]);
+                        return {
+                            ...addr,
+                            provinceName,
+                            districtName,
+                            villageName,
+                        };
+                    })
+                );
+                return updatedAddresses;
+            } else {
+                const [provinceName, districtName, villageName] = await Promise.all([
+                    dispatch(getProvinceName(address.province)).unwrap(),
+                    dispatch(getDistrictName(address.district)).unwrap(),
+                    dispatch(getVillageName(address.village)).unwrap(),
+                ]);
+                return {
+                    ...address,
+                    provinceName,
+                    districtName,
+                    villageName,
+                };
+            }
+        } catch (error) {
+            console.error("Error in fetchAddressWithLocationNames:", error);
         }
-      } catch (error) {
-        return rejectWithValue("Failed to fetch location names.");
-      }
     }
 );
+
 
 const addressSlice = createSlice({
     name: "address",

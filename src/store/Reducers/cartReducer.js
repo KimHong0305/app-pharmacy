@@ -186,7 +186,7 @@ const cartSlice = createSlice({
                 state.loading = false;
                 const data = action.payload;
                 if (data.result) {
-                    state.cartItems = data.result.cartItems || [];
+                    state.cartItems = data.result.cartItemResponses || [];
                     state.totalPrice = data.result.totalPrice || 0;
                     console.log(data.result)
                 } else {

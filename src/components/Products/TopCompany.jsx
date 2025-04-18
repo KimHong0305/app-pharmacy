@@ -11,8 +11,6 @@ const TopCompany = () => {
         dispatch(getTopCompanies());
     }, [dispatch]);
 
-    console.log(topCompanies)
-
     return (
         <div>
             <div className='my-10'>

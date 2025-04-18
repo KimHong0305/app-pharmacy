@@ -3,7 +3,7 @@ const OrderDetail = lazy(() => import("../../pages/admin/order/OrderDetail"));
 const Feedback = lazy(() => import("../../pages/employee/Feedback"));
 const OrderCOD = lazy(() => import("../../pages/admin/order/OrderCOD"));
 const AddPrice = lazy(() => import("../../pages/admin/price/AddPrice"));
-const AdminDashboard = lazy(() => import("../../pages/admin/AdminDashboard"));
+const EmployeeDashboard = lazy(() => import("../../pages/employee/EmployeeDashboard"));
 const Orders = lazy(() => import("../../pages/admin/order/Orders"));
 const Prices = lazy(() => import("../../pages/admin/price/Prices"));
 const Products = lazy(() => import("../../pages/admin/product/Products"));
@@ -15,7 +15,7 @@ const EditProduct = lazy(() => import("../../pages/admin/product/EditProduct"));
 export const employeeRoutes = [
     {
         path: 'employee/dashboard',
-        element : <AdminDashboard/>,
+        element : <EmployeeDashboard/>,
         role : 'ROLE_EMPLOYEE'
     },
     {

@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getCategoryNull } from '../store/Reducers/categoryReducer';
 import { useNavigate } from 'react-router-dom';
 import { clearAddress } from '../store/Reducers/addressReducer';
+import { getAllProducts } from '../store/Reducers/productReducer';
 
 const Header = () => {
   
@@ -21,16 +22,18 @@ const Header = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   const cartCount = cartItems.length;
-  // localStorage.removeItem('token');
   const navigate = useNavigate();
   const [showLogin, setShowLogin] = useState(false)
   const isLoggedIn = !!localStorage.getItem('token');
   const [showMenu, setShowMenu] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
-
-  const { message } = useSelector((state) => state.auth);
   const { categories } = useSelector((state) => state.category);
   const { bio } = useSelector((state) => state.auth);   
+
+  useEffect(() => {
+    dispatch(getCategoryNull());
+    dispatch(getAllProducts(0, 1000));
+  },[dispatch])
 
   const handleLogout = () => {
     setShowMenu(false)
@@ -70,14 +73,6 @@ const Header = () => {
   const handleSearchFocus = () => {
     setShowSearchResults(true);
   };
-  
-
-  useEffect(() => {
-    dispatch(getCategoryNull());
-    // if (message) {
-    //   toast.success('Đăng xuất thành công')
-    // }
-  },[dispatch, message])
 
   return (
     <header className="relative z-50">
@@ -180,9 +175,11 @@ const Header = () => {
                   role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabIndex="-1">
                   <div className="py-1" role="none">
                     <a href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-0">Thông tin cá nhân</a>
-                    <a href="/history" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-1">Lịch sử đơn hàng</a>
+                    <a href="/address" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-1">Địa chỉ nhận hàng</a>
+                    <a href="/coupon" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-2">Mã giảm giá</a>
+                    <a href="/history" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-3">Lịch sử đơn hàng</a>
                     <a onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200 flex items-center justify-between" 
-                    role="menuitem" tabIndex="-1" id="menu-item-2">Đăng xuất <MdLogout className='text-rose-700'/></a>
+                    role="menuitem" tabIndex="-1" id="menu-item-4">Đăng xuất <MdLogout className='text-rose-700'/></a>
                   </div>
                 </div>)}
                 </div>

@@ -24,7 +24,7 @@ const ProductList = () => {
     const [filteredProducts, setFilteredProducts] = useState([]);
 
     useEffect(() => {
-        dispatch(getProductByCategory({ categoryId, sortOrder }));
+        dispatch(getProductByCategory({ page: 0, size: 50, categoryId, sortOrder }));
         dispatch(getChildCategory(categoryId));
     }, [dispatch, categoryId, sortOrder]);
 
@@ -182,7 +182,7 @@ const ProductList = () => {
                 </div>
 
                 {/* Hiển thị sản phẩm */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {filteredProducts.length > 0 ? (
                     filteredProducts.map((item) => (
                     <div

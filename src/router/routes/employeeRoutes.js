@@ -1,4 +1,7 @@
 import { lazy } from "react";
+const EditCoupon = lazy(() => import("../../pages/admin/coupon/EditCoupon"));
+const AddCoupon = lazy(() => import("../../pages/admin/coupon/AddCoupon"));
+const Coupon = lazy(() => import("../../pages/admin/coupon/Coupon"));
 const OrderDetail = lazy(() => import("../../pages/admin/order/OrderDetail"));
 const Feedback = lazy(() => import("../../pages/employee/Feedback"));
 const OrderCOD = lazy(() => import("../../pages/admin/order/OrderCOD"));
@@ -71,6 +74,21 @@ export const employeeRoutes = [
     {
         path: 'employee/feedback',
         element : <Feedback/>,
+        role : 'ROLE_EMPLOYEE'
+    },
+    {
+        path: 'admin/coupon',
+        element : <Coupon/>,
+        role : 'ROLE_EMPLOYEE'
+    },
+    {
+        path: 'admin/addCoupon',
+        element : <AddCoupon/>,
+        role : 'ROLE_EMPLOYEE'
+    },
+    {
+        path: 'admin/editCoupon',
+        element : <EditCoupon/>,
         role : 'ROLE_EMPLOYEE'
     },
 ]

@@ -8,6 +8,7 @@ import { BsCartCheck } from "react-icons/bs";
 import { PiTrademarkRegisteredLight } from "react-icons/pi";
 import { MdOutlineFeedback } from "react-icons/md";
 import { CiDeliveryTruck } from "react-icons/ci";
+import { RiCoupon2Line } from "react-icons/ri";
 
 export const allNav = [
     {
@@ -114,5 +115,19 @@ export const allNav = [
         icon : <MdOutlineFeedback />,
         role : 'ROLE_EMPLOYEE',
         path: '/employee/feedback'
+    },
+    {
+        id : 16,
+        title : 'Coupons',
+        icon : <RiCoupon2Line />,
+        role : 'ROLE_EMPLOYEE',
+        path: '/admin/coupon'
+    },
+    {
+        id : 16,
+        title : 'Coupons',
+        icon : <RiCoupon2Line />,
+        role : 'ROLE_ADMIN',
+        path: '/admin/coupon'
     },
 ]

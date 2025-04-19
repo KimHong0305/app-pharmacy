@@ -14,7 +14,9 @@ const AddCategory = lazy(() => import("../../pages/admin/category/AddCategory"))
 const EditCategory = lazy(() => import("../../pages/admin/category/EditCategory"));
 const AddProduct = lazy(() => import("../../pages/admin/product/AddProduct"));
 const EditProduct = lazy(() => import("../../pages/admin/product/EditProduct"));
-
+const EditCoupon = lazy(() => import("../../pages/admin/coupon/EditCoupon"));
+const AddCoupon = lazy(() => import("../../pages/admin/coupon/AddCoupon"));
+const Coupon = lazy(() => import("../../pages/admin/coupon/Coupon"));
 
 export const adminRoutes = [
     {
@@ -90,6 +92,21 @@ export const adminRoutes = [
     {
         path: 'admin/orderDetail',
         element : <OrderDetail/>,
+        role : 'ROLE_ADMIN'
+    },
+    {
+        path: 'admin/coupon',
+        element : <Coupon/>,
+        role : 'ROLE_ADMIN'
+    },
+    {
+        path: 'admin/addCoupon',
+        element : <AddCoupon/>,
+        role : 'ROLE_ADMIN'
+    },
+    {
+        path: 'admin/editCoupon',
+        element : <EditCoupon/>,
         role : 'ROLE_ADMIN'
     },
 ]

@@ -55,7 +55,7 @@ const AddPrice = () => {
         } catch (error) {
           toast.error(error.message);
         }
-      };
+    };
 
     const handleInputChange = (e) => {
         let value = e.target.value.replace(/[^\d]/g, "");

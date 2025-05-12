@@ -6,7 +6,7 @@ export const getAllProducts = createAsyncThunk(
   async ({ page = 0, size = 1000, sortOrder = 'asc' }, { rejectWithValue }) => {
     try {
       const response = await api.get(`product?page=${page}&size=${size}&sortOrder=${sortOrder}`);
-      console.log(response.data.result)
+      // console.log(response.data.result)
       return response.data.result;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -88,30 +88,6 @@ export const deleteProduct = createAsyncThunk(
         },
       });
       return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
-export const getNewProducts = createAsyncThunk(
-  'product/getNewProducts',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await api.get('/home/user/top20');
-      return response.data.result;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
-export const getBestProducts = createAsyncThunk(
-  'product/getBestProducts',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await api.get('/home/user/bestSeller');
-      return response.data.result;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -205,16 +181,6 @@ const productSlice = createSlice({
       .addCase(deleteProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      })
-      // new product
-      .addCase(getNewProducts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.newProducts = action.payload;
-      })
-      // best product
-      .addCase(getBestProducts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.bestProducts = action.payload;
       })
   }
 });

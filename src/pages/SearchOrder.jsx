@@ -6,6 +6,18 @@ import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { getOrder } from '../store/Reducers/order/orderGuestReducer';
 import { useNavigate } from 'react-router-dom';
+import { FaTruck } from "react-icons/fa";
+
+const convertTimestampToDate = (timestamp) => {
+    if (!timestamp) return "Không có dữ liệu";
+    
+    const date = new Date(timestamp * 1000);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+};
 
 const SearchOrder = () => {
     const dispatch = useDispatch();
@@ -70,85 +82,93 @@ const SearchOrder = () => {
                             {/* Hiển thị kết quả */}
                             {result && (
                                 <div className="w-full py-5 px-10 cursor-pointer" onClick={() => handleOrderDetail(result)}>
-                                    <div className="p-4 bg-white border border-gray-200 rounded-lg">
-                                        <div className="flex justify-between pb-2 border-b border-gray-200 items-center">
-                                            <div>
-                                                <p className="text-lg font-semibold">Mã đơn hàng: {result.id}</p>
-                                                <p className="text-sm text-gray-600">Ngày đặt: {result.orderDate}</p>
-                                            </div>
-                                            <span
-                                                className={`px-3 py-1 text-sm rounded-lg ${
-                                                    result.isConfirm === false ? 'bg-yellow-200 text-yellow-800' : 'bg-blue-200 text-blue-800'
-                                                }`}
-                                            >
-                                                {result.isConfirm === false ? 'Đang xử lý' : 'Đang giao hàng'}
-                                            </span>
+                                    <div className="bg-white border border-gray-200 rounded-lg">
+                                        <div className="p-4 bg-blue-100 rounded-t-lg">
+                                            <p className="text-blue-800 font-semibold flex items-center">
+                                                <FaTruck className="mr-2" />
+                                                Ngày giao hàng dự kiến: {convertTimestampToDate(result.leadTime)}
+                                            </p>
                                         </div>
-
-                                        <div className="mt-4 border-b border-gray-200">
-                                        {result.orderItemResponses.length > 0 && (
-                                            <div className="flex py-2">
-                                            <div className="w-1/6">
-                                                <img
-                                                src={result.orderItemResponses[0].image}
-                                                alt={result.orderItemResponses[0].productName}
-                                                className="w-full h-auto object-cover"
-                                                />
-                                            </div>
-                                            <div className="w-5/6 px-4 flex flex-col justify-start">
-                                                <div className="flex justify-between">
+                                        <div className='p-4 '>
+                                            <div className="flex justify-between pb-2 border-b border-gray-200 items-center">
                                                 <div>
-                                                    <p className="font-medium">{result.orderItemResponses[0].productName}</p>
-                                                    <p className="text-sm text-gray-600">
-                                                    Số lượng: {result.orderItemResponses[0].quantity} {result.orderItemResponses[0].unitName}
-                                                    </p>
+                                                    <p className="text-lg font-semibold">Mã đơn hàng: {result.id}</p>
+                                                    <p className="text-sm text-gray-600">Ngày đặt: {result.orderDate}</p>
                                                 </div>
-                                                <p className="text-sm text-gray-600">
-                                                    Giá: {result.orderItemResponses[0].price.toLocaleString()} VND
-                                                </p>
+                                                <span
+                                                    className={`px-3 py-1 text-sm rounded-lg ${
+                                                        result.isConfirm === false ? 'bg-yellow-200 text-yellow-800' : 'bg-blue-200 text-blue-800'
+                                                    }`}
+                                                >
+                                                    {result.isConfirm === false ? 'Đang xử lý' : 'Đang giao hàng'}
+                                                </span>
+                                            </div>
+
+                                            <div className="mt-4 border-b border-gray-200">
+                                            {result.orderItemResponses.length > 0 && (
+                                                <div className="flex py-2">
+                                                <div className="w-1/6">
+                                                    <img
+                                                    src={result.orderItemResponses[0].image}
+                                                    alt={result.orderItemResponses[0].productName}
+                                                    className="w-full h-auto object-cover"
+                                                    />
                                                 </div>
-                                            </div>
-                                            </div>
-                                        )}
-                                        
-                                        {/* Hiển thị số lượng sản phẩm khác */}
-                                        {result.orderItemResponses.length > 1 && (
-                                            <p className="my-2 text-sm text-gray-500">
-                                             {result.orderItemResponses.length - 1} sản phẩm khác
-                                            </p>
-                                        )}
-                                        </div>
-
-
-                                        <div className="mt-4 flex justify-between">
-                                            <div>
-                                                <p className="text-sm text-gray-600">
-                                                    Phương thức thanh toán: <span className="font-semibold">{result.paymentMethod}</span>
-                                                </p>
-
-                                                {/* Hiển thị trạng thái thanh toán */}
-                                                {result.paymentMethod !== 'CASH' && (
-                                                    <div className="mt-2">
-                                                        <span
-                                                            className={`px-3 py-1 text-sm rounded-lg ${
-                                                                result.status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' :
-                                                                result.status === 'SUCCESS' ? 'bg-green-200 text-green-800' :
-                                                                result.status === 'FAILED' ? 'bg-red-200 text-red-800' :
-                                                                result.status === 'CANCELLED' ? 'bg-gray-200 text-gray-800' : ''
-                                                            }`}
-                                                        >
-                                                            {result.status === 'PENDING' && 'Chờ xử lý'}
-                                                            {result.status === 'SUCCESS' && 'Đã thanh toán'}
-                                                            {result.status === 'FAILED' && 'Thanh toán thất bại'}
-                                                            {result.status === 'CANCELLED' && 'Đã hủy'}
-                                                        </span>
+                                                <div className="w-5/6 px-4 flex flex-col justify-start">
+                                                    <div className="flex justify-between">
+                                                    <div>
+                                                        <p className="font-medium">{result.orderItemResponses[0].productName}</p>
+                                                        <p className="text-sm text-gray-600">
+                                                        Số lượng: {result.orderItemResponses[0].quantity} {result.orderItemResponses[0].unitName}
+                                                        </p>
                                                     </div>
-                                                )}
+                                                    <p className="text-sm text-gray-600">
+                                                        Giá: {result.orderItemResponses[0].price.toLocaleString()} VND
+                                                    </p>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            )}
+                                            
+                                            {/* Hiển thị số lượng sản phẩm khác */}
+                                            {result.orderItemResponses.length > 1 && (
+                                                <p className="my-2 text-sm text-gray-500">
+                                                {result.orderItemResponses.length - 1} sản phẩm khác
+                                                </p>
+                                            )}
                                             </div>
 
-                                            <p className="text-lg font-semibold">
-                                                Tổng tiền: {result.totalPrice.toLocaleString()} VND
-                                            </p>
+
+                                            <div className="mt-4 flex justify-between">
+                                                <div>
+                                                    <p className="text-sm text-gray-600">
+                                                        Phương thức thanh toán: <span className="font-semibold">{result.paymentMethod}</span>
+                                                    </p>
+
+                                                    {/* Hiển thị trạng thái thanh toán */}
+                                                    {result.paymentMethod !== 'CASH' && (
+                                                        <div className="mt-2">
+                                                            <span
+                                                                className={`px-3 py-1 text-sm rounded-lg ${
+                                                                    result.status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' :
+                                                                    result.status === 'SUCCESS' ? 'bg-green-200 text-green-800' :
+                                                                    result.status === 'FAILED' ? 'bg-red-200 text-red-800' :
+                                                                    result.status === 'CANCELLED' ? 'bg-gray-200 text-gray-800' : ''
+                                                                }`}
+                                                            >
+                                                                {result.status === 'PENDING' && 'Chờ xử lý'}
+                                                                {result.status === 'SUCCESS' && 'Đã thanh toán'}
+                                                                {result.status === 'FAILED' && 'Thanh toán thất bại'}
+                                                                {result.status === 'CANCELLED' && 'Đã hủy'}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <p className="text-lg font-semibold">
+                                                    Tổng tiền: {result.newTotalPrice.toLocaleString()} VND
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

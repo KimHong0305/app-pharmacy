@@ -1,20 +1,33 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/api";
-import { getProvinceName, getDistrictName, getVillageName } from "./locationReducer";
 
 export const getAddress = createAsyncThunk(
     "user/getAddress",
     async (_, { rejectWithValue }) => {
         try {
-        const token = localStorage.getItem('token');
-        const response = await api.get('/address', {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data.result;
+            const token = localStorage.getItem('token');
+            const response = await api.get('/address', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            
+            const updatedAddresses = await Promise.all(
+                response.data.result.map(async (addr) => {
+                    const { province, district, village } = addr;
+                    const detailResponse = await api.get(`/address/detail?provinceId=${province}&districtId=${district}&wardCode=${village}`);
+                    return {
+                        ...addr,
+                        provinceName: detailResponse.data.result.province.ProvinceName,
+                        districtName: detailResponse.data.result.district.DistrictName,
+                        wardName: detailResponse.data.result.ward.WardName,
+                    };
+                })
+            );
+
+            return updatedAddresses;
         } catch (error) {
-        return rejectWithValue(error.response.data);
+            return rejectWithValue(error.response?.data || 'Failed to fetch addresses');
         }
     }
 );
@@ -23,15 +36,15 @@ export const createAddress = createAsyncThunk(
     "user/createAddress",
     async (newAddress, { rejectWithValue }) => {
         try {
-        const token = localStorage.getItem('token');
-        const response = await api.post('/address', newAddress, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data;
+            const token = localStorage.getItem('token');
+            const response = await api.post('/address', newAddress, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
         } catch (error) {
-        return rejectWithValue(error.response.data);
+            return rejectWithValue(error.response.data);
         }
     }
 );
@@ -40,15 +53,15 @@ export const updateAddress = createAsyncThunk(
     "user/updateAddress",
     async (update, { rejectWithValue }) => {
         try {
-        const token = localStorage.getItem('token');
-        const response = await api.put('/address', update, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data;
+            const token = localStorage.getItem('token');
+            const response = await api.put('/address', update, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
         } catch (error) {
-        return rejectWithValue(error.response.data);
+            return rejectWithValue(error.response.data);
         }
     }
 );
@@ -57,74 +70,42 @@ export const deleteAddress = createAsyncThunk(
     "user/deleteAddress",
     async (Id, { rejectWithValue }) => {
         try {
-        const token = localStorage.getItem('token');
-        const response = await api.delete(`/address/${Id}`, {
-            headers: {
-            Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data;
+            const token = localStorage.getItem('token');
+            const response = await api.delete(`/address/${Id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
         } catch (error) {
-        return rejectWithValue(error.response.data);
+            return rejectWithValue(error.response.data);
         }
     }
 );
 
-// Fetch và bổ sung tên địa phương
-export const fetchAddressWithLocationNames = createAsyncThunk(
-    "address/fetchAddressWithLocationNames",
-    async (address, { dispatch, rejectWithValue }) => {
+export const getAddressDetail = createAsyncThunk(
+    'address/getDetail',
+    async ({ provinceId, districtId, wardCode }, { rejectWithValue }) => {
         try {
-            console.log("Received address in fetchAddressWithLocationNames:", address);
-            if (Array.isArray(address)) {
-                const updatedAddresses = await Promise.all(
-                    address.map(async (addr) => {
-                        const [provinceName, districtName, villageName] = await Promise.all([
-                            dispatch(getProvinceName(addr.province)).unwrap(),
-                            dispatch(getDistrictName(addr.district)).unwrap(),
-                            dispatch(getVillageName(addr.village)).unwrap(),
-                        ]);
-                        return {
-                            ...addr,
-                            provinceName,
-                            districtName,
-                            villageName,
-                        };
-                    })
-                );
-                return updatedAddresses;
-            } else {
-                const [provinceName, districtName, villageName] = await Promise.all([
-                    dispatch(getProvinceName(address.province)).unwrap(),
-                    dispatch(getDistrictName(address.district)).unwrap(),
-                    dispatch(getVillageName(address.village)).unwrap(),
-                ]);
-                return {
-                    ...address,
-                    provinceName,
-                    districtName,
-                    villageName,
-                };
-            }
+            const response = await api.get(`/address/detail?provinceId=${provinceId}&districtId=${districtId}&wardCode=${wardCode}`);
+            return response.data.result;
         } catch (error) {
-            console.error("Error in fetchAddressWithLocationNames:", error);
+            return rejectWithValue(error.response?.data || 'Failed to fetch address details');
         }
     }
 );
-
 
 const addressSlice = createSlice({
     name: "address",
     initialState: {
       address: [],
-      updateAddress: [],
+      addressDetail: null,
       loading: false,
       error: null,
     },
     reducers: {
         clearAddress: (state) => {
             state.address = [];
-            state.updateAddress = [];
         }
     },
     extraReducers: (builder) => {
@@ -178,19 +159,19 @@ const addressSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         })
-        // Bổ sung tên địa phương
-        .addCase(fetchAddressWithLocationNames.pending, (state) => {
+        // Chi tiết địa chỉ
+        .addCase(getAddressDetail.pending, (state) => {
             state.loading = true;
             state.error = null;
         })
-        .addCase(fetchAddressWithLocationNames.fulfilled, (state, action) => {
+        .addCase(getAddressDetail.fulfilled, (state, action) => {
             state.loading = false;
-            state.updateAddress = action.payload;
+            state.addressDetail = action.payload;
         })
-        .addCase(fetchAddressWithLocationNames.rejected, (state, action) => {
+        .addCase(getAddressDetail.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
-        });
+        })
     },
 });
 

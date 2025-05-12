@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Header from '../../components/Header';
 import Footer from "../../components/Footer";
-import { fetchAddressWithLocationNames, getAddress } from "../../store/Reducers/addressReducer";
+import { getAddress } from "../../store/Reducers/addressReducer";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createOrderCartUser } from "../../store/Reducers/order/orderUserReducer";
@@ -15,6 +15,8 @@ import { FaTicketAlt } from "react-icons/fa";
 import { HiOutlineTicket } from "react-icons/hi2";
 import { IoIosArrowForward } from "react-icons/io";
 import VoucherDialog from "../../components/VoucherDialog";
+import PaymentMethodSelector from '../../components/PaymentMethodSelector';
+import ShippingMethodSelector from '../../components/ShippingMethodSelector';
 
 const OrderCartUser = () => {
     const dispatch = useDispatch();
@@ -28,13 +30,13 @@ const OrderCartUser = () => {
     const [showAddressList, setShowAddressList] = useState(false);
     const [loading, setLoading] = useState(true);
     const [paymentMethod, setPaymentMethod] = useState("CASH");
-    const address = useSelector((state) => state.address.address);
-    const { updateAddress } = useSelector((state) => state.address);
+    const { address } = useSelector((state) => state.address);
     const [voucher, setVoucher] = useState(selectedVoucher);
     const [amount, setAmount] = useState(discountAmount);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-    console.log(totalPrice)
+    const [shippingMethod, setShippingMethod] = useState("FAST");
+    const [shippingFee, setShippingFee] = useState(0);
+    const [service, setService] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -52,18 +54,11 @@ const OrderCartUser = () => {
     }, [dispatch]);
     
     useEffect(() => {
-        if (address.length > 0) {
-            dispatch(fetchAddressWithLocationNames(address));
-        }
-    }, [address, dispatch]);  
-    
-    useEffect(() => {
-        console.log("Updated address:", updateAddress);
-        const defaultAddr = updateAddress.find((addr) => addr.addressDefault);
+        const defaultAddr = address.find((addr) => addr.addressDefault);
         if (defaultAddr) {
             setDefaultAddress(defaultAddr);
         }
-    }, [updateAddress]);
+    }, [address]);
 
     const handleAddressClick = (addr) => {
         setDefaultAddress(addr);
@@ -82,7 +77,9 @@ const OrderCartUser = () => {
         const order = {
             ...(voucher && { couponId: voucher.id }),
             addressId: defaultAddress.id,
-            paymentMethod: paymentMethod
+            paymentMethod: paymentMethod,
+            isInsurance: false,
+            service_id: service,
         };
         
         // console.log(order)
@@ -149,6 +146,7 @@ const OrderCartUser = () => {
         );
     }
 
+    console.log('dia chi',defaultAddress)
     return (
         <div>
             <Header />
@@ -200,7 +198,7 @@ const OrderCartUser = () => {
                                     </p>
                                 </div>
                                 <p>{defaultAddress.address}</p>
-                                <p>{defaultAddress.villageName}</p>
+                                <p>{defaultAddress.wardName +", "+  defaultAddress.districtName + ", " + defaultAddress.provinceName}</p>
                                 {defaultAddress.addressDefault && (
                                     <p className="w-[80px] px-2 text-center rounded border border-red-600 text-red-600">
                                         Mặc định
@@ -217,93 +215,30 @@ const OrderCartUser = () => {
                             </button>
                         </div>
 
+                        {/* Phương thức vận chuyển */}
+                        <ShippingMethodSelector
+                            shippingMethod={shippingMethod}
+                            setShippingMethod={setShippingMethod}
+                            districtId={defaultAddress.district}
+                            wardCode={defaultAddress.village}
+                            total={cartItems.reduce((total, item) => total + item.amount, 0)}
+                            setShippingFee={setShippingFee}
+                            setService={setService}
+                        />
+
 
                         {/* Phương thức thanh toán */}
-                        <div className="mt-6">
-                            <h2 className="text-lg font-bold mb-4">Phương thức thanh toán</h2>
-                            <div className="flex items-center">
-                                <input
-                                    type="radio"
-                                    id="payment-cash"
-                                    name="payment-method"
-                                    value="CASH"
-                                    className="mr-2"
-                                    onChange={handlePaymentMethodChange}
-                                    checked={paymentMethod === "CASH"}
-                                />
-                                <label htmlFor="payment-cash" className="flex items-center p-2">
-                                    <img
-                                        className="w-[40px] h-[40px] rounded overflow-hidden"
-                                        src="http://localhost:3000/images/COD.png"
-                                        alt="Tiền mặt"
-                                    />
-                                    <p className="ml-4">Tiền mặt</p>
-                                </label>
-                            </div>
-                            
-                            <div className="flex items-center mt-4">
-                                <input
-                                    type="radio"
-                                    id="payment-momo"
-                                    name="payment-method"
-                                    value="MOMO"
-                                    className="mr-2"
-                                    onChange={handlePaymentMethodChange}
-                                />
-                                <label htmlFor="payment-momo" className="flex items-center p-2">
-                                    <img
-                                        className="w-[40px] h-[40px] rounded overflow-hidden"
-                                        src="http://localhost:3000/images/MoMo.webp"
-                                        alt="Momo"
-                                    />
-                                    <p className="ml-4">Momo</p>
-                                </label>
-                            </div>
-
-                            <div className="flex items-center mt-4">
-                                <input
-                                    type="radio"
-                                    id="payment-vnpay"
-                                    name="payment-method"
-                                    value="VNPAY"
-                                    className="mr-2"
-                                    onChange={handlePaymentMethodChange}
-                                />
-                                <label htmlFor="payment-vnpay" className="flex items-center p-2">
-                                    <img
-                                        className="w-[40px] h-[40px] rounded overflow-hidden"
-                                        src="http://localhost:3000/images/VNPay.jpg"
-                                        alt="VNPay"
-                                    />
-                                    <p className="ml-4">VNPay</p>
-                                </label>
-                            </div>
-
-                            <div className="flex items-center mt-4">
-                                <input
-                                    type="radio"
-                                    id="payment-zalopay"
-                                    name="payment-method"
-                                    value="ZALOPAY"
-                                    className="mr-2"
-                                    onChange={handlePaymentMethodChange}
-                                />
-                                <label htmlFor="payment-zalopay" className="flex items-center p-2">
-                                    <img
-                                        className="w-[40px] h-[40px] rounded overflow-hidden"
-                                        src="http://localhost:3000/images/ZaloPay.png"
-                                        alt="ZaloPay"
-                                    />
-                                    <p className="ml-4">ZaloPay</p>
-                                </label>
-                            </div>
+                        <PaymentMethodSelector
+                            paymentMethod={paymentMethod}
+                            onChange={handlePaymentMethodChange}
+                        />
                         
-                            {showAddressList && (
+                        {showAddressList && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                             <div className="bg-white p-6 rounded-md shadow-lg w-[600px]">
                                 <h3 className="text-lg font-bold mb-4">Chọn địa chỉ</h3>
                                 <div className="max-h-80 overflow-y-auto">
-                                {updateAddress.map((addr) => (
+                                {address.map((addr) => (
                                     <div key={addr.id} className="p-4 border-b border-gray-300 text-sm text-gray-400 space-y-2"
                                     onClick={() => handleAddressClick(addr)}>
                                         <div className='flex justify-between'>
@@ -324,9 +259,7 @@ const OrderCartUser = () => {
                                         <p>
                                             {addr.address}
                                         </p>
-                                        <p>
-                                            {addr.villageName}
-                                        </p>
+                                        <p>{addr.wardName +", "+  addr.districtName + ", " + addr.provinceName}</p>
                                         {addr.addressDefault && (
                                             <p className='w-[80px] px-2 text-center rounded border border-red-600 text-red-600'>
                                                 Mặc định
@@ -354,7 +287,6 @@ const OrderCartUser = () => {
                             </div>
                         </div>
                         )}
-                        </div>
 
                     </div>
 
@@ -415,7 +347,9 @@ const OrderCartUser = () => {
                         </div>
                         <p className="flex justify-between my-2">
                             <span>Phí vận chuyển:</span>
-                            <span>0 đ</span>
+                            <span>
+                                {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shippingFee)}
+                            </span>
                         </p>
                         <div className="border-t border-gray-300 my-2"></div>
                         <p className="flex justify-between items-end font-bold">
@@ -426,8 +360,8 @@ const OrderCartUser = () => {
                                 </span>
                             </div>
                             <p className="text-xl font-semibold text-red-500">
-                                <span className="text-xs line-through mr-1 text-gray-500">{totalPrice}</span>
-                                {(totalPrice - amount).toLocaleString("vi-VN", {
+                                {/* <span className="text-xs line-through mr-1 text-gray-500">{totalPrice}</span> */}
+                                {(totalPrice - amount + shippingFee).toLocaleString("vi-VN", {
                                     style: "currency",
                                     currency: "VND",
                                 })}

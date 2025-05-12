@@ -1,16 +1,11 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTopCompanies } from '../../store/Reducers/companyReducer';
 
 const TopCompany = () => {
     const dispatch = useDispatch();
-    const { topCompanies } = useSelector((state) => state.company);
-
-    useEffect(() => {
-        dispatch(getTopCompanies());
-    }, [dispatch]);
-
+    const { topCompanies } = useSelector((state) => state.home);
+    
     return (
         <div>
             <div className='my-10'>

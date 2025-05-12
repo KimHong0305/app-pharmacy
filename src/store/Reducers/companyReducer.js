@@ -13,18 +13,6 @@ export const getCompanies = createAsyncThunk(
   }
 );
 
-export const getTopCompanies = createAsyncThunk(
-  "/getTopCompanies",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await api.get('/home/user/topCompany');
-      return response.data.result;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
 export const createCompany = createAsyncThunk(
   "/createCompany",
   async (newCompany, { rejectWithValue }) => {
@@ -99,11 +87,6 @@ const companySlice = createSlice({
       .addCase(createCompany.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      })
-      // top
-      .addCase(getTopCompanies.fulfilled, (state, action) => {
-        state.loading = false;
-        state.topCompanies = action.payload;
       })
   },
 });

@@ -4,7 +4,7 @@ import Footer from '../../../components/Footer';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserInfo } from '../../../store/Reducers/authReducer';
 import { useNavigate } from 'react-router-dom';
-import { getAddress, fetchAddressWithLocationNames } from '../../../store/Reducers/addressReducer';
+import { getAddress } from '../../../store/Reducers/addressReducer';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import UserNavBar from '../../../components/UserNavBar';
 
@@ -12,9 +12,8 @@ const Address = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     
-    const address = useSelector((state) => state.address.address);
     const { bio } = useSelector((state) => state.auth);
-    const { updateAddress } = useSelector((state) => state.address);
+    const { address } = useSelector((state) => state.address);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -23,12 +22,6 @@ const Address = () => {
         };
         fetchData();
     }, [dispatch]);
-
-    useEffect(() => {
-        if (address.length > 0) {
-          dispatch(fetchAddressWithLocationNames(address));
-        }
-    }, [address, dispatch]);
     
     const hanldeEditAddress = (addr) => {
         navigate('/editAddress', { state: addr });
@@ -42,6 +35,7 @@ const Address = () => {
         return <div>No user information available.</div>;
     }
 
+    // console.log('dia chi', address)
     return (
         <div>
             <Header />
@@ -59,9 +53,9 @@ const Address = () => {
                         <div className="md:col-span-2 flex flex-col items-center justify-start">
                             <div className="w-full bg-white rounded-lg shadow-xl flex flex-col items-center justify-center py-5 px-10">
                                 <p className="mb-4 text-2xl font-semibold">ĐỊA CHỈ NHẬN HÀNG</p>
-                                {updateAddress && updateAddress.length > 0 ? (
+                                {address && address.length > 0 ? (
                                     <div className="w-full text-left">
-                                        {updateAddress.map((addr) => (
+                                        {address.map((addr) => (
                                             <div key={addr.id} className="p-4 cursor-pointer border-b border-gray-300 text-sm text-gray-400 space-y-2"
                                             onClick={() =>hanldeEditAddress(addr)}>
                                                 <div className='flex justify-between'>
@@ -80,7 +74,7 @@ const Address = () => {
                                                     </p>
                                                 </div>
                                                 <p>{addr.address}</p>
-                                                <p>{addr.villageName}</p>
+                                                <p>{addr.wardName +", "+  addr.districtName + ", " + addr.provinceName}</p>
                                                 {addr.addressDefault && (
                                                     <p className='w-[80px] px-2 text-center rounded border border-red-600 text-red-600'>
                                                         Mặc định

@@ -327,7 +327,7 @@ const HistoryOrder = () => {
                                                 </div>
 
                                                 <p className="text-lg font-semibold">
-                                                    Tổng tiền: {order.totalPrice.toLocaleString()} VND
+                                                    Tổng tiền: {order.newTotalPrice.toLocaleString()} VND
                                                 </p>
                                             </div>
                                             {activeTab === "review" && (

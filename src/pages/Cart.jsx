@@ -236,7 +236,7 @@ const Cart = () => {
               <div className="flex justify-between items-center mt-4 mb-6">
                 <p className="text-lg font-medium">Thành tiền:</p>
                 <p className="text-xl font-semibold text-red-500">
-                  <span className="text-xs line-through mr-1 text-gray-500">{totalPrice}</span>
+                  {/* <span className="text-xs line-through mr-1 text-gray-500">{totalPrice}</span> */}
                   {(totalPrice - discountAmount).toLocaleString("vi-VN", {
                     style: "currency",
                     currency: "VND",

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IoReturnDownBackSharp } from "react-icons/io5";
-import { fetchAddressWithLocationNames } from '../../../store/Reducers/addressReducer';
 import { useDispatch, useSelector } from 'react-redux';
+import { getAddressDetail } from '../../../store/Reducers/addressReducer';
 
 const OrderDetail = () => {
     const location = useLocation();
@@ -10,7 +10,7 @@ const OrderDetail = () => {
     const dispatch = useDispatch();
     const order = location.state;
 
-    const { updateAddress } = useSelector((state) => state.address);
+    const { addressDetail } = useSelector((state) => state.address);
     const [loading, setLoading] = useState(true);
     const handleGoBack = () => {
         navigate(-1);
@@ -20,7 +20,11 @@ const OrderDetail = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                await dispatch(fetchAddressWithLocationNames(order.address));
+                await dispatch(getAddressDetail({
+                    provinceId: order?.address?.province,
+                    districtId: order?.address?.district,
+                    wardCode: order?.address?.village
+                }));
             } catch (error) {
                 console.error("Error fetching address with location names:", error);
             } finally {
@@ -46,13 +50,16 @@ const OrderDetail = () => {
         id,
         orderDate, 
         orderItemResponses, 
+        address,
         paymentMethod, 
         status, 
         totalPrice,
-        isConfirm
+        newTotalPrice,
+        deliveryTotal,
+        coupon,
+        isConfirm,
+        leadTime
     } = order;
-
-    console.log('dia chi',updateAddress)
 
     return (
         <div className="px-2 md:px-4">
@@ -86,23 +93,23 @@ const OrderDetail = () => {
                                         <div className='flex justify-between'>
                                             <div className='flex'>
                                                 <p className='font-semibold text-black'>
-                                                    {updateAddress?.fullname}
+                                                    {address?.fullname}
                                                 </p>
                                                 <div className="ml-2 mr-2 border-r border-gray-300"></div>
                                                 <p>
-                                                    (+84) {updateAddress?.phone}
+                                                    (+84) {address?.phone}
                                                 </p>
                                             </div>
                                             <p className="w-[90px] px-2 text-center rounded border border-blue-700 text-blue-700">
-                                                {updateAddress?.addressCategory === "HOUSE" ? "Nhà riêng" : 
-                                                updateAddress?.addressCategory === "COMPANY" ? "Văn phòng" : "Loại khác"}
+                                                {address?.addressCategory === "HOUSE" ? "Nhà riêng" : 
+                                                address?.addressCategory === "COMPANY" ? "Văn phòng" : "Loại khác"}
                                             </p>
                                         </div>
                                         <p>
-                                            {updateAddress?.address}
+                                            {address?.address}
                                         </p>
                                         <p>
-                                            {updateAddress?.villageName}
+                                            {addressDetail?.ward.WardName + ", " + addressDetail?.district.DistrictName + ", "+ addressDetail?.province.ProvinceName}
                                         </p>
                                     </div>
                                 </div>  
@@ -166,7 +173,7 @@ const OrderDetail = () => {
                                     </div>
 
                                     <p className="text-lg font-semibold">
-                                        Tổng tiền: {totalPrice.toLocaleString()} VND
+                                        Tổng tiền: {newTotalPrice.toLocaleString()} VND
                                     </p>
                                 </div>
                             </div>

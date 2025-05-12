@@ -18,6 +18,8 @@ import priceReducer from "./Reducers/priceReducer";
 import productReducer from "./Reducers/productReducer";
 import unitReducer from "./Reducers/unitReducer";
 import userReducer from "./Reducers/userReducer";
+import homeReducer from "./Reducers/homeReducer";
+import deliveryReducer from "./Reducers/deliveryReducer";
 
 const rootReducer = {
     auth: authReducer,
@@ -40,5 +42,7 @@ const rootReducer = {
     feedback: feedbackReducer,
     dashboard: dashboardReducer,
     coupon: couponReducer,
+    home: homeReducer,
+    delivery: deliveryReducer,
 }
 export default rootReducer;

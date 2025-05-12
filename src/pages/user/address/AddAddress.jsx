@@ -162,8 +162,8 @@ const AddAddress = () => {
                                                     Chọn Tỉnh/Thành phố
                                                 </option>
                                                 {provinces.map((province) => (
-                                                    <option key={province.id} value={province.id}>
-                                                        {province.full_name}
+                                                    <option key={province.ProvinceID} value={province.ProvinceID}>
+                                                        {province.ProvinceName}
                                                     </option>
                                                 ))}
                                             </select>
@@ -182,8 +182,8 @@ const AddAddress = () => {
                                             >
                                                 <option value="" disabled>Chọn Quận/Huyện</option>
                                                 {districts.map((district) => (
-                                                    <option key={district.id} value={district.id}>
-                                                        {district.full_name}
+                                                    <option key={district.DistrictID} value={district.DistrictID}>
+                                                        {district.DistrictName}
                                                     </option>
                                                 ))}
                                             </select>
@@ -202,8 +202,8 @@ const AddAddress = () => {
                                             >
                                                 <option value="" disabled>Chọn Phường/Xã</option>
                                                 {villages.map((village) => (
-                                                    <option key={village.id} value={village.id}>
-                                                        {village.full_name}
+                                                    <option key={village.WardCode} value={village.WardCode}>
+                                                        {village.WardName}
                                                     </option>
                                                 ))}
                                             </select>

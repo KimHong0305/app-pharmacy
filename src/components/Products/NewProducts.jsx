@@ -4,17 +4,12 @@ import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { useNavigate } from 'react-router-dom';
-import { getNewProducts } from '../../store/Reducers/productReducer';
 import { useDispatch, useSelector } from 'react-redux';
 
 const NewProducts = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { newProducts } = useSelector((state) => state.product);
-
-  useEffect(() => {
-    dispatch(getNewProducts());
-  }, [dispatch]);
+  const { newProducts } = useSelector((state) => state.home);
 
   const handleProductClick = (productId) => {
     navigate(`/productDetail/${productId}`);
@@ -53,7 +48,7 @@ const NewProducts = () => {
         {newProducts.map((product) => (
           <SwiperSlide key={product.id}>
             <div
-              className="relative flex flex-col items-center justify-center border border-gray-300 w-[200px] h-[280px] 
+              className="cursor-pointer relative flex flex-col items-center justify-center border border-gray-300 w-[200px] h-[280px] 
               shadow-lg hover:shadow-2xl bg-[#ffffff] mr-5 rounded-lg"
               onClick={() => handleProductClick(product.id)}
             >

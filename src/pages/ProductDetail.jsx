@@ -10,6 +10,7 @@ import { PiTrademarkDuotone } from "react-icons/pi";
 import { addCartGuest, addCartUser, getCartGuest, getCartUser } from '../store/Reducers/cartReducer';
 import { toast } from 'react-toastify';
 import { getFeedbackByProduct, getReplyFeedback, setReply } from '../store/Reducers/feedback/feedbackReducer';
+import { FaRegHeart } from "react-icons/fa";
 const ProductDetail = () => {
     const token = localStorage.getItem('token');
 
@@ -140,6 +141,11 @@ const ProductDetail = () => {
         ));
     };    
 
+    const handleFavorite = (productId) => {
+
+    };
+    
+
     const tabs = [
         { key: "benefits", label: "Công dụng" },
         { key: "ingredients", label: "Thành phần" },
@@ -160,7 +166,7 @@ const ProductDetail = () => {
             <div className="px-4 md:px-8 lg:px-48 container mx-auto my-10">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-6 pb-2">
                     {/* Slider */}
-                    <div className='md:col-span-2 flex items-start justify-center'>
+                    <div className='md:col-span-2 flex-col items-start justify-center'>
                         <div className='w-4/5'>
                         <Slider
                             className="slider-for"
@@ -199,6 +205,7 @@ const ProductDetail = () => {
                             </Slider>
                             )}
                         </div>
+
                     </div>
                     {/* Product details */}
                     <div className='md:col-span-2'>
@@ -296,8 +303,8 @@ const ProductDetail = () => {
                                 </>
                             )}
                         </div>
-
                     </div>
+                    
                     <div className='md:col-span-1'>
 
                     </div>

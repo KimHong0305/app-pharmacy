@@ -7,14 +7,19 @@ const VoucherDialog = ({ isOpen, onClose, vouchers, onSelectVoucher, totalPrice 
     if (!isOpen) return null;
 
     const handleSelectVoucher = (voucher) => {
-        if (totalPrice >= voucher.orderRequire) {
+        const now = new Date();
+        const [day, month, year] = voucher.expireDate.split('/');
+        const expireDate = new Date(`${year}-${month}-${day}`);
+        const isValidDate = expireDate > now;
+    
+        if (totalPrice >= voucher.orderRequire && isValidDate) {
             setSelectedVoucher(voucher);
         }
-    };
+    };    
 
     const handleApply = () => {
         if (selectedVoucher) {
-            onSelectVoucher(selectedVoucher); // Trả về toàn bộ object voucher
+            onSelectVoucher(selectedVoucher);
             onClose();
         }
     };
@@ -32,12 +37,15 @@ const VoucherDialog = ({ isOpen, onClose, vouchers, onSelectVoucher, totalPrice 
                 <div className="flex-1 space-y-4 overflow-y-auto">
                     {vouchers.length > 0 ? (
                         vouchers.map((voucher) => {
-                            const isDisabled = totalPrice < voucher.orderRequire;
+                            const [day, month, year] = voucher.expireDate.split('/');
+                            const expireDate = new Date(`${year}-${month}-${day}`);
+                            const isDisabled = totalPrice < voucher.orderRequire || expireDate <= new Date();
+                                                
                             return (
                                 <label 
                                     key={voucher.id} 
                                     className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer ${
-                                        isDisabled ? "opacity-70 cursor-not-allowed": ""
+                                        isDisabled ? "opacity-70 cursor-not-allowed" : ""
                                     }`}
                                 >
                                     <div className="flex items-center">
@@ -48,7 +56,7 @@ const VoucherDialog = ({ isOpen, onClose, vouchers, onSelectVoucher, totalPrice 
                                             <p className="text-xs text-red-500">HSD: {voucher.expireDate}</p>
                                         </div>
                                     </div>
-
+                        
                                     <input 
                                         type="radio" 
                                         className="ml-2 w-6 h-6 accent-blue-500 rounded-full" 
@@ -58,7 +66,7 @@ const VoucherDialog = ({ isOpen, onClose, vouchers, onSelectVoucher, totalPrice 
                                     />
                                 </label>
                             );
-                        })
+                        })                        
                     ) : (
                         <p className="text-center text-gray-500">Không có voucher nào</p>
                     )}

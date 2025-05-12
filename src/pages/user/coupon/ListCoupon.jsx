@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
 import UserNavBar from "../../../components/UserNavBar";
@@ -13,11 +13,13 @@ const ListCoupon = () => {
     const { bio } = useSelector((state) => state.auth);   
     const { coupons } = useSelector((state) => state.coupon);   
 
-    const fetchData = async () => {
-        await dispatch(getUserInfo());
-        await dispatch(getCouponUser());
-    };
-    fetchData();
+    useEffect(() => {
+        const fetchData = async () => {
+            await dispatch(getUserInfo());
+            await dispatch(getCouponUser());
+        };
+        fetchData();
+    }, [dispatch]);
 
     const handleProfile = () => navigate('/profile');
     const handleAddress = () => navigate('/address');

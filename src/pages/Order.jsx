@@ -105,6 +105,7 @@ const Order = () => {
         try{
             const result = await dispatch(createOrderHomeGuest(order)).unwrap();
             toast.success("Đặt hàng thành công!");
+            localStorage.setItem("lastOrderId", result.result.id);
             if (result.result.paymentMethod === "VNPAY") {
                 try {
                     const data = await dispatch(createPaymentVNPay(result.result.id)).unwrap();

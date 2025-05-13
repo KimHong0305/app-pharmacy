@@ -104,6 +104,7 @@ const OrderCart = () => {
         // console.log('don hang', order)
         try{
             const result = await dispatch(createOrderCartGuest(order)).unwrap();
+            localStorage.setItem("lastOrderId", result.result.id);
             toast.success("Đặt hàng thành công!");
             await dispatch(getCartGuest());
             if (result.result.paymentMethod === "VNPAY") {

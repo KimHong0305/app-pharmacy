@@ -4,6 +4,8 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { FaCircleCheck } from "react-icons/fa6";
 import { IoIosCloseCircle } from "react-icons/io";
+import { updateCallBack } from "../store/Reducers/payment/callbackReducer";
+import { useDispatch } from "react-redux";
 
 const PaymentCallback = () => {
     const [searchParams] = useSearchParams();
@@ -13,31 +15,64 @@ const PaymentCallback = () => {
         responseCode: "",
         transactionNo: "",
     });
+    const dispatch = useDispatch();
 
     const [tokenExists, setTokenExists] = useState(false);
 
     useEffect(() => {
-        // Lấy thông tin từ URL
-        const amount = searchParams.get("vnp_Amount");
-        const orderInfo = decodeURIComponent(
-            searchParams.get("vnp_OrderInfo") || ""
-        );
-        const responseCode = searchParams.get("vnp_ResponseCode");
-        const transactionNo = searchParams.get("vnp_TransactionNo");
-
+        const allParams = Object.fromEntries([...searchParams.entries()]);
+    
+        let paymentMethod = "";
+        let isSuccess = false;
+        let amount = 0;
+        let orderInfo = localStorage.getItem("lastOrderId");
+        let transactionNo = "";
+        let code = null;
+    
+        // === ZALOPAY ===
+        if (allParams.hasOwnProperty("appid")) {
+            paymentMethod = "ZaloPay";
+            amount = Number(allParams.amount || 0);
+            transactionNo = allParams.apptransid || "";
+            isSuccess = allParams.status === "1";
+            code = allParams.status;
+        }
+    
+        // === VNPAY ===
+        else if (allParams.hasOwnProperty("vnp_Amount")) {
+            paymentMethod = "VNPay";
+            amount = Number(allParams.vnp_Amount || 0) / 100;
+            transactionNo = allParams.vnp_TransactionNo || "";
+            isSuccess = allParams.vnp_ResponseCode === "00";
+            code = isSuccess ? "0" : allParams.vnp_ResponseCode;
+        }
+    
+        // === MOMO ===
+        else if (allParams.hasOwnProperty("partnerCode")) {
+            paymentMethod = "MoMo";
+            amount = Number(allParams.amount || 0);
+            transactionNo = allParams.transId || "";
+            isSuccess = allParams.errorCode === "0";
+            code = allParams.errorCode;
+        }
+    
         setPaymentInfo({
-            amount: amount ? Number(amount) / 100 : 0,
+            amount,
             orderInfo,
-            responseCode,
+            responseCode: isSuccess ? "0" : "1",
             transactionNo,
         });
-
-        // Kiểm tra token
-        const token = localStorage.getItem("token"); // Hoặc sessionStorage nếu cần
+    
+        const token = localStorage.getItem("token");
         setTokenExists(!!token);
-    }, [searchParams]);
+        if (orderInfo && code !== null) {
+            dispatch(updateCallBack({ orderId: orderInfo, code }));
+            // console.log('don hang', orderInfo);
+            // console.log('ma', code);
+        }        
+    }, [searchParams, dispatch]);    
 
-    const isSuccess = paymentInfo.responseCode === "00";
+    const isSuccess = paymentInfo.responseCode === "0";
 
     return (
         <div>
@@ -64,12 +99,6 @@ const PaymentCallback = () => {
                         </h1>
                         {isSuccess ? (
                             <div className="text-center">
-                                <p className="mb-3 font-medium">
-                                    <strong>Mã giao dịch:</strong> {paymentInfo.transactionNo}
-                                </p>
-                                <p className="mb-3 font-medium">
-                                    <strong>Số tiền:</strong> {paymentInfo.amount.toLocaleString()} VNĐ
-                                </p>
                                 <p className="mb-3">{paymentInfo.orderInfo}</p>
                                 {!tokenExists && (
                                     <div className="flex flex-col bg-amber-100 my-5 rounded-lg font-semibold py-2">

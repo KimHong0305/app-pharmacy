@@ -14,7 +14,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(getHome());
-  }, [dispatch]);
+  }, [dispatch]);  
 
   return (
     <div>

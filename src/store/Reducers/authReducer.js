@@ -99,7 +99,7 @@ export const loginGoogle = createAsyncThunk(
   'auth/loginGoogle',
   async (authCode, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/auth/outbound/authentication?code=${authCode}`);
+      const response = await api.post(`/auth/outbound/authentication/web?code=${authCode}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

@@ -20,7 +20,7 @@ import unitReducer from "./Reducers/unitReducer";
 import userReducer from "./Reducers/userReducer";
 import homeReducer from "./Reducers/homeReducer";
 import deliveryReducer from "./Reducers/deliveryReducer";
-
+import callbackReducer from "./Reducers/payment/callbackReducer";
 const rootReducer = {
     auth: authReducer,
     category: categoryReducer,
@@ -44,5 +44,6 @@ const rootReducer = {
     coupon: couponReducer,
     home: homeReducer,
     delivery: deliveryReducer,
+    callback: callbackReducer,
 }
 export default rootReducer;

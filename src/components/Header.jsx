@@ -12,6 +12,7 @@ import { getCategoryNull } from '../store/Reducers/categoryReducer';
 import { useNavigate } from 'react-router-dom';
 import { clearAddress } from '../store/Reducers/addressReducer';
 import { getAllProducts } from '../store/Reducers/productReducer';
+import { toast } from 'react-toastify';
 
 const Header = () => {
   
@@ -28,12 +29,45 @@ const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const { categories } = useSelector((state) => state.category);
-  const { bio } = useSelector((state) => state.auth);   
+  const { bio, token } = useSelector((state) => state.auth);   
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [hasNewNotifications, setHasNewNotifications] = useState(false);
 
   useEffect(() => {
     dispatch(getCategoryNull());
     dispatch(getAllProducts(0, 1000));
   },[dispatch])
+
+  useEffect(() => {
+    const url = 'ws://localhost:8080/api/v1/pharmacy/ws-notifications';
+    const socket = new WebSocket(url);
+  
+    console.log('🟡 Đang cố gắng kết nối tới:', url);
+  
+    socket.onopen = () => {
+      console.log('✅ WebSocket connected');
+    };
+  
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setNotifications((prev) => [...prev, data]);
+      console.log('📨 Received:', data);
+      setHasNewNotifications(true);
+    };    
+  
+    socket.onerror = (error) => {
+      console.error('❌ WebSocket error:', error);
+    };
+  
+    socket.onclose = (event) => {
+      console.log('🔌 WebSocket closed', event);
+    };
+  
+    return () => {
+      socket.close();
+    };
+  }, []);
 
   const handleLogout = () => {
     setShowMenu(false)
@@ -73,6 +107,15 @@ const Header = () => {
   const handleSearchFocus = () => {
     setShowSearchResults(true);
   };
+
+  const handleToggleNotifications = () => {
+    setShowNotifications((prev) => {
+      if (!prev) {
+        setHasNewNotifications(false);
+      }
+      return !prev;
+    });
+  };  
 
   return (
     <header className="relative z-50">
@@ -118,22 +161,24 @@ const Header = () => {
                       Tra cứu đơn hàng
                     </button>
                   </div>
-                  <ul className="divide-y divide-gray-200">
-                    {filteredProducts.map((product) => (
-                      <li key={product.id} className="flex items-center gap-4 p-3 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handleProductClick(product.id)}>
-                        {/* Hình ảnh sản phẩm */}
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-10 h-10 object-cover rounded-md border border-gray-300"
-                        />
-                        {/* Thông tin sản phẩm */}
-                        <div className="flex-1">
-                          <p className="font-medium text-sm text-gray-800">{product.name}</p>
-                        </div>
-                      </li>
-                    ))}
+                  <ul className="max-h-60 overflow-y-auto divide-y divide-gray-200">
+                    {notifications.length === 0 ? (
+                      <li className="p-3 text-gray-500 text-sm">Không có thông báo mới</li>
+                    ) : (
+                      notifications.map((noti, index) => (
+                        <li key={index} className="flex gap-3 p-3 hover:bg-gray-100">
+                          <img
+                            src={noti.image}
+                            alt="notification"
+                            className="w-12 h-12 rounded-md object-cover"
+                          />
+                          <div className="flex-1">
+                            <p className="font-semibold text-sm text-gray-900">{noti.title}</p>
+                            <p className="text-xs text-gray-600">{noti.content}</p>
+                          </div>
+                        </li>
+                      ))
+                    )}
                   </ul>
                 </div>
               )}
@@ -141,9 +186,46 @@ const Header = () => {
 
             
             <div className='flex items-center justify-center' >
-              <button className='ml-10 '>
-                <FaBell className='h-6 w-6'/>
-              </button> 
+              <div className="relative ml-10 mt-1">
+                <button onClick={handleToggleNotifications}>
+                  <FaBell className="h-6 w-6" />
+                </button>
+                {notifications.length > 0 && hasNewNotifications && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                    {notifications.length}
+                  </span>
+                )}
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-300 rounded-md shadow-lg z-50">
+                    <div className="p-3 font-semibold border-b">Thông báo</div>
+                    <ul className="max-h-60 overflow-y-auto divide-y divide-gray-200">
+                      {notifications.length === 0 ? (
+                        <li className="p-3 text-gray-500 text-sm">Không có thông báo mới</li>
+                      ) : (
+                        <ul>
+                        {Array.isArray(notifications) && notifications.length > 0 ? (
+                          notifications.map((noti, index) => (
+                            <li key={index} className="flex items-start gap-4 p-4 hover:bg-gray-50 rounded-md transition duration-200 ease-in-out">
+                              <img
+                                src={noti.image}
+                                alt={noti.title}
+                                className="w-16 h-16 rounded-full object-cover shadow-md"
+                              />
+                              <div className="flex-1">
+                                <p className="text-lg font-semibold text-gray-900">{noti.title}</p>
+                                <p className="text-sm text-gray-600">{noti.content}</p>
+                              </div>
+                            </li>
+                          ))
+                        ) : (
+                          <li className="p-3 text-gray-500 text-sm">Không có thông báo mới</li>
+                        )}
+                      </ul>
+                      )}
+                    </ul>
+                  </div>
+                )}
+              </div>
 
               <div className="relative ml-5">
                 <Link to="/cart">

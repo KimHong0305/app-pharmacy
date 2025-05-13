@@ -86,6 +86,7 @@ const OrderCartUser = () => {
         try{
             const result = await dispatch(createOrderCartUser(order)).unwrap();
             toast.success("Đặt hàng thành công!");
+            localStorage.setItem("lastOrderId", result.result.id);
             await dispatch(getCartUser());
             if (result.result.paymentMethod === "VNPAY") {
                 try {
@@ -146,7 +147,7 @@ const OrderCartUser = () => {
         );
     }
 
-    console.log('dia chi',defaultAddress)
+    // console.log('dia chi',defaultAddress)
     return (
         <div>
             <Header />
@@ -219,13 +220,12 @@ const OrderCartUser = () => {
                         <ShippingMethodSelector
                             shippingMethod={shippingMethod}
                             setShippingMethod={setShippingMethod}
-                            districtId={defaultAddress.district}
-                            wardCode={defaultAddress.village}
+                            districtId={defaultAddress?.district || null}
+                            wardCode={defaultAddress?.village || null}
                             total={cartItems.reduce((total, item) => total + item.amount, 0)}
                             setShippingFee={setShippingFee}
                             setService={setService}
                         />
-
 
                         {/* Phương thức thanh toán */}
                         <PaymentMethodSelector

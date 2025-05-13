@@ -92,6 +92,7 @@ const OrderUser = () => {
         try{
             const result = await dispatch(createOrderHomeUser(order)).unwrap();
             toast.success("Đặt hàng thành công!");
+            localStorage.setItem("lastOrderId", result.result.id);
             if (result.result.paymentMethod === "VNPAY") {
                 try {
                     const data = await dispatch(createPaymentVNPay(result.result.id)).unwrap();
@@ -224,8 +225,8 @@ const OrderUser = () => {
                         <ShippingMethodSelector
                             shippingMethod={shippingMethod}
                             setShippingMethod={setShippingMethod}
-                            districtId={defaultAddress.district}
-                            wardCode={defaultAddress.village}
+                            districtId={defaultAddress?.district || null}
+                            wardCode={defaultAddress?.village || null}
                             total={selectedProduct.price.price}
                             setShippingFee={setShippingFee}
                             setService={setService}

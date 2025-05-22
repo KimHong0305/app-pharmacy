@@ -20,7 +20,7 @@ const AddPrice = () => {
     const { units } = useSelector((state) => state.unit);
 
     const page = 0;
-    const size = 20;
+    const size = 1000;
     useEffect(() => {
         dispatch(getAllProducts({ page, size }));
         dispatch(getUnits({ page, size }));

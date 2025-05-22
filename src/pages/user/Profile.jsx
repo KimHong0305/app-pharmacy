@@ -18,6 +18,8 @@ const Profile = () => {
     const [dob, setDob] = useState('');
     const [gender, setGender] = useState('');
     const [phone, setPhone] = useState('');
+    const [lastname, setLastname] = useState('');
+    const [firstname, setFirstname] = useState('');
 
     useEffect(() => {
         dispatch(getUserInfo());
@@ -27,8 +29,10 @@ const Profile = () => {
         if (bio) {
             setDob(bio.dob ? formatDateForInput(bio.dob) : '');
             setGender(bio.sex || '');
-            setPhone(bio.phone_number || '');
+            setPhone(bio.phoneNumber || '');
             setImageUpload(bio.image || '');
+            setFirstname(bio.firstname || '');
+            setLastname(bio.lastname || '');
         }
     }, [bio]);
 
@@ -47,18 +51,41 @@ const Profile = () => {
         }
     };
 
+    const isChanged = () => {
+        const originalDob = bio.dob ? formatDateForInput(bio.dob) : '';
+        return (
+            firstname !== bio.firstname ||
+            lastname !== bio.lastname ||
+            phone !== bio.phoneNumber ||
+            gender !== bio.sex ||
+            dob !== originalDob ||
+            image !== null
+        );
+    };
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!isChanged()) {
+            toast.info("Không có thay đổi nào để cập nhật.");
+            return;
+        }
+
         const update = {
             id: bio.id,
             dob: dob ? formatDateForInput(dob) : '',
             sex: gender,
-            phone_number: phone,
+            phoneNumber: phone,
+            lastname: lastname,
+            firstname: firstname,
         };
         
         const formData = new FormData();
         formData.append("updateUser", new Blob([JSON.stringify(update)], { type: "application/json" }));
         if (image) formData.append('file', image);
+
+        // console.log(update)
 
         try {
             await dispatch(updateBio(formData)).unwrap();
@@ -105,6 +132,27 @@ const Profile = () => {
                                                 </div>
                                                 <p className="mt-2 text-sm text-neutral-800">Dung lượng file tối đa 5 MB.</p>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4 flex justify-center gap-4">
+                                        <div className='w-1/2'>
+                                            <label className="block font-medium text-gray-700 mb-2">Họ</label>
+                                            <input
+                                                type="text"
+                                                value={lastname}
+                                                onChange={(e) => setLastname(e.target.value)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                            />
+                                        </div>
+                                        <div className='w-1/2'>
+                                            <label className="block font-medium text-gray-700 mb-2">Tên</label>
+                                            <input
+                                                type="text"
+                                                value={firstname}
+                                                onChange={(e) => setFirstname(e.target.value)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                            />
                                         </div>
                                     </div>
 

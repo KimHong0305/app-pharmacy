@@ -75,7 +75,7 @@ const EditCategory = () => {
             <div className="p-4 rounded bg-white shadow-lg">
                 <div className="min-h-96">
                     <span onClick={handleGoBack} className="inline-block">
-                        <IoReturnDownBackSharp className="inline-block"/>
+                        <IoReturnDownBackSharp className="cursor-pointer inline-block"/>
                         <button className="inline-block ml-5">Quay lại</button>
                     </span>
                     <div className='py-5'>
@@ -118,30 +118,30 @@ const EditCategory = () => {
                                 <div>
                                     <label className="block font-medium text-gray-700">Hình ảnh</label>
                                     <div className="mt-2">
-                                    <div className="file-input-container">
-                                    <input
-                                        type="file"
-                                        id="image"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        className="hidden"
-                                    />
-                                    <label
-                                        htmlFor="image"
-                                        className="flex items-center justify-center w-[300px] h-[150px] border-dashed border-2 border-gray-300 cursor-pointer"
-                                    >
-                                        {imagePreview ? (
-                                        <img
-                                            src={imagePreview}
-                                            alt="image Preview"
-                                            className="object-cover w-[300px] h-[140px]"
-                                        />
-                                        ) : (
-                                        <IoIosAddCircleOutline className="text-gray-300 text-4xl" />
-                                        )}
-                                    </label>
-                                </div>
-                                </div>
+                                        <div className="file-input-container">
+                                            <input
+                                                type="file"
+                                                id="image"
+                                                accept="image/*"
+                                                onChange={handleImageChange}
+                                                className="hidden"
+                                            />
+                                            <label
+                                                htmlFor="image"
+                                                className="flex items-center justify-center w-[300px] h-[150px] border-dashed border-2 border-gray-300 cursor-pointer"
+                                            >
+                                                {imagePreview ? (
+                                                <img
+                                                    src={imagePreview}
+                                                    alt="image Preview"
+                                                    className="object-cover w-[300px] h-[140px]"
+                                                />
+                                                ) : (
+                                                <IoIosAddCircleOutline className="text-gray-300 text-4xl" />
+                                                )}
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                                 
                                 <button

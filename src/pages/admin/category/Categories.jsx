@@ -33,11 +33,21 @@ const Categories = () => {
 
     const { allCategory } = useSelector((state) => state.category);
 
-    const totalItems = allCategory.length;
-    const totalPages = Math.ceil(totalItems / size);
-
     const [categoryToDelete, setCategoryToDelete] = useState(null);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+
+    // Lọc theo tên hoặc tên danh mục cha
+    const filteredCategories = allCategory.filter((category) => {
+        const nameMatch = category.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const parentMatch = category.parent?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+        return nameMatch || parentMatch;
+    });
+
+    const totalItems = filteredCategories.length;
+    const totalPages = Math.ceil(totalItems / size);
+    const paginatedCategories = filteredCategories.slice(currentPage * size, (currentPage + 1) * size);
+
 
     useEffect(() => {
         dispatch(getAllCategory({ page: currentPage, size }));
@@ -86,14 +96,12 @@ const Categories = () => {
         setIsDeleteDialogOpen(false);
     };
 
-    const paginatedCategories = allCategory.slice(currentPage * size, (currentPage + 1) * size);
-
     return (
         <div className="px-2 md:px-4">
             <div className="flex flex-col p-4 rounded bg-white shadow-lg">
                 <div className="text-black">
-                    <h2 className="text-2xl font-bold mb-2">Quản lý giá</h2>
-                    <p>Đây là danh sách tất cả giá sản phẩm!</p>
+                    <h2 className="text-2xl font-bold mb-2">Quản lý danh mục</h2>
+                    <p>Đây là danh sách tất cả danh mục sản phẩm!</p>
                     <div className="flex flex-col md:flex-row items-center w-full h-[85px] justify-between">
                         <div className="flex flex-col md:flex-row items-center w-[566px]">
                             <label htmlFor="itemsPerPage" className="mb-2 md:mb-0 md:ml-2">
@@ -120,6 +128,10 @@ const Categories = () => {
                                     id="search"
                                     className="border border-gray-400 hover:border-blue-500 rounded-md pl-10 pr-4 py-1 h-10"
                                     placeholder="Search"
+                                    onChange={(e) => {
+                                    setSearchTerm(e.target.value);
+                                    setCurrentPage(0);
+                                }}
                                 />
                             </div>
                         </div>
@@ -150,7 +162,7 @@ const Categories = () => {
                             {paginatedCategories.map((category) => (
                                 <TableRow key={category.id}>
                                     <TableCell>
-                                        <img className="size-[50px]" src={category.image} />
+                                        <img className="size-[50px]" src={category.image} alt={category.name}/>
                                     </TableCell>
                                     <TableCell>{category.name}</TableCell>
                                     <TableCell>{category.parent ? category.parent.name : 'Không có'}</TableCell>

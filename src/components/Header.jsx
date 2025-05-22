@@ -161,24 +161,22 @@ const Header = () => {
                       Tra cứu đơn hàng
                     </button>
                   </div>
-                  <ul className="max-h-60 overflow-y-auto divide-y divide-gray-200">
-                    {notifications.length === 0 ? (
-                      <li className="p-3 text-gray-500 text-sm">Không có thông báo mới</li>
-                    ) : (
-                      notifications.map((noti, index) => (
-                        <li key={index} className="flex gap-3 p-3 hover:bg-gray-100">
-                          <img
-                            src={noti.image}
-                            alt="notification"
-                            className="w-12 h-12 rounded-md object-cover"
-                          />
-                          <div className="flex-1">
-                            <p className="font-semibold text-sm text-gray-900">{noti.title}</p>
-                            <p className="text-xs text-gray-600">{noti.content}</p>
-                          </div>
-                        </li>
-                      ))
-                    )}
+                  <ul className="divide-y divide-gray-200">
+                    {filteredProducts.map((product) => (
+                      <li key={product.id} className="flex items-center gap-4 p-3 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleProductClick(product.id)}>
+                        {/* Hình ảnh sản phẩm */}
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-10 h-10 object-cover rounded-md border border-gray-300"
+                        />
+                        {/* Thông tin sản phẩm */}
+                        <div className="flex-1">
+                          <p className="font-medium text-sm text-gray-800">{product.name}</p>
+                        </div>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               )}
@@ -260,7 +258,7 @@ const Header = () => {
                     <a href="/address" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-1">Địa chỉ nhận hàng</a>
                     <a href="/coupon" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-2">Mã giảm giá</a>
                     <a href="/history" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-3">Lịch sử đơn hàng</a>
-                    <a onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200 flex items-center justify-between" 
+                    <a onClick={handleLogout} className="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200 flex items-center justify-between" 
                     role="menuitem" tabIndex="-1" id="menu-item-4">Đăng xuất <MdLogout className='text-rose-700'/></a>
                   </div>
                 </div>)}

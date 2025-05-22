@@ -13,7 +13,10 @@ const Register = () => {
     confirmPassword: '',
     email: '',
     dob: '',
-  });
+    firstname: '',
+    lastname: '',
+    phoneNumber: '',
+  });  
 
   const [showVerify, setShowVerify] = useState(false);
 
@@ -23,7 +26,10 @@ const Register = () => {
     confirmPassword: false,
     email: false,
     dob: false,
-  });
+    firstname: false,
+    lastname: false,
+    phoneNumber: false,
+  });  
 
   const { successRegMessage, errorRegMessage } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -51,7 +57,10 @@ const Register = () => {
       confirmPassword: state.confirmPassword.trim() === '',
       email: state.email.trim() === '',
       dob: state.dob.trim() === '',
-    };
+      firstname: state.firstname.trim() === '',
+      lastname: state.lastname.trim() === '',
+      phoneNumber: state.phoneNumber.trim() === '',
+    };    
     setErrors(newErrors);
     if (Object.values(newErrors).some((error) => error)) {
       if (newErrors.dob) {
@@ -92,6 +101,40 @@ const Register = () => {
             <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
               <p className="mt-5 text-2xl font-semibold">ĐĂNG KÝ TÀI KHOẢN</p>
               <form onSubmit={handleSubmit} className="w-full px-8 py-6">
+                <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="lastname" className="block text-gray-700 font-bold mb-2">
+                      Họ
+                    </label>
+                    <input
+                      type="text"
+                      id="lastname"
+                      name="lastname"
+                      value={state.lastname}
+                      onChange={inputHandle}
+                      className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.lastname ? 'border-red-500' : ''}`}
+                    />
+                    {errors.lastname && (
+                      <p className="mt-2 text-pink-600 text-sm">Vui lòng nhập họ.</p>
+                    )}
+                  </div>
+                  <div>
+                    <label htmlFor="firstname" className="block text-gray-700 font-bold mb-2">
+                      Tên
+                    </label>
+                    <input
+                      type="text"
+                      id="firstname"
+                      name="firstname"
+                      value={state.firstname}
+                      onChange={inputHandle}
+                      className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.firstname ? 'border-red-500' : ''}`}
+                    />
+                    {errors.firstname && (
+                      <p className="mt-2 text-pink-600 text-sm">Vui lòng nhập tên.</p>
+                    )}
+                  </div>
+                </div>
                 <div className="mb-4">
                   <label htmlFor="username" className="block text-gray-700 font-bold mb-2">
                     Tên đăng nhập
@@ -171,6 +214,23 @@ const Register = () => {
                   />
                   {errors.dob && (
                     <p className="mt-2 text-pink-600 text-sm">Vui lòng nhập ngày sinh.</p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="phoneNumber" className="block text-gray-700 font-bold mb-2">
+                    Số điện thoại
+                  </label>
+                  <input
+                    type="tel"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    value={state.phoneNumber}
+                    onChange={inputHandle}
+                    placeholder="Ví dụ: 0901234567"
+                    className={`peer shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.phoneNumber ? 'border-red-500' : ''}`}
+                  />
+                  {errors.phoneNumber && (
+                    <p className="mt-2 text-pink-600 text-sm">Vui lòng nhập số điện thoại.</p>
                   )}
                 </div>
                 <div className="flex items-center justify-center">

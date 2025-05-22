@@ -81,7 +81,7 @@ const SearchProduct = () => {
   return (
     <div>
       <Header />
-      <div className="px-4 md:px-8 lg:px-48 container mx-auto my-5">
+      <div className="container mx-auto px-4 md:px-8 lg:px-16 max-w-screen-xl my-10">
         <p className="text-2xl font-semibold">Kết quả tìm kiếm</p>
         <p className="text-lg text-gray-600">Kết quả cho "{query}"</p>
         <div className="container relative grid grid-cols-1 items-start gap-3 md:grid-cols-[193px,1fr]">
@@ -162,32 +162,33 @@ const SearchProduct = () => {
             </div>
 
             {/* Hiển thị sản phẩm */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {filteredProducts.length > 0 ? (
-                filteredProducts.map((product) => (
+                filteredProducts.map((item) => (
                   <div
-                    key={product.id}
-                    className="flex flex-col items-center justify-center border border-gray-300 w-[200px] h-[280px] hover:shadow-2xl bg-[#ffffff] rounded-lg"
-                    onClick={() => handleProductClick(product.id)}
+                    key={item.id}
+                    className="flex flex-col items-center justify-between border border-gray-200 hover:shadow-xl bg-white rounded-lg p-3 cursor-pointer transition-all duration-300"
+                    onClick={() => handleProductClick(item.id)}
                   >
                     <img
-                      className="h-[130px] object-cover"
-                      src={product.image}
-                      alt={product.name}
+                      className="w-full aspect-[4/3] object-cover rounded-md"
+                      src={item.image}
+                      alt={item.name}
                     />
-                    <span className={`mt-1 font-sans font-medium px-2 w-full overflow-hidden text-ellipsis line-clamp-2 text-center ${product.name.split('\n').length > 1 ? '' : 'h-12'}`}>
-                      {product.name}
+                    <span className="mt-2 font-medium text-center line-clamp-2 text-sm text-gray-800">
+                      {item.name}
                     </span>
-                    <span className="mt-1 font-medium font-semibold text-[#27a4f2] text-lg">
-                        {product.prices?.[0]?.price?.toLocaleString('vi-VN')} đ / {product.prices?.[0]?.unit?.name}
+                    <span className="mt-1 font-semibold text-sky-600 text-base">
+                      {item.prices?.[0]?.price?.toLocaleString("vi-VN")} đ /{" "}
+                      {item.prices?.[0]?.unit?.name}
                     </span>
-                    <button className="mt-1 h-8 px-3 rounded-lg bg-sky-500 hover:bg-sky-700 text-white">
+                    <button className="mt-2 h-8 w-full rounded-md bg-sky-500 hover:bg-sky-700 text-white text-sm font-semibold">
                       Chọn sản phẩm
                     </button>
                   </div>
                 ))
               ) : (
-                <p className="text-center col-span-4">Không có sản phẩm nào phù hợp với tìm kiếm của bạn!</p>
+                <p className="text-center col-span-full">Không có sản phẩm nào!</p>
               )}
             </div>
           </div>

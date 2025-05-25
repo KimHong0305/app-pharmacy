@@ -226,7 +226,7 @@ const Register = () => {
                     name="phoneNumber"
                     value={state.phoneNumber}
                     onChange={inputHandle}
-                    placeholder="Ví dụ: 0901234567"
+                    placeholder="Ex: 0987654321"
                     className={`peer shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.phoneNumber ? 'border-red-500' : ''}`}
                   />
                   {errors.phoneNumber && (

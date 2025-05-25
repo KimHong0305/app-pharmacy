@@ -21,9 +21,9 @@ const ListCoupon = () => {
         fetchData();
     }, [dispatch]);
 
-    const handleProfile = () => navigate('/profile');
-    const handleAddress = () => navigate('/address');
-    const handleHistory = () => navigate('/history');
+    const handleProfile = () => navigate('/user/profile');
+    const handleAddress = () => navigate('/user/addresses');
+    const handleHistory = () => navigate('/user/orders/history');
 
     if (!bio) {
         return <div>No user information available.</div>;

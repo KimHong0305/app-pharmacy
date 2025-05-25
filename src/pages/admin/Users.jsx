@@ -12,10 +12,12 @@ import {
 import { FaSearch } from "react-icons/fa";
 import { FiUserCheck, FiUserX } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Users = () => {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { allUsers, loading, totalPages, currentPage } = useSelector((state) => state.user);
 
   const [UserToBan, setUserToBan] = useState(null);
@@ -142,6 +144,7 @@ const Users = () => {
               <TableHead>Email</TableHead>
               <TableHead>Date of birth</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>Phone</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Action</TableHead>
             </TableRow>
@@ -152,12 +155,15 @@ const Users = () => {
                   <TableCell colSpan="4">Loading...</TableCell>
               </TableRow>
             ) : (
-              allUsers.map((user) => (
+              allUsers
+              .filter(user => user.role.name.toLowerCase() !== 'admin')
+              .map((user) => (
                   <TableRow key={user.id}>
                       <TableCell>{user.username}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.dob}</TableCell>
-                      <TableCell>{user.roles.map((role) => role.name).join(", ")}</TableCell>
+                      <TableCell>{user.role.name}</TableCell>
+                      <TableCell>{user.phoneNumber}</TableCell>
                       <TableCell className={user.status ? "font-semibold text-green-500" : "font-semibold text-red-500"}>
                         {user.status ? "Active" : "Inactive"}
                       </TableCell>

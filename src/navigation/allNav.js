@@ -9,6 +9,7 @@ import { PiTrademarkRegisteredLight } from "react-icons/pi";
 import { MdOutlineFeedback } from "react-icons/md";
 import { CiDeliveryTruck } from "react-icons/ci";
 import { RiCoupon2Line } from "react-icons/ri";
+import { GrUserManager } from "react-icons/gr";
 
 export const allNav = [
     {
@@ -20,114 +21,121 @@ export const allNav = [
     },
     {
         id : 2,
-        title : 'Users',
+        title : 'Accounts',
         icon : <LuUsers2 />,
         role : 'ROLE_ADMIN',
-        path: '/admin/users'
+        path: '/admin/users',
     },
     {
         id : 3,
+        title : 'Staff',
+        icon : <GrUserManager />,
+        role : 'ROLE_ADMIN',
+        path: '/admin/employees',
+    },
+    {
+        id : 4,
         title : 'Categories',
         icon : <MdOutlineCategory />,
         role : 'ROLE_ADMIN',
         path: '/admin/categories'
     },
     {
-        id : 4,
+        id : 5,
         title : 'Products',
         icon : <GiMedicines />,
         role : 'ROLE_ADMIN',
         path: '/admin/products'
     },
     {
-        id : 5,
+        id : 6,
         title : 'Prices',
         icon : <IoPricetagOutline />,
         role : 'ROLE_ADMIN',
         path: '/admin/prices'
     },
     {
-        id : 6,
+        id : 7,
         title : 'Units',
         icon : <CiBoxes />,
         role : 'ROLE_ADMIN',
         path: '/admin/units'
     },
     {
-        id : 7,
+        id : 8,
         title : 'Orders',
         icon : <BsCartCheck />,
         role : 'ROLE_ADMIN',
         path: '/admin/orders'
     },
     {
-        id : 8,
+        id : 9,
         title : 'Companies',
         icon : <PiTrademarkRegisteredLight />,
         role : 'ROLE_ADMIN',
         path: '/admin/companies'
     },
     {
-        id : 9,
+        id : 10,
         title : 'Dashboard',
         icon : <IoMdHome />,
         role : 'ROLE_EMPLOYEE',
         path: '/employee/dashboard'
     },
     {
-        id : 10,
+        id : 11,
         title : 'Products',
         icon : <GiMedicines />,
         role : 'ROLE_EMPLOYEE',
         path: '/admin/products'
     },
     {
-        id : 11,
+        id : 12,
         title : 'Prices',
         icon : <IoPricetagOutline />,
         role : 'ROLE_EMPLOYEE',
         path: '/admin/prices'
     },
     {
-        id : 12,
+        id : 13,
         title : 'Units',
         icon : <CiBoxes />,
         role : 'ROLE_EMPLOYEE',
         path: '/admin/units'
     },
     {
-        id : 13,
+        id : 14,
         title : 'Orders',
         icon : <BsCartCheck />,
         role : 'ROLE_EMPLOYEE',
         path: '/admin/orders'
     },
     {
-        id : 14,
+        id : 15,
         title : 'Orders COD',
         icon : <CiDeliveryTruck />,
         role : 'ROLE_EMPLOYEE',
         path: '/admin/orderCOD'
     },
     {
-        id : 15,
+        id : 16,
         title : 'Feedbacks',
         icon : <MdOutlineFeedback />,
         role : 'ROLE_EMPLOYEE',
         path: '/employee/feedback'
     },
     {
-        id : 16,
+        id : 17,
         title : 'Coupons',
         icon : <RiCoupon2Line />,
         role : 'ROLE_EMPLOYEE',
-        path: '/admin/coupon'
+        path: '/admin/coupons'
     },
     {
-        id : 16,
+        id : 18,
         title : 'Coupons',
         icon : <RiCoupon2Line />,
         role : 'ROLE_ADMIN',
-        path: '/admin/coupon'
+        path: '/admin/coupons'
     },
 ]

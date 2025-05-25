@@ -1,114 +1,71 @@
 import { lazy } from "react";
-const OrderDetail = lazy(() => import("../../pages/admin/order/OrderDetail"));
-const AddPrice = lazy(() => import("../../pages/admin/price/AddPrice"));
+
+// Dashboard
 const AdminDashboard = lazy(() => import("../../pages/admin/AdminDashboard"));
-const Categories = lazy(() => import("../../pages/admin/category/Categories"));
-const Companies = lazy(() => import("../../pages/admin/Companies"));
-const Orders = lazy(() => import("../../pages/admin/order/Orders"));
-const Prices = lazy(() => import("../../pages/admin/price/Prices"));
-const Products = lazy(() => import("../../pages/admin/product/Products"));
-const Units = lazy(() => import("../../pages/admin/Units"));
+
+// Users
 const Users = lazy(() => import("../../pages/admin/Users"));
-const EditPrice = lazy(() => import("../../pages/admin/price/EditPrice"));
+const Employees = lazy(() => import("../../pages/admin/staff/Employees"));
+const AddEmployee = lazy(() => import("../../pages/admin/staff/AddEmployee"));
+
+// Categories
+const Categories = lazy(() => import("../../pages/admin/category/Categories"));
 const AddCategory = lazy(() => import("../../pages/admin/category/AddCategory"));
 const EditCategory = lazy(() => import("../../pages/admin/category/EditCategory"));
+
+// Products
+const Products = lazy(() => import("../../pages/admin/product/Products"));
 const AddProduct = lazy(() => import("../../pages/admin/product/AddProduct"));
 const EditProduct = lazy(() => import("../../pages/admin/product/EditProduct"));
-const EditCoupon = lazy(() => import("../../pages/admin/coupon/EditCoupon"));
-const AddCoupon = lazy(() => import("../../pages/admin/coupon/AddCoupon"));
+
+// Units
+const Units = lazy(() => import("../../pages/admin/Units"));
+
+// Companies
+const Companies = lazy(() => import("../../pages/admin/Companies"));
+
+// Prices
+const Prices = lazy(() => import("../../pages/admin/price/Prices"));
+const AddPrice = lazy(() => import("../../pages/admin/price/AddPrice"));
+const EditPrice = lazy(() => import("../../pages/admin/price/EditPrice"));
+
+// Orders
+const Orders = lazy(() => import("../../pages/admin/order/Orders"));
+const OrderDetail = lazy(() => import("../../pages/admin/order/OrderDetail"));
+
+// Coupons
 const Coupon = lazy(() => import("../../pages/admin/coupon/Coupon"));
+const AddCoupon = lazy(() => import("../../pages/admin/coupon/AddCoupon"));
+const EditCoupon = lazy(() => import("../../pages/admin/coupon/EditCoupon"));
 
 export const adminRoutes = [
-    {
-        path: 'admin/dashboard',
-        element : <AdminDashboard/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/users',
-        element : <Users/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/categories',
-        element : <Categories/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/addCategory',
-        element : <AddCategory/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/editCategory',
-        element : <EditCategory/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/products',
-        element : <Products/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/addProduct',
-        element : <AddProduct/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/editProduct',
-        element : <EditProduct/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/units',
-        element : <Units/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/companies',
-        element : <Companies/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/prices',
-        element : <Prices/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/addPrice',
-        element : <AddPrice/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/editPrice',
-        element : <EditPrice/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/orders',
-        element : <Orders/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/orderDetail',
-        element : <OrderDetail/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/coupon',
-        element : <Coupon/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/addCoupon',
-        element : <AddCoupon/>,
-        role : 'ROLE_ADMIN'
-    },
-    {
-        path: 'admin/editCoupon',
-        element : <EditCoupon/>,
-        role : 'ROLE_ADMIN'
-    },
-]
+    { path: 'admin/dashboard', element: <AdminDashboard />, role: 'ROLE_ADMIN' },
+
+    { path: 'admin/users', element: <Users />, role: 'ROLE_ADMIN' },
+    { path: 'admin/employees', element: <Employees />, role: 'ROLE_ADMIN' },
+    { path: 'admin/employees/add', element: <AddEmployee />, role: 'ROLE_ADMIN' },
+
+    { path: 'admin/categories', element: <Categories />, role: 'ROLE_ADMIN' },
+    { path: 'admin/categories/add', element: <AddCategory />, role: 'ROLE_ADMIN' },
+    { path: 'admin/categories/edit/:id', element: <EditCategory />, role: 'ROLE_ADMIN' },
+
+    { path: 'admin/products', element: <Products />, role: 'ROLE_ADMIN' },
+    { path: 'admin/products/add', element: <AddProduct />, role: 'ROLE_ADMIN' },
+    { path: 'admin/products/edit/:id', element: <EditProduct />, role: 'ROLE_ADMIN' },
+
+    { path: 'admin/units', element: <Units />, role: 'ROLE_ADMIN' },
+    { path: 'admin/companies', element: <Companies />, role: 'ROLE_ADMIN' },
+
+    { path: 'admin/prices', element: <Prices />, role: 'ROLE_ADMIN' },
+    { path: 'admin/prices/add', element: <AddPrice />, role: 'ROLE_ADMIN' },
+    { path: 'admin/prices/edit/:id', element: <EditPrice />, role: 'ROLE_ADMIN' },
+
+    { path: 'admin/orders', element: <Orders />, role: 'ROLE_ADMIN' },
+    { path: 'admin/orders/:id', element: <OrderDetail />, role: 'ROLE_ADMIN' },
+
+    { path: 'admin/coupons', element: <Coupon />, role: 'ROLE_ADMIN' },
+    { path: 'admin/coupons/add', element: <AddCoupon />, role: 'ROLE_ADMIN' },
+    { path: 'admin/coupons/edit/:id', element: <EditCoupon />, role: 'ROLE_ADMIN' },
+];
 
 export default adminRoutes;

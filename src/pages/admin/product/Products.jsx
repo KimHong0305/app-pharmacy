@@ -45,7 +45,7 @@ const Products = () => {
     };
 
     const handleAddProduct= () => {
-        navigate('/admin/addProduct');
+        navigate('/admin/products/add');
     };
 
     const truncateText = (text, maxLength) => 
@@ -53,7 +53,7 @@ const Products = () => {
 
     const handleEditProduct= (product) => {
         console.log(product)
-        navigate('/admin/editProduct', { state: product });
+        navigate(`/admin/products/edit/${product.id}`, { state: product });
     };
 
     const handleDeleteClick = (productId) => {

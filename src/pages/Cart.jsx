@@ -94,9 +94,9 @@ const Cart = () => {
 
   const handleOrder = () => {
     if (token) {
-      navigate('/orderCartUser', { state: {cartItems, totalPrice, selectedVoucher, discountAmount }})
+      navigate('/user/orders/cart', { state: {cartItems, totalPrice, selectedVoucher, discountAmount }})
     } else {
-      navigate('/orderCart', { state: cartItems })
+      navigate('/orders/cart', { state: cartItems })
     }
   }
 

@@ -85,8 +85,6 @@ const AddProduct = () => {
         setDoctor_advice(!doctor_advice);
     };
     
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 

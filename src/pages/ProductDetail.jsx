@@ -106,9 +106,9 @@ const ProductDetail = () => {
     const handleOrder = () => {
         const selectedProduct = product.find((p) => p.price.unit.name === selectedUnit);
         if (token) {
-            navigate('/orderUser', { state: selectedProduct })
+            navigate('/user/orders', { state: selectedProduct })
         } else {
-            navigate('/order', { state: selectedProduct })
+            navigate('/orders', { state: selectedProduct })
         }
     }
 

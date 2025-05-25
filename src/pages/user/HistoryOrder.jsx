@@ -38,14 +38,14 @@ const HistoryOrder = () => {
     }, [dispatch]);
 
     const handleAddress = () => {
-        navigate('/address');
+        navigate('/user/addresses');
     };
 
     const handleProfile = () => {
-        navigate('/profile');
+        navigate('/user/profile');
     };
 
-    const handleCoupon = () => navigate('/coupon');
+    const handleCoupon = () => navigate('/user/coupons');
 
     const handleOpenReviewDialog = (order) => {
         setSelectedOrder(order);

@@ -7,24 +7,27 @@ import { logout } from '../../store/Reducers/authReducer';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Sidebar = ({ showSidebar, setShowSidebar }) => {
-
   const { role } = useSelector((state) => state.auth);
-
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  const {pathname} = useLocation()
-  const [allNav,setAllNav] = useState([])
+  const [allNav, setAllNav] = useState([]);
 
   useEffect(() => {
-    const navs = getNav(role)
-    setAllNav(navs)
-  },[role])
+    const navs = getNav(role);
+    setAllNav(navs);
+  }, [role]);
 
   const handleLogout = () => {
     dispatch(logout());
     navigate('/');
   };
+
+  const isActive = (nav) =>
+    nav.activePaths
+      ? nav.activePaths.includes(pathname)
+      : pathname === nav.path;
 
   return (
     <div>
@@ -35,20 +38,17 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
         } w-screen h-screen bg-[#daf3f9] top-0 left-0 z-10`}
       ></div>
 
-      {/* Sidebar */}
       <div
         className={`w-[260px] fixed bg-[#daf3f9] z-50 top-0 h-screen shadow-[0_0_15px_0_rgb(34_41_47_/_5%)] transition-all ${
           showSidebar ? "left-0" : "-left-[260px] lg:left-0"
         }`}
       >
-        {/* Logo */}
         <div className="h-[80px] flex justify-center items-center">
           <Link to="/admin/dashboard" className="w-[180px] h-[70px]">
             <img className="w-full h-full" src={logo} alt="Logo" />
           </Link>
         </div>
 
-        {/* Navigation */}
         <div className="px-[16px]">
           <ul>
             {allNav.map((n, i) => (
@@ -56,7 +56,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
                 <Link
                   to={n.path}
                   className={`${
-                    pathname === n.path
+                    isActive(n)
                       ? "bg-[#84ccde] shadow-indigo-500/50 text-white font-semibold duration-500"
                       : "text-[#030811] font-semibold duration-200"
                   } px-[12px] py-[9px] rounded-sm flex justify-start items-center gap-[12px] hover:pl-4 transition-all w-full mb-1`}
@@ -66,21 +66,19 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
                 </Link>
               </li>
             ))}
-            </ul>
+          </ul>
 
-            {/* Logout Button */}
-            <div className=''>
-              <button
-                onClick={() => handleLogout()}
-                className="text-[#030811] font-semibold duration-200 px-[12px] py-[9px] rounded-sm flex justify-start items-center gap-[12px] hover:pl-4 transition-all w-full mb-1"
-              >
-                <span>
-                  <BiLogOutCircle />
-                </span>
-                <span>Logout</span>
-              </button>
-            </div>
-          
+          <div>
+            <button
+              onClick={handleLogout}
+              className="text-[#030811] font-semibold duration-200 px-[12px] py-[9px] rounded-sm flex justify-start items-center gap-[12px] hover:pl-4 transition-all w-full mb-1"
+            >
+              <span>
+                <BiLogOutCircle />
+              </span>
+              <span>Logout</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

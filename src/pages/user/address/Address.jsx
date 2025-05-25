@@ -24,11 +24,11 @@ const Address = () => {
     }, [dispatch]);
     
     const hanldeEditAddress = (addr) => {
-        navigate('/editAddress', { state: addr });
+        navigate('/user/addresses/edit/:id', { state: addr });
     };
 
     const handleAddAddress = () => {
-        navigate('/addAddress');
+        navigate('/user/addresses/new');
     };
 
     if (!bio) {
@@ -45,9 +45,9 @@ const Address = () => {
 
                         <UserNavBar 
                             bio={bio} 
-                            handleProfile={() => navigate('/profile')}
-                            handleHistory={() => navigate('/history')}
-                            handleCoupon={() => navigate('/coupon')}
+                            handleProfile={() => navigate('/user/profile')}
+                            handleHistory={() => navigate('/user/orders/history')}
+                            handleCoupon={() => navigate('/user/coupons')}
                         />
 
                         <div className="md:col-span-2 flex flex-col items-center justify-start">

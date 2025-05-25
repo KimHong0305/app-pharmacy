@@ -71,7 +71,7 @@ const OrderUser = () => {
     };
 
     const handleAddAddress = () => {
-        navigate('/addAddress');
+        navigate('/user/addresses/new');
     }
 
     const handlePaymentMethodChange = (event) => {

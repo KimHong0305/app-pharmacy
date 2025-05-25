@@ -10,7 +10,6 @@ const UserNavBar = ({ bio, handleProfile, handleAddress, handleCoupon, handleHis
     const { username, point, image } = bio;
     const location = useLocation();
 
-    // Xác định trang hiện tại
     const isActive = (path) => location.pathname === path ? "text-sky-600 bg-sky-100 font-medium" : "text-gray-700 font-medium hover:text-sky-600";
 
     return (
@@ -30,7 +29,7 @@ const UserNavBar = ({ bio, handleProfile, handleAddress, handleCoupon, handleHis
             <div className="my-4 flex-grow border-t border-gray-300"></div>
             <div className="flex flex-col items-start justify-start space-y-4">
                 <button 
-                    className={`block w-full h-10 flex items-center space-x-2 text-left ${isActive('/profile')}`}
+                    className={`block w-full h-10 flex items-center space-x-2 text-left ${isActive('/user/profile')}`}
                     onClick={handleProfile}
                 >
                     <HiOutlineUserCircle className="text-xl ml-2"/>
@@ -38,7 +37,7 @@ const UserNavBar = ({ bio, handleProfile, handleAddress, handleCoupon, handleHis
                 </button>
 
                 <button 
-                    className={`block w-full h-10 flex items-center space-x-2 text-left ${isActive('/address')}`}
+                    className={`block w-full h-10 flex items-center space-x-2 text-left ${isActive('/user/addresses')}`}
                     onClick={handleAddress}
                 >
                     <IoLocationOutline className="text-xl ml-2"/>
@@ -46,7 +45,7 @@ const UserNavBar = ({ bio, handleProfile, handleAddress, handleCoupon, handleHis
                 </button>
 
                 <button 
-                    className={`block w-full h-10 flex items-center space-x-2 text-left ${isActive('/coupon')}`}
+                    className={`block w-full h-10 flex items-center space-x-2 text-left ${isActive('/user/coupons')}`}
                     onClick={handleCoupon}
                 >
                     <HiOutlineTicket className="text-xl ml-2"/>
@@ -54,12 +53,13 @@ const UserNavBar = ({ bio, handleProfile, handleAddress, handleCoupon, handleHis
                 </button>
 
                 <button 
-                    className={`block w-full h-10 flex items-center space-x-2 text-left ${isActive('/history')}`}
+                    className={`block w-full h-10 flex items-center space-x-2 text-left ${isActive('/user/orders/history')}`}
                     onClick={handleHistory}
                 >
                     <PiNewspaperClippingLight className="text-xl ml-2"/>
                     <span>Lịch sử mua hàng</span>
                 </button>
+
             </div>
         </div>
     );

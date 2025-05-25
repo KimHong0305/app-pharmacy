@@ -18,6 +18,41 @@ export const getUsers = createAsyncThunk(
     }
 );
 
+export const getEmployees = createAsyncThunk(
+    'admin/getEmployees',
+    async ({ role = 'NURSE', size = 5 }, { rejectWithValue, fulfillWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const { data } = await api.get(`/employee?roleName=${role}&size=${size}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return fulfillWithValue(data);
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const createEmployee = createAsyncThunk(
+  "admin/createEmployee",
+  async (newEmployee, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.post('/employee', newEmployee, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data)
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const updateBio = createAsyncThunk(
     "user/updateBio",
     async (bio, { rejectWithValue }) => {
@@ -73,11 +108,13 @@ const userSlice = createSlice({
     name: 'user',
     initialState: {
         allUsers: [],
+        allEmployees: [],
         totalPages: 0,
         currentPage: 0,
         totalElements: 0,
         loading: false,
         error: null,
+        message: '',
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -97,38 +134,61 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            .addCase(getEmployees.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(getEmployees.fulfilled, (state, action) => {
+                state.loading = false;
+                state.allEmployees = action.payload.result.content;
+            })
+            .addCase(getEmployees.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // tạo tài khoản
+            .addCase(createEmployee.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(createEmployee.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(createEmployee.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                state.message = action.payload.message;
+            })
             // Ban người dùng
             .addCase(banUsers.pending, (state) => {
                 state.loading = true;
             })
             .addCase(banUsers.fulfilled, (state, action) => {
-            state.loading = false;
+                state.loading = false;
             })
             .addCase(banUsers.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.payload;
+                state.loading = false;
+                state.error = action.payload;
             })
             // Gỡ Ban người dùng
             .addCase(unBanUsers.pending, (state) => {
                 state.loading = true;
             })
             .addCase(unBanUsers.fulfilled, (state, action) => {
-            state.loading = false;
+                state.loading = false;
             })
             .addCase(unBanUsers.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.payload;
+                state.loading = false;
+                state.error = action.payload;
             })
             // Cập nhật bio
             .addCase(updateBio.pending, (state) => {
                 state.loading = true;
             })
             .addCase(updateBio.fulfilled, (state, action) => {
-            state.loading = false;
+                state.loading = false;
             })
             .addCase(updateBio.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.payload;
+                state.loading = false;
+                state.error = action.payload;
             })
     },
 });

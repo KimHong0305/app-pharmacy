@@ -20,7 +20,7 @@ const SearchProduct = () => {
   const query = queryParams.get('query') || '';
 
   const handleProductClick = (productId) => {
-    navigate(`/productDetail/${productId}`);
+    navigate(`/products/${productId}`);
   };
 
   const formatCurrency = (value) => {

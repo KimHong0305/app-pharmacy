@@ -12,7 +12,7 @@ const NewProducts = () => {
   const { newProducts } = useSelector((state) => state.home);
 
   const handleProductClick = (productId) => {
-    navigate(`/productDetail/${productId}`);
+    navigate(`/products/${productId}`);
   };
 
   return (

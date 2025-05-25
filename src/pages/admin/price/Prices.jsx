@@ -46,11 +46,11 @@ const Prices = () => {
     };
 
     const handleEditPrice= (price) => {
-        navigate('/admin/editPrice', { state: price });
+        navigate(`/admin/prices/edit/${price.id}`, { state: price });
     };
 
     const handleAddPrice= () => {
-        navigate('/admin/addPrice');
+        navigate('/admin/prices/add');
     };
 
     const handleDeleteClick = (priceId) => {

@@ -51,13 +51,11 @@ const ProductList = () => {
     };
 
     const handleProductClick = (productId) => {
-        navigate(`/productDetail/${productId}`);
+        navigate(`/products/${productId}`);
     };
 
     const handleCategoryClick = (categoryId, categoryName) => {
-        navigate(`/productList/${categoryId}`, {
-        state: { categoryName },
-        });
+        navigate(`/categories/${categoryId}/products`, { state: { categoryName } });
     };
 
     const handleSortOrderChange = (order) => {

@@ -46,7 +46,7 @@ const Coupon = () => {
     };
 
     const handleAddCoupon= () => {
-        navigate('/admin/addCoupon');
+        navigate('/admin/coupons/add');
     };
 
     // const handleItemsPerPageChange = (e) => {
@@ -54,7 +54,7 @@ const Coupon = () => {
     // };
 
     const handleEditCoupon= (coupon) => {
-        navigate('/admin/editCoupon', { state: coupon });
+        navigate(`/admin/coupons/edit/${coupon.id}`, { state: coupon });
     };
 
     const handleDeleteClick = (couponId) => {

@@ -65,11 +65,11 @@ const Categories = () => {
     };
 
     const handleAddCategory= () => {
-        navigate('/admin/addCategory');
+        navigate('/admin/categories/add');
     };
 
-    const handleEditCategory= (category) => {
-        navigate('/admin/editCategory', { state: category });
+    const handleEditCategory = (category) => {
+        navigate(`admin/categories/edit/${category.id}`, { state: category });
     };
 
     const handleDeleteClick = (categoryId) => {

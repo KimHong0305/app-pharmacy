@@ -38,7 +38,12 @@ const Profile = () => {
 
     const formatDateForInput = (date) => {
         const parts = date.split('/');
-        return parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : '';
+        return parts.length === 3 ? `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}` : '';
+    };
+
+    const formatDateForServer = (date) => {
+        const parts = date.split('-');
+        return parts.length === 3 ? `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}` : '';
     };
 
     const handleImageChange = (e) => {
@@ -63,7 +68,6 @@ const Profile = () => {
         );
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -74,7 +78,7 @@ const Profile = () => {
 
         const update = {
             id: bio.id,
-            dob: dob ? formatDateForInput(dob) : '',
+            dob: dob ? formatDateForServer(dob) : '',
             sex: gender,
             phoneNumber: phone,
             lastname: lastname,
@@ -85,7 +89,7 @@ const Profile = () => {
         formData.append("updateUser", new Blob([JSON.stringify(update)], { type: "application/json" }));
         if (image) formData.append('file', image);
 
-        // console.log(update)
+        console.log(update)
 
         try {
             await dispatch(updateBio(formData)).unwrap();
@@ -96,9 +100,9 @@ const Profile = () => {
         }
     };
 
-    const handleAddress = () => navigate('/address');
-    const handleCoupon = () => navigate('/coupon');
-    const handleHistory = () => navigate('/history');
+    const handleAddress = () => navigate('/user/addresses');
+    const handleCoupon = () => navigate('/user/coupons');
+    const handleHistory = () => navigate('/user/orders/history');
 
     if (!bio) return <div>No user information available.</div>;
 

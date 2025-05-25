@@ -52,7 +52,7 @@ const Orders = () => {
     };
 
     const handleOrderDetail= (order) => {
-        navigate('/admin/orderDetail', { state: order });
+        navigate(`/admin/orders/${order.id}`, { state: order });
     };
 
     const handleConfirm = async(orderId) => {

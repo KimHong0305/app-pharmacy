@@ -77,9 +77,7 @@ const Header = () => {
   };
 
   const handleCategoryClick = (categoryId, categoryName) => {
-    navigate(`/productList/${categoryId}`, {
-        state: { categoryName },
-    });
+    navigate(`/categories/${categoryId}/products`, { state: { categoryName } });
   };
 
   useEffect(() => {
@@ -96,12 +94,12 @@ const Header = () => {
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      navigate(`/search?query=${searchQuery}`);
+      navigate(`/search/products?query=${searchQuery}`);
     }
   };
 
   const handleProductClick = (productId) => {
-    navigate(`/productDetail/${productId}`);
+    navigate(`/products/${productId}`);
   };
 
   const handleSearchFocus = () => {
@@ -156,7 +154,7 @@ const Header = () => {
                   <div className="p-3">
                     <button
                       className="w-[200px] bg-gray-200 hover:bg-blue-300 font-semibold py-2 px-4 rounded-lg focus:outline-none"
-                      onMouseDown={() => navigate('/searchOrder')}
+                      onMouseDown={() => navigate('/orders/search')}
                     >
                       Tra cứu đơn hàng
                     </button>
@@ -254,10 +252,10 @@ const Header = () => {
                   <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" 
                   role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabIndex="-1">
                   <div className="py-1" role="none">
-                    <a href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-0">Thông tin cá nhân</a>
-                    <a href="/address" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-1">Địa chỉ nhận hàng</a>
-                    <a href="/coupon" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-2">Mã giảm giá</a>
-                    <a href="/history" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-3">Lịch sử đơn hàng</a>
+                    <Link to="/user/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-0">Thông tin cá nhân</Link>
+                    <Link to="/user/addresses" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-1">Địa chỉ nhận hàng</Link>
+                    <Link to="/user/coupons" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-2">Mã giảm giá</Link>
+                    <Link to="/user/orders/history" className="block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200" role="menuitem" tabIndex="-1" id="menu-item-3">Lịch sử đơn hàng</Link>
                     <a onClick={handleLogout} className="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-slate-200 flex items-center justify-between" 
                     role="menuitem" tabIndex="-1" id="menu-item-4">Đăng xuất <MdLogout className='text-rose-700'/></a>
                   </div>

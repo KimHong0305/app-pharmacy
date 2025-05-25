@@ -111,7 +111,7 @@ const AddAddress = () => {
         try{
             await dispatch(updateAddress(update)).unwrap();
             toast.success("Cập nhật địa chỉ thành công!");
-            navigate("/address");
+            navigate("/user/addresses");
         } catch (error) {
             toast.error(error.message);
         }
@@ -129,7 +129,7 @@ const AddAddress = () => {
                 toast.success('Xóa địa chỉ thành công');
                 setAddressToDelete(null);
                 setIsDeleteDialogOpen(false);
-                navigate("/address");
+                navigate("/user/addresses");
               } catch (error) {
                 toast.error(error.message);
             }

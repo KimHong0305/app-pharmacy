@@ -1,6 +1,7 @@
 import adminRoutes from './adminRoutes';
 import MainLayout from './../../layout/MainLayout';
 import employeeRoutes from './employeeRoutes';
+import nurseRoutes from './nurseRoutes';
 
 export const routes = [
     {
@@ -9,6 +10,7 @@ export const routes = [
       children: [
         ...adminRoutes,
         ...employeeRoutes,
+        ...nurseRoutes,
       ],
     },
 ];

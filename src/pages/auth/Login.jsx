@@ -57,12 +57,12 @@ const Login = ({isVisible, onClose}) => {
       });
       if (role === 'ROLE_ADMIN'){
         navigate('/admin/dashboard');
-      }else{
-        if (role === 'ROLE_EMPLOYEE'){
+      } else if (role === 'ROLE_EMPLOYEE') {
           navigate('/employee/dashboard');
-        }else{
-          navigate('/');
-        }
+      } else if (role === 'ROLE_NURSE') {
+          navigate('/nurse/dashboard');
+      } else {
+        navigate('/');
       }
       onClose()
     }
@@ -96,7 +96,7 @@ const Login = ({isVisible, onClose}) => {
                 placeholder='Nhập mật khẩu' id='password' required name='password'></input>
               </div>
               <div className='flex justify-end'>
-                <label className='mt-2 font-semibold text-sm cursor-pointer' onClick={() => navigate("/forgotPassword")}>
+                <label className='mt-2 font-semibold text-sm cursor-pointer' onClick={() => navigate("/auth/forgot-password")}>
                   Quên mật khẩu?
                 </label>
               </div>
@@ -119,7 +119,7 @@ const Login = ({isVisible, onClose}) => {
             </button>
             <div className="flex justify-center items-center my-6">
               <span className="text-gray-500 mr-1">Bạn chưa có tài khoản?</span>
-              <Link to="/register" className="font-medium hover:text-orange-900">
+              <Link to="/auth/register" className="font-medium hover:text-orange-900">
                 Đăng ký
               </Link>
             </div>

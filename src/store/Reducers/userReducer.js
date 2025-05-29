@@ -104,6 +104,23 @@ export const unBanUsers = createAsyncThunk(
     }
 );
 
+export const getEmployeeInfo = createAsyncThunk(
+    'employee/bio',
+    async (_, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.get('/employee/info', {
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 const userSlice = createSlice({
     name: 'user',
     initialState: {
@@ -187,6 +204,16 @@ const userSlice = createSlice({
                 state.loading = false;
             })
             .addCase(updateBio.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // info nhan vien
+            .addCase(getEmployeeInfo.fulfilled, (state, action) => {
+                state.loading = false;
+                state.bio = action.payload.result;
+                localStorage.setItem('user_id', action.payload.result.id);
+            })
+            .addCase(getEmployeeInfo.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })

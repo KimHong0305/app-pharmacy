@@ -7,14 +7,24 @@ import Footer from '../components/Footer';
 import TopCompany from '../components/Products/TopCompany';
 import { useDispatch } from 'react-redux';
 import { getHome } from '../store/Reducers/homeReducer';
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
 const Home = () => {
 
   const dispatch = useDispatch();
 
+  const { role } = useSelector((state) => state.auth);
+
   useEffect(() => {
     dispatch(getHome());
-  }, [dispatch]);  
+  }, [dispatch]);
+
+  if (role === 'ROLE_ADMIN') {
+    return <Navigate to="/admin/dashboard" />
+  } else if (role === 'ROLE_EMPLOYEE') {
+    return <Navigate to="/employee/dashboard" />
+  }  
 
   return (
     <div>

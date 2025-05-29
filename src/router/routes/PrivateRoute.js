@@ -1,17 +1,22 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 const PrivateRoute = ({ element, requiredRole }) => {
   const { role } = useSelector((state) => state.auth);
   const token = localStorage.getItem('token');
+  const location = useLocation();
 
   if (!token) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  
+  if (typeof requiredRole === 'string' && role !== requiredRole) {
+    return <Navigate to="/unauthorized" replace />;
   }
 
-  if (requiredRole && role !== requiredRole) {
-    return <Navigate to="/unauthorized" />;
+  if (Array.isArray(requiredRole) && !requiredRole.includes(role)) {
+    return <Navigate to="/unauthorized" replace />;
   }
 
   return element;

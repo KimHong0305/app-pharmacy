@@ -12,7 +12,7 @@ import { getCategoryNull } from '../store/Reducers/categoryReducer';
 import { useNavigate } from 'react-router-dom';
 import { clearAddress } from '../store/Reducers/addressReducer';
 import { getAllProducts } from '../store/Reducers/productReducer';
-import { toast } from 'react-toastify';
+import { useWebSocket } from '../contexts/WebSocketContext';
 
 const Header = () => {
   
@@ -33,6 +33,7 @@ const Header = () => {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
+  const { clearMessages } = useWebSocket();
 
   useEffect(() => {
     dispatch(getCategoryNull());
@@ -40,7 +41,7 @@ const Header = () => {
   },[dispatch])
 
   useEffect(() => {
-    const url = 'ws://localhost:8080/api/v1/pharmacy/ws-notifications';
+    const url = `${process.env.REACT_APP_WS_BASE_URL}/ws-notifications`;
     const socket = new WebSocket(url);
   
     console.log('🟡 Đang cố gắng kết nối tới:', url);
@@ -73,6 +74,7 @@ const Header = () => {
     setShowMenu(false)
     dispatch(logout());
     dispatch(clearAddress());
+    clearMessages();
     navigate('/');
   };
 

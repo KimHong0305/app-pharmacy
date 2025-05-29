@@ -64,8 +64,8 @@ export const adminRoutes = [
     { path: 'admin/orders/:id', element: <OrderDetail />, role: 'ROLE_ADMIN' },
 
     { path: 'admin/coupons', element: <Coupon />, role: 'ROLE_ADMIN' },
-    { path: 'admin/coupons/add', element: <AddCoupon />, role: 'ROLE_ADMIN' },
-    { path: 'admin/coupons/edit/:id', element: <EditCoupon />, role: 'ROLE_ADMIN' },
+    { path: 'admin/coupons/add', element: <AddCoupon />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] },
+    { path: 'admin/coupons/edit/:id', element: <EditCoupon />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] },
 ];
 
 export default adminRoutes;

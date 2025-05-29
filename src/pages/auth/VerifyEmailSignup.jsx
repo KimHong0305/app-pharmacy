@@ -5,15 +5,12 @@ import { verifySignUp, messageClear } from '../../store/Reducers/authReducer';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
 
 const VerifyEmailSignup = ({ isVisible, onClose, email }) => {
   const [otpValue, setOtpValue] = useState('');
   const otpInputsRef = useRef([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const { successVerMessage } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (isVisible) {
@@ -49,7 +46,7 @@ const VerifyEmailSignup = ({ isVisible, onClose, email }) => {
       .unwrap()
       .then(() => {
         onClose();
-        toast.success(successVerMessage);
+        toast.success('Xác thực email thành công!');
         navigate('/');
       })
       .catch((error) => {

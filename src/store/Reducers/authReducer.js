@@ -63,7 +63,11 @@ export const logout = createAsyncThunk(
       const response = await api.post('/auth/logout', { token });
 
       localStorage.removeItem('token');
-
+      localStorage.removeItem('role');
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('username');
+      localStorage.removeItem('chat_room_id');
+      
       return { message: response.data.message };
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -111,6 +115,9 @@ const returnRole = (token) => {
   if (token) {
     try {
       const decodeToken = jwtDecode(token);
+      const name = decodeToken.sub;
+      localStorage.setItem('username', name);
+      localStorage.setItem('role', decodeToken.scope);
       const expireTime = new Date(decodeToken.exp * 1000);
 
       if (new Date() > expireTime) {
@@ -219,6 +226,7 @@ const authSlice = createSlice({
     .addCase(logout.fulfilled, (state, action) => {
       state.user = null;
       state.token = null;
+      state.role = null;
       state.successMessage = '';
       state.message = action.payload.message;
       console.log(action.payload.message);
@@ -230,6 +238,7 @@ const authSlice = createSlice({
     .addCase(getUserInfo.fulfilled, (state, action) => {
       state.loading = false;
       state.bio = action.payload.result;
+      localStorage.setItem('user_id', action.payload.result.id);
     })
     .addCase(getUserInfo.rejected, (state, action) => {
       state.loading = false;

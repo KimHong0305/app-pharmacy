@@ -1,86 +1,80 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import publicRoutes from './router/routes/publicRoutes';
 import userRoutes from './router/routes/userRoutes';
-import adminRoutes from './router/routes/adminRoutes'; 
-import Home from './pages/Home';
-import PrivateRoute from './router/routes/PrivateRoute'; 
-import MainLayout from './components/admin/MainLayout';
+import adminRoutes from './router/routes/adminRoutes';
 import employeeRoutes from './router/routes/employeeRoutes';
+import Home from './pages/Home';
+import PrivateRoute from './router/routes/PrivateRoute';
+import MainLayout from './components/admin/MainLayout';
 import { getUserInfo } from './store/Reducers/authReducer';
 import { getCartGuest, getCartUser, transfer } from './store/Reducers/cartReducer';
+import Unauthorized from './pages/Unauthorized';
+import ContactFloating from './components/ContactFloating';
+import nurseRoutes from './router/routes/nurseRoutes';
 
 function App() {
-  const { role } = useSelector((state) => state.auth); 
-  const dispatch = useDispatch()
+  const { role } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (token) {
-      dispatch(getUserInfo())
+      dispatch(getUserInfo());
       dispatch(transfer()).then(() => {
-        dispatch(getCartUser()); 
+        dispatch(getCartUser());
       });
-    }else {
+    } else {
       dispatch(getCartGuest());
     }
-
-  },[dispatch, token])
+  }, [dispatch, token]);
 
   return (
-    <Routes>
-      {/* Route công khai */}
-      <Route path="/" element={<Home />} />
+    <>
+      {(!role || role === 'ROLE_USER') && <ContactFloating />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        
+        {publicRoutes.map((route) => (
+          <Route key={route.path} path={route.path} element={route.element} />
+        ))}
 
-      {/* Hiển thị tất cả publicRoutes */}
-      {publicRoutes.map((route) => (
-        <Route key={route.path} path={route.path} element={route.element} />
-      ))}
-
-      {/* Hiển thị userRoutes khi có token và role = 'ROLE_USER' */}
-      {token &&
-        role === 'ROLE_USER' &&
-        userRoutes.map((route) => (
+        {userRoutes.map((route) => (
           <Route
             key={route.path}
             path={route.path}
-            element={<PrivateRoute requiredRole="ROLE_USER" element={route.element} />}
+            element={
+              <PrivateRoute
+                requiredRole="ROLE_USER"
+                element={route.element}
+              />
+            }
           />
         ))}
 
-      {/* Route dành cho Admin với MainLayout */}
-      <Route
-        path="/"
-        element={<MainLayout/>}
-      >
-        {token &&
-          role === 'ROLE_ADMIN' &&
-          adminRoutes.map((route) => (
+        <Route path="/" element={<MainLayout />}>
+          {[...adminRoutes, ...employeeRoutes, ...nurseRoutes].map((route) => (
             <Route
               key={route.path}
               path={route.path}
-              element={<PrivateRoute requiredRole="ROLE_ADMIN" element={route.element} />}
+              element={
+                <PrivateRoute
+                  requiredRole={
+                    route.role ?? ['ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_NURSE']
+                  }
+                  element={route.element}
+                />
+              }
             />
           ))}
-      </Route>
+        </Route>
 
-      {/* Route dành cho Employee với MainLayout */}
-      <Route
-        path="/"
-        element={<MainLayout/>}
-      >
-        {token &&
-          role === 'ROLE_EMPLOYEE' &&
-          employeeRoutes.map((route) => (
-            <Route
-              key={route.path}
-              path={route.path}
-              element={<PrivateRoute requiredRole="ROLE_EMPLOYEE" element={route.element} />}
-            />
-          ))}
-      </Route>
-    </Routes>
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
+        <Route path="*" element={<Unauthorized />} />
+      </Routes>
+    </>
   );
 }
 

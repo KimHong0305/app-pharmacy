@@ -8,9 +8,8 @@ const Header = ({ showSidebar, setShowSidebar }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const { bio } = useSelector((state) => state.auth);   
 
-  console.log(bio)
+  const username = localStorage.getItem('username');
 
-  console.log(role)
   return (
     <div className="fixed top-0 left-0 w-full z-40">
       <div className="ml-0 lg:ml-[260px] h-[65px] flex justify-between items-center bg-[#41c5e5] px-5 transition-all">
@@ -42,12 +41,12 @@ const Header = ({ showSidebar, setShowSidebar }) => {
           <div className="flex justify-center items-center">
             <div className="flex justify-center items-center gap-3">
               <div className="flex justify-center items-center flex-col text-end">
-                <h2 className="text-md font-bold">{bio?.username}</h2>
+                <h2 className="text-md font-bold">{username}</h2>
                 <span className="text-[14px] w-full font-normal">{role}</span>
               </div>
 
               {/* User Avatar */}
-              {role === 'ROLE_ADMIN' || role === 'ROLE_EMPLOYEE' ? (
+              {role === 'ROLE_ADMIN' || role === 'ROLE_EMPLOYEE' || role === 'ROLE_NURSE' ? (
                 <img
                   className="w-[45px] h-[45px] rounded-full overflow-hidden"
                   src="http://localhost:3000/images/avata_1.png"

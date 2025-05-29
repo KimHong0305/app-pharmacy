@@ -19,8 +19,8 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
     setAllNav(navs);
   }, [role]);
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await dispatch(logout());
     navigate('/');
   };
 

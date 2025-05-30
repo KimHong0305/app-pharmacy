@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaList } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { getEmployeeInfo } from '../../store/Reducers/userReducer';
 
 const Header = ({ showSidebar, setShowSidebar }) => {
 
   const { role } = useSelector((state) => state.auth); 
   const [searchTerm, setSearchTerm] = useState("");
-  const { bio } = useSelector((state) => state.auth);   
+  const { bio } = useSelector((state) => state.user);   
 
   const username = localStorage.getItem('username');
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getEmployeeInfo());
+  }, [dispatch]);
 
   return (
     <div className="fixed top-0 left-0 w-full z-40">
@@ -49,7 +57,7 @@ const Header = ({ showSidebar, setShowSidebar }) => {
               {role === 'ROLE_ADMIN' || role === 'ROLE_EMPLOYEE' || role === 'ROLE_NURSE' ? (
                 <img
                   className="w-[45px] h-[45px] rounded-full overflow-hidden"
-                  src="http://localhost:3000/images/avata_1.png"
+                  src={bio?.image}
                   alt="Admin Avatar"
                 />
               ) : (

@@ -1,6 +1,13 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
-export const WebSocketContext = createContext(null);
+export const WebSocketContext = createContext({
+  socketRef: null,
+  sendMessage: () => {},
+  messages: [],
+  clearMessages: () => {},
+  setUserInfo: () => {},
+});
+
 export const useWebSocket = () => useContext(WebSocketContext);
 
 export const WebSocketProvider = ({ children }) => {
@@ -8,6 +15,13 @@ export const WebSocketProvider = ({ children }) => {
     const [messages, setMessages] = useState([]);
     const [username, setUsername] = useState(null);
     const [role, setRole] = useState(null);
+
+    const setUserInfo = (username, role) => {
+        setUsername(username);
+        setRole(role);
+        localStorage.setItem('username', username);
+        localStorage.setItem('role', role);
+    };
 
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
@@ -18,8 +32,6 @@ export const WebSocketProvider = ({ children }) => {
             setRole(storedRole);
         }
     }, []);
-
-    console.log('tin nhan',messages)
 
     useEffect(() => {
         if (!username || !role) return;
@@ -33,26 +45,36 @@ export const WebSocketProvider = ({ children }) => {
         ws.onopen = () => console.log("✅ WebSocket connected chat");
 
         ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log('📨 Received chat:', data);
-            setMessages((prev) => [...prev, data]);
+            try {
+                const data = JSON.parse(event.data);
+                console.log('📨 Received chat:', data);
+                setMessages((prev) => [...prev, data]);
+            } catch (err) {
+                console.error('❗ Lỗi phân tích tin nhắn:', err);
+            }
         };
 
-        ws.onerror = (error) => console.error("❌ WebSocket error:", error);
+        ws.onerror = (error) => {
+            console.error("❌ WebSocket error:", error);
+        };
 
+        ws.onclose = (event) => {
+            console.log("🔌 WebSocket closed:", event.code, event.reason);
+        };
+
+        return () => {
+            if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+                ws.close();
+                console.log("🛑 WebSocket disconnected");
+            }
+        };
     }, [username, role]);
 
     const clearMessages = () => setMessages([]);
 
-    const sendMessage = (message) => {
-        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-            socketRef.current.send(message);
-        }
-    };
-
     return (
-        <WebSocketContext.Provider value={{ socketRef, sendMessage, messages, clearMessages }}>
-            {children}
+        <WebSocketContext.Provider value={{ socketRef, messages, clearMessages, setUserInfo }}>
+        {children}
         </WebSocketContext.Provider>
     );
 };

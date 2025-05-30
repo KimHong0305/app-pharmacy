@@ -8,10 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { OAuthConfig } from "../../configurations/configuration";
+import { useWebSocket } from '../../contexts/WebSocketContext';
 
 const Login = ({isVisible, onClose}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { setUserInfo } = useWebSocket();
 
   const { role, errorMessage,successMessage } = useSelector((state) => state.auth);
 
@@ -55,6 +57,9 @@ const Login = ({isVisible, onClose}) => {
         username: '',
         password: '',
       });
+      const username = localStorage.getItem('username');
+
+      setUserInfo(username, role);
       if (role === 'ROLE_ADMIN'){
         navigate('/admin/dashboard');
       } else if (role === 'ROLE_EMPLOYEE') {
@@ -70,7 +75,7 @@ const Login = ({isVisible, onClose}) => {
       toast.error(errorMessage);
       dispatch(messageClear());
     }
-  }, [successMessage, role, errorMessage, navigate, dispatch, onClose]);
+  }, [successMessage, role, errorMessage, navigate, dispatch, onClose, setUserInfo]);
 
   if (!isVisible) return null;
 

@@ -1,15 +1,7 @@
 import React, { useEffect } from 'react';
 import Chart from 'react-apexcharts'
-import { useDispatch } from 'react-redux';
-import { getEmployeeInfo } from '../../store/Reducers/userReducer';
 
 const NurseDashboard = () => {
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(getEmployeeInfo());
-    }, [dispatch]);
 
     const state = {
         series : [

@@ -4,7 +4,7 @@ import { useWebSocket } from '../../contexts/WebSocketContext';
 import { createMessage, historyChatMessage } from '../../store/Reducers/chat/chatUserReducer';
 import { useDispatch, useSelector } from 'react-redux';
 
-const ChatBoxForEmployee = ({ roomId, receiver }) => {
+const ChatBoxForEmployee = ({ roomId, receiver, image }) => {
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
     const { messages } = useWebSocket();
@@ -21,21 +21,27 @@ const ChatBoxForEmployee = ({ roomId, receiver }) => {
     }, [roomId, dispatch]);
 
     const normalizedOldMessages = oldMessages.map(msg => ({
-        id: msg.messageId,
+        messageId: msg.messageId,
         sender: msg.senderId,
         senderName: msg.senderName,
         senderImage: msg.senderImage,
         content: msg.content,
     }));
 
-    const filteredMessages = messages.filter(msg => msg.roomId === roomId);
-    const combinedMessages = [...normalizedOldMessages, ...filteredMessages];
+    const filteredMessages = messages.filter(msg => msg.roomId === roomId && msg.messageId);
 
-    // console.log(oldMessages);
+    const messageMap = new Map();
+        [...normalizedOldMessages, ...filteredMessages].forEach(msg => {
+        messageMap.set(msg.messageId, msg); 
+    });
+
+    const combinedMessages = Array.from(messageMap.values());
+
+    // console.log(combinedMessages);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+    }, [combinedMessages]);
 
     const handleSend = async () => {
         if (!input.trim() || !roomId) return;
@@ -62,7 +68,7 @@ const ChatBoxForEmployee = ({ roomId, receiver }) => {
     };
 
     return (
-        <div className="flex flex-col p-4 bg-white rounded-lg shadow h-full">
+        <div className="flex flex-col p-4 bg-white rounded-lg shadow h-[550px]">
             <div className="flex items-center gap-3 mb-4 border-b pb-4">
                 <img
                     src="http://localhost:3000/images/avata_1.png"
@@ -78,7 +84,7 @@ const ChatBoxForEmployee = ({ roomId, receiver }) => {
                 </div>
             </div>
 
-            <div className="flex-grow overflow-y-auto bg-gray-50 p-4 rounded-lg shadow-inner max-h-[400px]">
+            <div className="flex-grow overflow-y-auto bg-gray-50 p-4 rounded-lg shadow-inner h-[500px]">
                 {(combinedMessages.length === 0) ? (
                     <p className="text-gray-400 text-center mt-20">Chưa có tin nhắn</p>
                 ) : (
@@ -93,7 +99,7 @@ const ChatBoxForEmployee = ({ roomId, receiver }) => {
                                 <div className="flex items-end gap-2">
                                     {msg.sender !== userId && (
                                         <img
-                                            src={msg.senderImage || "/images/default-avatar.png"}
+                                            src={image}
                                             alt="Khách"
                                             className="w-8 h-8 rounded-full object-cover"
                                         />

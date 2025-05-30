@@ -132,6 +132,7 @@ const userSlice = createSlice({
         loading: false,
         error: null,
         message: '',
+        bio: [],
     },
     reducers: {},
     extraReducers: (builder) => {

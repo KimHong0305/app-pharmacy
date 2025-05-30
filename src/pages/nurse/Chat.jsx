@@ -55,28 +55,56 @@ const Chat = () => {
     // console.log(combinedRooms)
 
     const handleChooseRoom = async (room) => {
-        try {
-            await dispatch(chooseRoomVacant(room.roomId)).unwrap();
-            setSelectedRoom({ roomId: room.roomId, receiver: room.senderId });
-            toast.success('Hãy nói chuyện nhẹ nhàng với khách hàng nhé!');
-        } catch (err) {
-            toast.error(err);
+        if (room.roomStatus === true) {
+            try {
+                await dispatch(chooseRoomVacant(room.roomId)).unwrap();
+                setSelectedRoom({ roomId: room.roomId, receiver: room.senderId, image: room.senderImage });
+                toast.success('Hãy nói chuyện nhẹ nhàng với khách hàng nhé!');
+            } catch (err) {
+                toast.error(err);
+            }
         }
+        else {
+            setSelectedRoom({ roomId: room.roomId, receiver: room.senderId, image: room.senderImage });
+        }
+    };
+
+    const formatLastTimeShort = (lastTime) => {
+        if (!lastTime) return '';
+        const now = new Date();
+        const time = new Date(lastTime);
+        const diffMs = now - time;
+
+        const diffMinutes = Math.floor(diffMs / (1000 * 60));
+        if (diffMinutes < 60) {
+            return `${diffMinutes}p`;
+        }
+
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        if (diffHours < 24) {
+            return `${diffHours}h`;
+        }
+
+        const diffDays = Math.floor(diffHours / 24);
+        return `${diffDays}d`;
     };
 
     return (
         <div className="flex min-h-[500px] p-4 gap-6 bg-gray-100">
-            <div className="w-1/3 bg-white rounded-lg shadow-lg p-4 overflow-y-auto">
-                <h2 className="text-xl font-semibold mb-4">Đoạn chat</h2>
+            <div className="w-1/3 bg-white rounded-lg shadow-lg overflow-y-auto max-h-[550px]">
+                <h2 className="text-xl font-semibold sticky top-0 bg-white z-10 p-4 ">Đoạn chat</h2>
                 {combinedRooms.length === 0 ? (
-                    <p className="text-gray-500">Không có khách hàng nào</p>
+                    <p className="text-gray-500 px-5"></p>
                 ) : (
                     combinedRooms.map((room) => (
                         <div
                             key={room.roomId}
-                            className="cursor-pointer py-3 border-b rounded hover:bg-gray-100 relative"
+                            className={`cursor-pointer py-3 px-2 border-b rounded relative
+                                ${selectedRoom?.roomId === room.roomId ? 'bg-blue-100' : 'hover:bg-gray-100'}
+                            `}
                             onClick={() => handleChooseRoom(room)}
                         >
+
                             <div className="flex justify-start items-center">
                                 <img
                                     src={room.senderImage}
@@ -85,7 +113,14 @@ const Chat = () => {
                                 />
                                 <div>
                                     <p className="font-medium">{room.senderName || 'Khách không tên'}</p>
-                                    <p className="text-sm text-gray-500">{room.lastMessage}</p>
+                                    <div className="flex items-center justify-between w-[310px]">
+                                        <p className="text-sm text-gray-500 truncate w-[250px]">
+                                            {room.lastMessage}
+                                        </p>
+                                        <p className="text-sm text-gray-400 mr-2">
+                                            {formatLastTimeShort(room.lastTime)}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             {room.roomStatus === true && (
@@ -101,7 +136,7 @@ const Chat = () => {
             {/* Main Chat Box */}
             <div className="flex-1">
                 {selectedRoom ? (
-                    <ChatBoxForEmployee roomId={selectedRoom.roomId} receiver={selectedRoom.receiver} />
+                    <ChatBoxForEmployee roomId={selectedRoom.roomId} receiver={selectedRoom.receiver} image={selectedRoom.image}/>
                 ) : (
                     <div className="flex items-center justify-center h-full text-gray-400 text-lg">
                         Chọn một khách hàng để phản hồi

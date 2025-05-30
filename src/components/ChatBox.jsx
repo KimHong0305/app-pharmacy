@@ -12,17 +12,34 @@ const ChatBox = ({ onClose }) => {
     const [roomId, setRoomId] = useState(null);
     const [localMessages, setLocalMessages] = useState([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { sendMessage, messages } = useWebSocket();
-    const messagesEndRef = useRef(null);
+    const { messages } = useWebSocket();
     const { clearMessages } = useWebSocket();
+    const messagesEndRef = useRef(null);
     const userId = localStorage.getItem('user_id');
+
+    const defaultSystemMessage = {
+        sender: "system",
+        content: "Xin chào! Tôi có thể giúp gì cho bạn hôm nay?",
+    };
 
     useEffect(() => {
         const savedRoomId = localStorage.getItem('chat_room_id');
         if (savedRoomId) {
             setRoomId(savedRoomId);
         }
-        console.log('phong chat',roomId);
+
+        const savedLocalMessages = localStorage.getItem('chat_local_messages');
+        if (savedLocalMessages) {
+            setLocalMessages(JSON.parse(savedLocalMessages));
+        }
+
+        const savedSystemMsg = localStorage.getItem("system_message_shown");
+        if (!savedSystemMsg) {
+            const systemMsg = [defaultSystemMessage];
+            localStorage.setItem("chat_local_messages", JSON.stringify(systemMsg));
+            localStorage.setItem("system_message_shown", "true");
+            setLocalMessages(systemMsg);
+        }
     }, []);
 
     useEffect(() => {
@@ -40,9 +57,13 @@ const ChatBox = ({ onClose }) => {
         if (!roomId) {
             try {
                 const res = await dispatch(createRoom({ content: message })).unwrap();
-                setRoomId(res.result.roomId);
-                localStorage.setItem('chat_room_id', res.result.roomId);
-                setLocalMessages(prev => [...prev, messageObj]);
+                const newRoomId = res.result.roomId;
+                setRoomId(newRoomId);
+                localStorage.setItem('chat_room_id', newRoomId);
+
+                const updated = [...localMessages, messageObj];
+                setLocalMessages(updated);
+                localStorage.setItem('chat_local_messages', JSON.stringify(updated));
             } catch (e) {
                 console.error("Lỗi tạo phòng:", e);
             }
@@ -53,7 +74,6 @@ const ChatBox = ({ onClose }) => {
                 receiver: messages[0]?.sender,
                 content: message
             };
-            // console.log(mess);
             await dispatch(createMessage(mess)).unwrap();
         }
 
@@ -67,15 +87,7 @@ const ChatBox = ({ onClose }) => {
         }
     };
 
-    const defaultSystemMessage = {
-        sender: "system",
-        content: "Xin chào! Tôi có thể giúp gì cho bạn hôm nay?",
-    };
-
-    const allMessages =
-        (roomId || messages.length > 0 || localMessages.length > 0)
-            ? [...localMessages, ...messages]
-            : [defaultSystemMessage];
+    const allMessages = [...localMessages, ...messages];
 
     return (
         <div className="flex flex-col h-full">
@@ -94,7 +106,16 @@ const ChatBox = ({ onClose }) => {
                                     onClick={() => {
                                         setRoomId(null);
                                         localStorage.removeItem("chat_room_id");
-                                        setLocalMessages([]);
+                                        localStorage.removeItem("chat_local_messages");
+                                        localStorage.removeItem("system_message_shown");
+                                        const defaultSystemMsg = {
+                                            sender: "system",
+                                            content: "Xin chào! Tôi có thể giúp gì cho bạn hôm nay?",
+                                        };
+
+                                        setLocalMessages([defaultSystemMsg]);
+                                        localStorage.setItem("chat_local_messages", JSON.stringify([defaultSystemMsg]));
+                                        localStorage.setItem("system_message_shown", "true");
                                         setIsMenuOpen(false);
                                         clearMessages();
                                     }}
@@ -123,7 +144,6 @@ const ChatBox = ({ onClose }) => {
                     )}
                 </div>
             </div>
-
 
             <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-gray-50">
                 {allMessages.map((msg, index) => {

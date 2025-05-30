@@ -1,75 +1,75 @@
-import React, { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { historyChatMessage } from "../../../store/Reducers/chat/chatUserReducer";
-import Header from '../../../components/Header';
-import Footer from '../../../components/Footer';
-import { IoReturnDownBackSharp } from "react-icons/io5";
+import React, { useEffect, useRef, useState } from 'react';
+import { GoDotFill } from 'react-icons/go';
+import { useDispatch, useSelector } from 'react-redux';
+import { historyChatMessage } from '../../../store/Reducers/chat/chatUserReducer';
 
-const HistoryChatMessage = () => {
-    const { id } = useParams();
+const HistoryChatMessage = ({ roomId, receiver, image }) => {
+    const [input, setInput] = useState('');
+    const messagesEndRef = useRef(null);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const { oldMessages } = useSelector((state) => state.chat_user);
 
-    const currentUserId = localStorage.getItem("user_id");
-
-    const handleGoBack = () => {
-        navigate(-1);
-    };
+    const userId = localStorage.getItem('user_id');
 
     useEffect(() => {
-        dispatch(historyChatMessage(id));
-    }, [id, dispatch]);
+        if (roomId) {
+            dispatch(historyChatMessage(roomId));
+        }
+    }, [roomId, dispatch]);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [oldMessages]);
 
     return (
-        <div>
-            <Header />
-            <div className="container px-4 md:px-8 lg:px-48 container mx-auto my-10 min-h-[400px]">
-                <span onClick={handleGoBack} className="inline-block">
-                    <IoReturnDownBackSharp className="inline-block"/>
-                    <button className="inline-block ml-5">Quay lại</button>
-                </span>
-                <div className="space-y-4">
-                    {oldMessages.map((msg) => {
-                        const isMyMessage = msg.senderId === currentUserId;
+        <div className="flex flex-col p-4 bg-white rounded-lg shadow h-[550px]">
+            <div className="flex items-center gap-3 mb-4 border-b pb-4">
+                <img
+                    src={image}
+                    alt="Nhân viên"
+                    className="w-10 h-10 rounded-full object-cover"
+                />
+                <div>
+                    <p className="text-lg font-semibold">{receiver}</p>
+                </div>
+            </div>
 
-                        return (
+            <div className="flex-grow overflow-y-auto bg-gray-50 p-4 rounded-lg shadow-inner h-[500px]">
+                {(oldMessages.length === 0) ? (
+                    <p className="text-gray-400 text-center mt-20">Chưa có tin nhắn</p>
+                ) : (
+                    <>
+                        {oldMessages.map((msg, idx) => (
                             <div
-                                key={msg.messageId}
-                                className={`flex ${isMyMessage ? "justify-end" : "justify-start"}`}
+                                key={idx}
+                                className={`flex flex-col gap-1 mb-3 ${
+                                    msg.senderId === userId ? 'items-end' : 'items-start'
+                                }`}
                             >
-                                <div
-                                    className={`flex items-end gap-2 max-w-[70%] ${
-                                        isMyMessage ? "flex-row-reverse" : ""
-                                    }`}
-                                >
-                                    <img
-                                        src={msg.senderImage}
-                                        alt="avatar"
-                                        className="w-8 h-8 rounded-full object-cover"
-                                    />
+                                <div className="flex items-end gap-2">
+                                    {msg.senderId !== userId && (
+                                        <img
+                                            src={image}
+                                            alt="Khách"
+                                            className="w-8 h-8 rounded-full object-cover"
+                                        />
+                                    )}
                                     <div
-                                        className={`p-3 rounded-xl shadow ${
-                                            isMyMessage
-                                                ? "bg-blue-100 text-right"
-                                                : "bg-gray-100 text-left"
+                                        className={`px-4 py-2 rounded-lg text-base max-w-xs ${
+                                            msg.senderId === userId
+                                                ? 'bg-blue-600 text-white'
+                                                : 'bg-gray-200 text-gray-800'
                                         }`}
                                     >
-                                        <p className="text-sm text-gray-800 whitespace-pre-wrap">
-                                            {msg.content}
-                                        </p>
-                                        <p className="text-xs text-gray-500 mt-1">
-                                            {/* {new Date(msg.time).toLocaleString("vi-VN")} */}
-                                        </p>
+                                        {msg.content || msg.lastMessage}
                                     </div>
                                 </div>
                             </div>
-                        );
-                    })}
-                </div>
+                        ))}
+                        <div ref={messagesEndRef} />
+                    </>
+                )}
             </div>
-            <Footer/>
         </div>
     );
 };

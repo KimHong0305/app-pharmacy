@@ -67,6 +67,8 @@ export const logout = createAsyncThunk(
       localStorage.removeItem('user_id');
       localStorage.removeItem('username');
       localStorage.removeItem('chat_room_id');
+      localStorage.removeItem("chat_local_messages");
+      localStorage.removeItem("system_message_shown");
       
       return { message: response.data.message };
     } catch (error) {

@@ -9,7 +9,6 @@ const OrderUser = lazy(() => import("../../pages/user/OrderUser"));
 const OrderCartUser = lazy(() => import("../../pages/user/OrderCartUser"));
 const HistoryOrder = lazy(() => import("../../pages/user/HistoryOrder"));
 const HistoryChat = lazy(() => import("../../pages/user/chat/HistoryChat"));
-const HistoryChatMessage = lazy(() => import("../../pages/user/chat/HistoryChatMessage"));
 
 const userRoutes = [
     // Profile
@@ -30,7 +29,6 @@ const userRoutes = [
 
     // Chat
     { path: '/user/chat/history', element: <HistoryChat />, role: 'ROLE_USER' },
-    { path: '/user/chat/history/:id', element: <HistoryChatMessage />, role: 'ROLE_USER' },
 
 ];
 

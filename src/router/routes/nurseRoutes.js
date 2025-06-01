@@ -1,14 +1,13 @@
 import { lazy } from "react";
 
 const Chat = lazy(() => import("../../pages/nurse/Chat"));
-
-// Dashboard
-const NurseDashboard = lazy(() => import("../../pages/nurse/NurseDashboard"));
+const OrderShop = lazy(() => import("../../pages/nurse/OrderShop"));
 
 export const nurseRoutes = [
-    { path: 'nurse/dashboard', element: <NurseDashboard />, role: 'ROLE_NURSE' },
 
     { path: 'nurse/chat', element: <Chat />, role: 'ROLE_NURSE' },
+
+    { path: 'nurse/order', element: <OrderShop />, role: 'ROLE_NURSE' },
 ];
 
 export default nurseRoutes;

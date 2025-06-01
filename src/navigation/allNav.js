@@ -11,6 +11,7 @@ import { CiDeliveryTruck } from "react-icons/ci";
 import { RiCoupon2Line } from "react-icons/ri";
 import { GrUserManager } from "react-icons/gr";
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
+import { CiShoppingBasket } from "react-icons/ci";
 
 export const allNav = [
     {
@@ -141,10 +142,10 @@ export const allNav = [
     },
     {
         id: 19,
-        title: 'Dashboard',
-        icon: <IoMdHome />,
+        title: 'Order',
+        icon: <CiShoppingBasket />,
         role: 'ROLE_NURSE',
-        path: '/nurse/dashboard'
+        path: '/nurse/order'
     },
     
     {

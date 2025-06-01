@@ -29,7 +29,7 @@ const publicRoutes = [
     { path: '/orders/cart', element: <OrderCart /> },
     { path: '/orderDetail', element: <DetailOrder /> },
     { path: '/orders/search', element: <SearchOrder /> },
-    { path: '/orders/callback', element: <PaymentCallback /> },
+    { path: '/paymentCallback', element: <PaymentCallback /> },
 
     // Auth
     { path: '/auth', element: <Authenticate /> },

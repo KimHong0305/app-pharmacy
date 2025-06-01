@@ -24,7 +24,9 @@ const Home = () => {
     return <Navigate to="/admin/dashboard" />
   } else if (role === 'ROLE_EMPLOYEE') {
     return <Navigate to="/employee/dashboard" />
-  }  
+  }  else if (role === 'ROLE_NURSE') {
+    return <Navigate to="/nurse/order" />
+  } 
 
   return (
     <div>

@@ -15,7 +15,7 @@ const ChatBoxForEmployee = ({ roomId, receiver, image }) => {
 
     useEffect(() => {
         if (roomId) {
-            console.log('chay 1 lan');
+            // console.log('chay 1 lan');
             dispatch(historyChatMessage(roomId));
         }
     }, [roomId, dispatch]);

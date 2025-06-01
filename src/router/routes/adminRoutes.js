@@ -46,22 +46,22 @@ export const adminRoutes = [
     { path: 'admin/employees/add', element: <AddEmployee />, role: 'ROLE_ADMIN' },
 
     { path: 'admin/categories', element: <Categories />, role: 'ROLE_ADMIN' },
-    { path: 'admin/categories/add', element: <AddCategory />, role: 'ROLE_ADMIN' },
-    { path: 'admin/categories/edit/:id', element: <EditCategory />, role: 'ROLE_ADMIN' },
+    { path: 'admin/categories/add', element: <AddCategory />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE']  },
+    { path: 'admin/categories/edit/:id', element: <EditCategory />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE']  },
 
     { path: 'admin/products', element: <Products />, role: 'ROLE_ADMIN' },
-    { path: 'admin/products/add', element: <AddProduct />, role: 'ROLE_ADMIN' },
-    { path: 'admin/products/edit/:id', element: <EditProduct />, role: 'ROLE_ADMIN' },
+    { path: 'admin/products/add', element: <AddProduct />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE']  },
+    { path: 'admin/products/edit/:id', element: <EditProduct />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE']  },
 
     { path: 'admin/units', element: <Units />, role: 'ROLE_ADMIN' },
     { path: 'admin/companies', element: <Companies />, role: 'ROLE_ADMIN' },
 
     { path: 'admin/prices', element: <Prices />, role: 'ROLE_ADMIN' },
-    { path: 'admin/prices/add', element: <AddPrice />, role: 'ROLE_ADMIN' },
-    { path: 'admin/prices/edit/:id', element: <EditPrice />, role: 'ROLE_ADMIN' },
+    { path: 'admin/prices/add', element: <AddPrice />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE']  },
+    { path: 'admin/prices/edit/:id', element: <EditPrice />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE']  },
 
     { path: 'admin/orders', element: <Orders />, role: 'ROLE_ADMIN' },
-    { path: 'admin/orders/:id', element: <OrderDetail />, role: 'ROLE_ADMIN' },
+    { path: 'admin/orders/:id', element: <OrderDetail />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] },
 
     { path: 'admin/coupons', element: <Coupon />, role: 'ROLE_ADMIN' },
     { path: 'admin/coupons/add', element: <AddCoupon />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] },

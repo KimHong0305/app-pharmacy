@@ -23,6 +23,7 @@ import deliveryReducer from "./Reducers/deliveryReducer";
 import callbackReducer from "./Reducers/payment/callbackReducer";
 import chatUserReducer from "./Reducers/chat/chatUserReducer";
 import chatNurseReducer from "./Reducers/chat/chatNurseReducer";
+import nurseReducer from "./Reducers/nurseReducer";
 
 const rootReducer = {
     auth: authReducer,
@@ -50,5 +51,6 @@ const rootReducer = {
     callback: callbackReducer,
     chat_user: chatUserReducer,
     chat_nurse: chatNurseReducer,
+    nurse: nurseReducer,
 }
 export default rootReducer;

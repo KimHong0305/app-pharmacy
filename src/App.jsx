@@ -13,11 +13,14 @@ import { getCartGuest, getCartUser, transfer } from './store/Reducers/cartReduce
 import Unauthorized from './pages/Unauthorized';
 import ContactFloating from './components/ContactFloating';
 import nurseRoutes from './router/routes/nurseRoutes';
+import { useWebSocket } from './contexts/WebSocketContext';
 
 function App() {
   const { role } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const token = localStorage.getItem('token');
+  const username = localStorage.getItem('username');
+  const { connectWebSocket } = useWebSocket();
 
   useEffect(() => {
     if (token) {
@@ -29,6 +32,12 @@ function App() {
       dispatch(getCartGuest());
     }
   }, [dispatch, token]);
+
+  useEffect(() => {
+    if (token && role && username) {
+      connectWebSocket(username, role);
+    }
+  }, [token, role, username]);
 
   return (
     <>

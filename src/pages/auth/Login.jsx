@@ -13,7 +13,7 @@ import { useWebSocket } from '../../contexts/WebSocketContext';
 const Login = ({isVisible, onClose}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { setUserInfo } = useWebSocket();
+  const { connectWebSocket } = useWebSocket();
 
   const { role, errorMessage,successMessage } = useSelector((state) => state.auth);
 
@@ -58,8 +58,7 @@ const Login = ({isVisible, onClose}) => {
         password: '',
       });
       const username = localStorage.getItem('username');
-
-      setUserInfo(username, role);
+      connectWebSocket(username, role);
       if (role === 'ROLE_ADMIN'){
         navigate('/admin/dashboard');
       } else if (role === 'ROLE_EMPLOYEE') {
@@ -75,7 +74,7 @@ const Login = ({isVisible, onClose}) => {
       toast.error(errorMessage);
       dispatch(messageClear());
     }
-  }, [successMessage, role, errorMessage, navigate, dispatch, onClose, setUserInfo]);
+  }, [successMessage, role, errorMessage, navigate, dispatch, onClose, connectWebSocket]);
 
   if (!isVisible) return null;
 

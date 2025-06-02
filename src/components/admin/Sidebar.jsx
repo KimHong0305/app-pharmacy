@@ -5,6 +5,7 @@ import logo from '../../assets/logo.png';
 import { getNav } from '../../navigation/index';
 import { logout } from '../../store/Reducers/authReducer';
 import { useDispatch, useSelector } from 'react-redux';
+import { useWebSocket } from '../../contexts/WebSocketContext';
 
 const Sidebar = ({ showSidebar, setShowSidebar }) => {
   const { role } = useSelector((state) => state.auth);
@@ -13,6 +14,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
   const { pathname } = useLocation();
 
   const [allNav, setAllNav] = useState([]);
+  const { disconnect, clearMessages } = useWebSocket();
 
   useEffect(() => {
     const navs = getNav(role);
@@ -20,6 +22,8 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
   }, [role]);
 
   const handleLogout = async () => {
+    clearMessages();
+    disconnect();
     await dispatch(logout());
     navigate('/');
   };

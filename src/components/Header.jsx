@@ -33,7 +33,7 @@ const Header = () => {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
-  const { clearMessages } = useWebSocket();
+  const { clearMessages, disconnect } = useWebSocket();
 
   useEffect(() => {
     dispatch(getCategoryNull());
@@ -72,6 +72,7 @@ const Header = () => {
 
   const handleLogout = () => {
     setShowMenu(false)
+    disconnect();
     dispatch(logout());
     dispatch(clearAddress());
     clearMessages();

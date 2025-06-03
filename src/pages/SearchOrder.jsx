@@ -83,12 +83,20 @@ const SearchOrder = () => {
                             {result && (
                                 <div className="w-full py-5 px-10 cursor-pointer" onClick={() => handleOrderDetail(result)}>
                                     <div className="bg-white border border-gray-200 rounded-lg">
-                                        <div className="p-4 bg-blue-100 rounded-t-lg">
+                                        <div className="p-3 mb-5 bg-blue-100 rounded-t-lg">
+                                        {result.address ? (
                                             <p className="text-blue-800 font-semibold flex items-center">
-                                                <FaTruck className="mr-2" />
-                                                Ngày giao hàng dự kiến: {convertTimestampToDate(result.leadTime)}
+                                            <FaTruck className="mr-2" />
+                                            Ngày giao hàng dự kiến: {convertTimestampToDate(result.leadTime)}
                                             </p>
+                                        ) : (
+                                            <p className="text-blue-800 font-semibold flex items-center">
+                                            <FaTruck className="mr-2" />
+                                            Mua tại cửa hàng
+                                            </p>
+                                        )}
                                         </div>
+
                                         <div className='p-4 '>
                                             <div className="flex justify-between pb-2 border-b border-gray-200 items-center">
                                                 <div>

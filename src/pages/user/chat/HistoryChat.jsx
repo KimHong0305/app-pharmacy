@@ -11,6 +11,19 @@ const HistoryChat = () => {
     const [selectedRoom, setSelectedRoom] = useState(null);
 
     useEffect(() => {
+        if (chats && chats.length > 0) {
+            const first = chats[0];
+            setSelectedRoom({
+                roomId: first.roomId,
+                receiver: first.receiverName,
+                image: first.receiverImage
+            });
+        }
+    }, [chats]);
+
+    console.log(chats[0])
+
+    useEffect(() => {
         dispatch(historyChat());
     }, [dispatch]);
 

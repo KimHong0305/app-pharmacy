@@ -6,12 +6,10 @@ import { getDistricts, getProvinces, getVillages } from '../store/Reducers/locat
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { createOrderHomeGuest } from "../store/Reducers/order/orderGuestReducer";
-import { createPaymentVNPay } from "../store/Reducers/payment/VNPayReducer";
-import { createPaymentMoMo } from "../store/Reducers/payment/MoMoReducer";
-import { createPaymentZaloPay } from "../store/Reducers/payment/ZaloPayReducer";
 import PaymentMethodSelector from '../components/PaymentMethodSelector';
 import ShippingMethodSelector from '../components/ShippingMethodSelector';
 import { clearFee } from "../store/Reducers/deliveryReducer";
+import usePaymentRedirect from "../hooks/usePaymentRedirect";
 
 const Order = () => {
     const dispatch = useDispatch();
@@ -32,6 +30,7 @@ const Order = () => {
 
     const [orderId, setOrderId] = useState(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const handleRedirectPayment = usePaymentRedirect();
 
     useEffect(() => {
         dispatch(getProvinces());
@@ -106,57 +105,7 @@ const Order = () => {
             const result = await dispatch(createOrderHomeGuest(order)).unwrap();
             toast.success("Đặt hàng thành công!");
             localStorage.setItem("lastOrderId", result.result.id);
-            if (result.result.paymentMethod === "VNPAY") {
-                try {
-                    const data = await dispatch(createPaymentVNPay(result.result.id)).unwrap();
-                    if (data.result) {
-                        window.location.href = data.result;
-                    } else {
-                        toast.error("Không tạo được thanh toán VNPay.");
-                    }
-                } catch (error) {
-                    console.error("Error creating VNPay payment:", error);
-                    toast.error("Đã xảy ra lỗi khi tạo thanh toán VNPay.");
-                }
-            }
-            else {
-                if (result.result.paymentMethod === "MOMO") {
-                    try {
-                        const data = await dispatch(createPaymentMoMo(result.result.id)).unwrap();
-                        if (data.result) {
-                            window.location.href = data.result.payUrl;
-                        } else {
-                            toast.error("Không tạo được thanh toán Momo.");
-                        }
-                    } catch (error) {
-                        console.error("Error creating Momo payment:", error);
-                        toast.error("Đã xảy ra lỗi khi tạo thanh toán Momo.");
-                    }
-                }
-                else{
-                    if (result.result.paymentMethod === "ZALOPAY") {
-                        try {
-                            const data = await dispatch(createPaymentZaloPay(result.result.id)).unwrap();
-                            if (data.result) {
-                                window.location.href = data.result.orderurl;
-                            } else {
-                                toast.error("Không tạo được thanh toán Momo.");
-                            }
-                        } catch (error) {
-                            console.error("Error creating Momo payment:", error);
-                            toast.error("Đã xảy ra lỗi khi tạo thanh toán Momo.");
-                        }
-                    }
-                    else{
-                        if (result.result.paymentMethod === "CASH") {
-                            setOrderId(result.result.id); 
-                            setIsDialogOpen(true);
-                        } else {
-                            toast.error("Đặt hàng không thành công!");
-                        }
-                    }
-                }
-            }
+            await handleRedirectPayment(result.result.paymentMethod, result.result.id);
         } catch (error) {
             toast.error(error.message);
         }

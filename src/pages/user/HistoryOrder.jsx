@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { FaRegTrashCan } from "react-icons/fa6";
 import { GrEdit } from "react-icons/gr";
 import UserNavBar from '../../components/UserNavBar';
+import usePaymentRedirect from '../../hooks/usePaymentRedirect';
 
 const HistoryOrder = () => {
     const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const HistoryOrder = () => {
     const [selectedFeedback, setSelectedFeedback] = useState(null);
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [updatedFeedback, setUpdatedFeedback] = useState("");
+    const handleRedirectPayment = usePaymentRedirect();
 
     useEffect(() => {
         dispatch(getUserInfo());
@@ -119,6 +121,9 @@ const HistoryOrder = () => {
         }
     };
     
+    const handlePay = async (order) => {
+        await handleRedirectPayment(order.paymentMethod, order.id);
+    }
 
     const filteredHistory = history.filter((order) => {
         switch (activeTab) {
@@ -154,15 +159,15 @@ const HistoryOrder = () => {
             <Header />
             <div className="bg-slate-100 py-10">
                 <div className="px-4 md:px-8 lg:px-48 container mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className='md:col-span-1 space-y-8'>
                             <UserNavBar 
                                 bio={bio} 
                                 handleProfile={handleProfile} handleAddress={handleAddress} handleCoupon ={handleCoupon}
                             />
                         </div>
-                        <div className='md:col-span-3 flex flex-col items-center justify-start'>
-                            <div className="w-full bg-white rounded-lg shadow-xl flex flex-col items-center justify-center py-5 px-10">
+                        <div className='md:col-span-2 flex flex-col items-center justify-start'>
+                            <div className="w-full bg-white rounded-lg shadow-xl flex flex-col items-center justify-start py-5 px-10  min-h-96">
                                 <p className='mb-4 text-2xl font-semibold'>LỊCH SỬ MUA HÀNG</p>
 
                                 {/* Thanh Tab */}
@@ -330,6 +335,16 @@ const HistoryOrder = () => {
                                                     Tổng tiền: {order.newTotalPrice.toLocaleString()} VND
                                                 </p>
                                             </div>
+                                            {activeTab === "pendingPayment" && (
+                                                <div className="mt-4 text-right">
+                                                    <button
+                                                        className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                                                        onClick={() => handlePay(order)}
+                                                    >
+                                                        Thanh toán
+                                                    </button>
+                                                </div>
+                                            )}
                                             {activeTab === "review" && (
                                                 <div className="mt-4 text-right">
                                                     <button

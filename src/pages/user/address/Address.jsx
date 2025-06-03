@@ -51,7 +51,7 @@ const Address = () => {
                         />
 
                         <div className="md:col-span-2 flex flex-col items-center justify-start">
-                            <div className="w-full bg-white rounded-lg shadow-xl flex flex-col items-center justify-center py-5 px-10">
+                            <div className="w-full bg-white rounded-lg shadow-xl flex flex-col items-center justify-start py-5 px-10 min-h-96">
                                 <p className="mb-4 text-2xl font-semibold">ĐỊA CHỈ NHẬN HÀNG</p>
                                 {address && address.length > 0 ? (
                                     <div className="w-full text-left">

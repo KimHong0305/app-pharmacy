@@ -47,11 +47,11 @@ const ListCoupon = () => {
 
                         {/* Nội dung chính */}
                         <div className='md:col-span-2 flex flex-col items-center justify-start'>
-                            <div className='w-full bg-white rounded-lg shadow-xl flex flex-col py-5 px-10'>
+                            <div className='w-full bg-white rounded-lg shadow-xl flex flex-col py-5 px-10 min-h-96'>
                                 <p className='mb-4 text-2xl font-semibold text-center'>MÃ GIẢM GIÁ</p>
 
                                 {/* Danh sách mã giảm giá */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 gap-4">
                                     {coupons.length > 0 ? (
                                         coupons.map((coupon) => (
                                             <div 

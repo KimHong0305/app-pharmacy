@@ -6,13 +6,11 @@ import { getDistricts, getProvinces, getVillages } from '../store/Reducers/locat
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { createOrderCartGuest } from "../store/Reducers/order/orderGuestReducer";
-import { createPaymentVNPay } from "../store/Reducers/payment/VNPayReducer";
-import { createPaymentMoMo } from "../store/Reducers/payment/MoMoReducer";
-import { createPaymentZaloPay } from "../store/Reducers/payment/ZaloPayReducer";
 import { getCartGuest } from "../store/Reducers/cartReducer";
 import ShippingMethodSelector from '../components/ShippingMethodSelector';
 import PaymentMethodSelector from '../components/PaymentMethodSelector';
 import { clearFee } from "../store/Reducers/deliveryReducer";
+import usePaymentRedirect from "../hooks/usePaymentRedirect";
 
 const OrderCart = () => {
     const dispatch = useDispatch();
@@ -32,7 +30,7 @@ const OrderCart = () => {
     const [shippingMethod, setShippingMethod] = useState("FAST");
     const [shippingFee, setShippingFee] = useState(0);
     const [service, setService] = useState(null);
-
+    const handleRedirectPayment = usePaymentRedirect();
 
     useEffect(() => {
         dispatch(getProvinces());
@@ -101,63 +99,12 @@ const OrderCart = () => {
             isInsurance: false,
             service_id: service,
         };
-        // console.log('don hang', order)
         try{
             const result = await dispatch(createOrderCartGuest(order)).unwrap();
             localStorage.setItem("lastOrderId", result.result.id);
             toast.success("Đặt hàng thành công!");
             await dispatch(getCartGuest());
-            if (result.result.paymentMethod === "VNPAY") {
-                try {
-                    const data = await dispatch(createPaymentVNPay(result.result.id)).unwrap();
-                    if (data.result) {
-                        window.location.href = data.result;
-                    } else {
-                        toast.error("Không tạo được thanh toán VNPay.");
-                    }
-                } catch (error) {
-                    console.error("Error creating VNPay payment:", error);
-                    toast.error("Đã xảy ra lỗi khi tạo thanh toán VNPay.");
-                }
-            }
-            else {
-                if (result.result.paymentMethod === "MOMO") {
-                    try {
-                        const data = await dispatch(createPaymentMoMo(result.result.id)).unwrap();
-                        if (data.result) {
-                            window.location.href = data.result.payUrl;
-                        } else {
-                            toast.error("Không tạo được thanh toán Momo.");
-                        }
-                    } catch (error) {
-                        console.error("Error creating Momo payment:", error);
-                        toast.error("Đã xảy ra lỗi khi tạo thanh toán Momo.");
-                    }
-                }
-                else{
-                    if (result.result.paymentMethod === "ZALOPAY") {
-                        try {
-                            const data = await dispatch(createPaymentZaloPay(result.result.id)).unwrap();
-                            if (data.result) {
-                                window.location.href = data.result.orderurl;
-                            } else {
-                                toast.error("Không tạo được thanh toán Momo.");
-                            }
-                        } catch (error) {
-                            console.error("Error creating Momo payment:", error);
-                            toast.error("Đã xảy ra lỗi khi tạo thanh toán Momo.");
-                        }
-                    }
-                    else{
-                        if (result.result.paymentMethod === "CASH") {
-                            setOrderId(result.result.id); 
-                            setIsDialogOpen(true);
-                        } else {
-                            toast.error("Đặt hàng không thành công!");
-                        }
-                    }
-                }
-            }
+            await handleRedirectPayment(result.result.paymentMethod, result.result.id);
         } catch (error) {
             toast.error(error.message);
         }
@@ -184,7 +131,7 @@ const OrderCart = () => {
                                         src={item.image}
                                         alt={item.productName}
                                     />
-                                    <div className="flex-grow max-w-[500px]">
+                                    <div className="flex-grow w-[500px]">
                                         <p className="font-medium break-words">{item.productName}</p>
                                         <p className="text-sm text-gray-500">{item.unitName}</p>
                                     </div>

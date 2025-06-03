@@ -121,6 +121,61 @@ export const getEmployeeInfo = createAsyncThunk(
     }
 );
 
+export const updateEmail = createAsyncThunk(
+    'user/updateEmail',
+    async (email, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.put(`/user/update-email`, email, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const verifyEmail = createAsyncThunk(
+    'user/verifyEmail',
+    async (otp, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.put(`/user/verify-email-update`, {otp}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const updatePassword = createAsyncThunk(
+    'user/updatePassword',
+    async ({ oldPassword, newPassword, checkNewPassword }, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.put('/user/update-password', {
+                oldPassword,
+                newPassword,
+                checkNewPassword
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 const userSlice = createSlice({
     name: 'user',
     initialState: {

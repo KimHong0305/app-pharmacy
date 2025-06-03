@@ -79,10 +79,17 @@ const DetailOrder = () => {
                         <div className="w-full py-5 px-10">
                             <div>
                                 <div className="p-3 mb-5 bg-blue-100 rounded-t-lg">
+                                {address ? (
                                     <p className="text-blue-800 font-semibold flex items-center">
-                                        <FaTruck className="mr-2" />
-                                        Ngày giao hàng dự kiến: {convertTimestampToDate(leadTime)}
+                                    <FaTruck className="mr-2" />
+                                    Ngày giao hàng dự kiến: {convertTimestampToDate(leadTime)}
                                     </p>
+                                ) : (
+                                    <p className="text-blue-800 font-semibold flex items-center">
+                                    <FaTruck className="mr-2" />
+                                    Mua tại cửa hàng
+                                    </p>
+                                )}
                                 </div>
                                 <div className="flex justify-between pb-2 border-b border-gray-200 items-start">
                                     <div>
@@ -98,32 +105,34 @@ const DetailOrder = () => {
                                     </span>
                                 </div>
 
+                                {address && (
                                 <div className="mt-4 border-b border-gray-200">
                                     <h2 className="text-lg font-semibold mt-2">Thông tin người nhận</h2>
                                     <div className="py-2 text-sm space-y-2">
-                                        <div className='flex justify-between'>
-                                            <div className='flex'>
-                                                <p className='font-semibold text-black'>
-                                                    {address?.fullname}
-                                                </p>
-                                                <div className="ml-2 mr-2 border-r border-gray-300"></div>
-                                                <p>
-                                                    (+84) {address?.phone}
-                                                </p>
-                                            </div>
-                                            <p className="w-[90px] px-2 text-center rounded border border-blue-700 text-blue-700">
-                                                {address?.addressCategory === "HOUSE" ? "Nhà riêng" : 
-                                                address?.addressCategory === "COMPANY" ? "Văn phòng" : "Loại khác"}
-                                            </p>
-                                        </div>
-                                        <p>
-                                            {address?.address}
+                                    <div className='flex justify-between'>
+                                        <div className='flex'>
+                                        <p className='font-semibold text-black'>
+                                            {address?.fullname}
                                         </p>
+                                        <div className="ml-2 mr-2 border-r border-gray-300"></div>
                                         <p>
-                                            {addressDetail?.ward.WardName + ", " + addressDetail?.district.DistrictName + ", "+ addressDetail?.province.ProvinceName}
+                                            (+84) {address?.phone}
+                                        </p>
+                                        </div>
+                                        <p className="w-[90px] px-2 text-center rounded border border-blue-700 text-blue-700">
+                                        {address?.addressCategory === "HOUSE" ? "Nhà riêng" : 
+                                        address?.addressCategory === "COMPANY" ? "Văn phòng" : "Loại khác"}
                                         </p>
                                     </div>
-                                </div>  
+                                    <p>
+                                        {address?.address}
+                                    </p>
+                                    <p>
+                                        {addressDetail?.ward.WardName + ", " + addressDetail?.district.DistrictName + ", "+ addressDetail?.province.ProvinceName}
+                                    </p>
+                                    </div>
+                                </div>
+                                )}
 
                                 <div className="mt-4 border-b border-gray-200">
                                 {orderItemResponses.length > 0 ? (

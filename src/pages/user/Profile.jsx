@@ -7,6 +7,7 @@ import { updateBio } from '../../store/Reducers/userReducer';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import UserNavBar from "../../components/UserNavBar";
+import { IoIosArrowForward } from "react-icons/io";
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -118,9 +119,9 @@ const Profile = () => {
                         </div>
 
                         <div className='md:col-span-2 flex flex-col items-center justify-start'>
-                            <div className='w-full bg-white rounded-lg shadow-xl flex flex-col items-center justify-center py-5 px-10 divide-y'>
-                                <p className='mb-4 text-2xl font-semibold'>THÔNG TIN CÁ NHÂN</p>
-                                <form className="w-full" onSubmit={handleSubmit}>
+                            <div className='w-full bg-white rounded-lg shadow-xl py-5 px-10'>
+                                <p className='mb-4 text-2xl font-semibold text-center'>THÔNG TIN CÁ NHÂN</p>
+                                <form className="w-full border-b-2 pb-5" onSubmit={handleSubmit}>
                                     <div>
                                         <label className="block font-medium text-gray-700 my-2">Ảnh đại diện</label>
                                         <div className="flex items-center">
@@ -189,6 +190,34 @@ const Profile = () => {
                                         </button>
                                     </div>
                                 </form>
+
+                                <div className='mt-5 flex flex-col items-start justify-start'>
+                                    <p className='text-xl font-semibold'>Tài khoản</p>
+                                    <div className='mt-4 w-full'>
+                                        <div className='flex items-center justify-between'>
+                                            <label className="block font-medium text-gray-700 mb-2">Email</label>
+                                            <p className='cursor-pointer flex items-center font-medium text-sky-500 mb-2'
+                                                onClick={() => navigate('/user/edit/email')}>
+                                                Cập nhật
+                                                <IoIosArrowForward size={25}/>
+                                            </p>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            value={bio.email}
+                                            readOnly
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                        />
+                                    </div>
+                                    <div className='w-full flex items-center justify-between mt-4'>
+                                        <label className="block font-medium text-gray-700 mb-2">Mật khẩu</label>
+                                        <p className='cursor-pointer flex items-center font-medium text-sky-500 mb-2'
+                                            onClick={() => navigate('/user/edit/password')}>
+                                            Đổi mật khẩu
+                                            <IoIosArrowForward size={25}/>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

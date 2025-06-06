@@ -49,6 +49,7 @@ const OrderShop = () => {
             setCustomer(info);
         } catch (error) {
             console.error("Lỗi gửi tin nhắn:", error);
+            toast.error('Không tìm thấy người dùng!');
         }
     };
 

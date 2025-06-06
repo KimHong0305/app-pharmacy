@@ -156,9 +156,14 @@ const Chat = () => {
                                     />
                                     <div>
                                         <p className="text-base font-medium">{room.senderName || 'Khách không tên'}</p>
-                                        <p className="text-sm text-gray-500">{room.lastMessage} 
-                                            <span className='font-semibold'>.{formatLastTimeShort(room.lastTime)}</span>
-                                        </p>
+                                        <div className="flex items-center justify-between w-[200px]">
+                                            <p className="text-sm text-gray-500 truncate w-[100px]">
+                                                {room.lastMessage}
+                                            </p>
+                                            <p className="text-sm text-gray-400">
+                                                {formatLastTimeShort(room.lastTime)}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             ))
@@ -184,7 +189,7 @@ const Chat = () => {
                                     alt={room.senderName}
                                     className="w-16 h-16 rounded-full object-cover border-2"
                                 />
-                                <div>
+                                <div className='ml-2'>
                                     <p className="font-medium">{room.senderName || 'Khách không tên'}</p>
                                     <div className="flex items-center justify-between w-[300px]">
                                         <p className="text-sm text-gray-500 truncate w-[250px]">

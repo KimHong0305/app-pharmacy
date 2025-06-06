@@ -3,12 +3,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { IoReturnDownBackSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from 'react-redux';
 import { getAddressDetail } from '../../../store/Reducers/addressReducer';
+import ExportPdfComponent from '../../../components/ExportPdfComponent'
 
 const OrderDetail = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const order = location.state;
+    const [showPdf, setShowPdf] = useState(false);
 
     const { addressDetail } = useSelector((state) => state.address);
     const [loading, setLoading] = useState(true);
@@ -180,6 +182,21 @@ const OrderDetail = () => {
                         </div>
                     </div>
                 </div>
+                <div className="flex justify-end mr-10">
+                    <button
+                        onClick={() => setShowPdf(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition-colors duration-300"
+                    >
+                        Xuất PDF
+                    </button>
+                </div>
+                {showPdf && (
+                <ExportPdfComponent
+                    order={order}
+                    addressDetail={addressDetail}
+                    onFinish={() => setShowPdf(false)}
+                />
+                )}
             </div>
         </div>
     );

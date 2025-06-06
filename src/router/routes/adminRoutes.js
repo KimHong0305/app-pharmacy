@@ -46,8 +46,8 @@ export const adminRoutes = [
     { path: 'admin/employees/add', element: <AddEmployee />, role: 'ROLE_ADMIN' },
 
     { path: 'admin/categories', element: <Categories />, role: 'ROLE_ADMIN' },
-    { path: 'admin/categories/add', element: <AddCategory />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE']  },
-    { path: 'admin/categories/edit/:id', element: <EditCategory />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE']  },
+    { path: 'admin/categories/add', element: <AddCategory />, role: 'ROLE_ADMIN'  },
+    { path: 'admin/categories/edit/:id', element: <EditCategory />, role: 'ROLE_ADMIN' },
 
     { path: 'admin/products', element: <Products />, role: 'ROLE_ADMIN' },
     { path: 'admin/products/add', element: <AddProduct />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE']  },

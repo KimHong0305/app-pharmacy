@@ -67,7 +67,7 @@ const HistoryOrder = () => {
             priceId: selectedProduct.priceId,
             feedback: reviewText
         }
-        console.log(newFeedback)
+        // console.log(selectedProduct)
         try {
             await dispatch(createFeedback(newFeedback)).unwrap();
             toast.success('Feedback sản phẩm thành công!')
@@ -370,15 +370,16 @@ const HistoryOrder = () => {
                                 <label className="block text-sm mb-2">Chọn sản phẩm:</label>
                                 <select
                                     className="w-full border p-2 mb-4 rounded-md"
-                                    value={selectedProduct}
-                                    onChange={(e) => setSelectedProduct(e.target.value)}
+                                    value={JSON.stringify(selectedProduct)}
+                                    onChange={(e) => setSelectedProduct(JSON.parse(e.target.value))}
                                 >
                                     {selectedOrder.orderItemResponses.map((product) => (
-                                    <option key={product.id} value={product.id}>
-                                        {product.productName}
-                                    </option>
+                                        <option key={product.id} value={JSON.stringify(product)}>
+                                            {product.productName}
+                                        </option>
                                     ))}
                                 </select>
+
                                 <textarea
                                     value={reviewText}
                                     onChange={(e) => setReviewText(e.target.value)}

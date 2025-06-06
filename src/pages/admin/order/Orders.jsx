@@ -65,10 +65,6 @@ const Orders = () => {
             toast.error(error.message);
         }
     }
-
-    const handlePrint = () =>{
-
-    }
     console.log(role)
 
     return (
@@ -151,7 +147,7 @@ const Orders = () => {
                                             ) : null}
                                             <button 
                                                 className="flex items-center justify-center p-2 rounded-lg bg-gray-200 ml-2"
-                                                onClick={handlePrint}
+                                                onClick={() => handleOrderDetail(order)}
                                             >
                                                 <IoPrintOutline className="text-gray-500" />
                                             </button>

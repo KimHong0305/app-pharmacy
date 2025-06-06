@@ -54,16 +54,16 @@ const Header = ({ showSidebar, setShowSidebar }) => {
               </div>
 
               {/* User Avatar */}
-              {role === 'ROLE_ADMIN' || role === 'ROLE_EMPLOYEE' || role === 'ROLE_NURSE' ? (
+              {role === 'ROLE_EMPLOYEE' || role === 'ROLE_NURSE' ? (
                 <img
                   className="w-[45px] h-[45px] rounded-full overflow-hidden"
-                  src={bio?.image}
+                  src={bio?.image || '/images/avata_1.png'}
                   alt="Admin Avatar"
                 />
               ) : (
                 <img
                   className="w-[45px] h-[45px] rounded-full overflow-hidden"
-                  src={bio?.image}
+                  src={'/images/avata_1.png'}
                   alt="User Avatar"
                 />
               )}

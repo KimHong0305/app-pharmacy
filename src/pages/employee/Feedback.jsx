@@ -34,6 +34,8 @@ const Feedback = () => {
             parent: feedback.id,
         };
 
+        console.log(newFeedback)
+
         try {
             await dispatch(createFeedback(newFeedback)).unwrap();
             dispatch(getAllFeedback());

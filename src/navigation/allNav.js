@@ -142,6 +142,13 @@ export const allNav = [
     },
     {
         id: 19,
+        title: 'Dashboard',
+        icon: <IoMdHome />,
+        role: 'ROLE_NURSE',
+        path: '/nurse/home'
+    },
+    {
+        id: 20,
         title: 'Order',
         icon: <CiShoppingBasket />,
         role: 'ROLE_NURSE',
@@ -149,7 +156,7 @@ export const allNav = [
     },
     
     {
-        id: 20,
+        id: 21,
         title: 'Chat',
         icon: <IoChatboxEllipsesOutline />,
         role: 'ROLE_NURSE',

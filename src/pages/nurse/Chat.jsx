@@ -47,7 +47,7 @@ const Chat = () => {
                 !handledRoomIds.includes(msg.roomId)
             );
         });
-        setUnreadCount(pendingMessages.length);
+        // setUnreadCount(pendingMessages.length);
     }, [messages, showDropdown, combinedRooms]);
 
     const handleToggleDropdown = () => {
@@ -157,7 +157,7 @@ const Chat = () => {
                                     <div>
                                         <p className="text-base font-medium">{room.senderName || 'Khách không tên'}</p>
                                         <div className="flex items-center justify-between w-[200px]">
-                                            <p className="text-sm text-gray-500 truncate w-[100px]">
+                                            <p className="text-sm text-gray-500 truncate w-[150px]">
                                                 {room.lastMessage}
                                             </p>
                                             <p className="text-sm text-gray-400">

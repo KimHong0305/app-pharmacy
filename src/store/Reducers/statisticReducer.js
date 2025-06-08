@@ -35,6 +35,39 @@ export const getStatisticMonth = createAsyncThunk(
     }
 );
 
+export const getStatisticYearForAdmin = createAsyncThunk(
+    "admin/getStatisticYear",
+    async (year, { rejectWithValue }) => {
+        try {
+        const token = localStorage.getItem('token');
+        const response = await api.get(`/home/admin/revenue/year?year=${year}`, {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.result;
+        } catch (error) {
+        return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const getStatisticMonthForAdmin = createAsyncThunk(
+    "admin/getStatisticMonth",
+    async ({month, year}, { rejectWithValue }) => {
+        try {
+        const token = localStorage.getItem('token');
+        const response = await api.get(`/home/admin/revenue/month?month=${month}&year=${year}`, {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.result;
+        } catch (error) {
+        return rejectWithValue(error.response.data);
+        }
+    }
+);
 
 const statisticSlice = createSlice({
     name: 'statistic',
@@ -69,6 +102,14 @@ const statisticSlice = createSlice({
             .addCase(getStatisticMonth.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            .addCase(getStatisticYearForAdmin.fulfilled, (state, action) => {
+                state.loading = false;
+                state.dataYear = action.payload;
+            })
+            .addCase(getStatisticMonthForAdmin.fulfilled, (state, action) => {
+                state.loading = false;
+                state.dataMonth = action.payload;
             })
     },
 });

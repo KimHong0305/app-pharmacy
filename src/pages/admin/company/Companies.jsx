@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { createCompany, deleteCompany, getCompanies } from '../../store/Reducers/companyReducer';
-import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "../../components/ui/table";
+import { createCompany, deleteCompany, getCompanies } from '../../../store/Reducers/companyReducer';
+import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "../../../components/ui/table";
 import {
     Pagination,
     PaginationItem,
     PaginationLink,
     PaginationPrevious,
     PaginationNext,
-} from "../../components/ui/pagination";  
+} from "../../../components/ui/pagination";  
 import { FaSearch, FaRegEdit } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Companies = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { companies, loading, totalPages, currentPage } = useSelector((state) => state.company);
   const [companyName, setCompanyName] = useState('');
   const [origin, setOrigin] = useState('');
@@ -87,22 +89,26 @@ const Companies = () => {
   };
 
   const handleConfirmDelete = async () => {
-      if (companyToDelete) {
-          try {
-              await dispatch(deleteCompany(companyToDelete));
-              dispatch(getCompanies({ page: currentPage, size }));
-              toast.success('Xóa công ty thành công');
-              setCompanyToDelete(null);
-              setIsDeleteDialogOpen(false);
-            } catch (error) {
-              toast.error(error.message);
-          }
-      }
+    if (companyToDelete) {
+        try {
+            await dispatch(deleteCompany(companyToDelete));
+            dispatch(getCompanies({ page: currentPage, size }));
+            toast.success('Xóa công ty thành công');
+            setCompanyToDelete(null);
+            setIsDeleteDialogOpen(false);
+          } catch (error) {
+            toast.error(error.message);
+        }
+    }
   };
 
   const handleCancelDelete = () => {
-      setCompanyToDelete(null);
-      setIsDeleteDialogOpen(false);
+    setCompanyToDelete(null);
+    setIsDeleteDialogOpen(false);
+  };
+
+  const handleEditCompany = (company) => {
+    navigate(`/admin/companies/edit/${company.id}`, { state: company });
   };
 
   return (
@@ -178,7 +184,8 @@ const Companies = () => {
                         <TableCell>{company.origin}</TableCell> 
                         <TableCell>
                             <div className='flex'>
-                                <button className="flex items-center justify-center p-2 rounded-lg bg-sky-200">
+                                <button className="flex items-center justify-center p-2 rounded-lg bg-sky-200"
+                                onClick={() => handleEditCompany(company)}>
                                     <FaRegEdit className="text-sky-400" /> 
                                 </button>
                                 <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2"

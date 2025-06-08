@@ -30,6 +30,23 @@ export const createCompany = createAsyncThunk(
   }
 );
 
+export const updateCompany = createAsyncThunk(
+  "/updateCompany",
+  async (updateCompany, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.put('/company', updateCompany, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const deleteCompany = createAsyncThunk(
   "/deleteCompany",
   async (companyId, { rejectWithValue }) => {

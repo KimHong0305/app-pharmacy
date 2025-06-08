@@ -22,7 +22,8 @@ const EditProduct = lazy(() => import("../../pages/admin/product/EditProduct"));
 const Units = lazy(() => import("../../pages/admin/Units"));
 
 // Companies
-const Companies = lazy(() => import("../../pages/admin/Companies"));
+const Companies = lazy(() => import("../../pages/admin/company/Companies"));
+const EditCompany = lazy(() => import("../../pages/admin/company/EditCompany"));
 
 // Prices
 const Prices = lazy(() => import("../../pages/admin/price/Prices"));
@@ -55,6 +56,7 @@ export const adminRoutes = [
 
     { path: 'admin/units', element: <Units />, role: 'ROLE_ADMIN' },
     { path: 'admin/companies', element: <Companies />, role: 'ROLE_ADMIN' },
+    { path: 'admin/companies/edit/:id', element: <EditCompany />, role: 'ROLE_ADMIN' },
 
     { path: 'admin/prices', element: <Prices />, role: 'ROLE_ADMIN' },
     { path: 'admin/prices/add', element: <AddPrice />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE']  },

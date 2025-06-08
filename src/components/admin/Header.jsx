@@ -3,6 +3,7 @@ import { FaList } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { getEmployeeInfo } from '../../store/Reducers/userReducer';
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({ showSidebar, setShowSidebar }) => {
 
@@ -13,6 +14,7 @@ const Header = ({ showSidebar, setShowSidebar }) => {
   const username = localStorage.getItem('username');
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getEmployeeInfo());
@@ -54,19 +56,32 @@ const Header = ({ showSidebar, setShowSidebar }) => {
               </div>
 
               {/* User Avatar */}
-              {role === 'ROLE_EMPLOYEE' || role === 'ROLE_NURSE' ? (
+              {role === 'ROLE_EMPLOYEE' && (
                 <img
                   className="w-[45px] h-[45px] rounded-full overflow-hidden"
                   src={bio?.image || '/images/avata_1.png'}
-                  alt="Admin Avatar"
+                  alt="Employee Avatar"
+                  
                 />
-              ) : (
+              )}
+
+              {role === 'ROLE_NURSE' && (
+                <img
+                  className="cursor-pointer w-[45px] h-[45px] rounded-full overflow-hidden"
+                  src={bio?.image || '/images/avata_1.png'}
+                  alt="Nurse Avatar"
+                  onClick={() => navigate('/nurse/profile')}
+                />
+              )}
+
+              {role !== 'ROLE_EMPLOYEE' && role !== 'ROLE_NURSE' && (
                 <img
                   className="w-[45px] h-[45px] rounded-full overflow-hidden"
                   src={'/images/avata_1.png'}
                   alt="User Avatar"
                 />
               )}
+
             </div>
           </div>
         </div>

@@ -157,11 +157,11 @@ const Employees = () => {
                                                 >
                                                     <FaRegEdit className="text-sky-400" /> 
                                                 </button>
-                                                <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2"
+                                                {/* <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2"
                                                 // onClick={() => handleDeleteClick(product.id)}
                                                 >
                                                     <FaRegTrashCan className="text-red-500" /> 
-                                                </button>
+                                                </button> */}
                                             </div>
                                         </TableCell>
                                     </TableRow>

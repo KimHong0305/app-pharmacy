@@ -52,7 +52,7 @@ const ForgotPassword = () => {
 
   }, [dispatch, navigate, successPassMessage, errorPassMessage, successResetMessage, errorResetMessage]);
 
-  const handleResetPassword = (e) => {
+  const handleResetPassword = async(e) => {
     e.preventDefault();
     if (/[^0-9]/.test(otp)) {
       toast.error("Định dạng OTP không hợp lệ!");
@@ -63,8 +63,12 @@ const ForgotPassword = () => {
       otp: otp,       
       newPassword: newPassword
     };
-    console.log(info)
-    dispatch(resetPassword(info));
+    try{
+      dispatch(resetPassword(info)).unwrap();
+      toast.success("Cập nhật mật khẩu thành công!");
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (

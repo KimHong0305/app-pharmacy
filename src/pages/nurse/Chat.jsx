@@ -47,7 +47,7 @@ const Chat = () => {
                 !handledRoomIds.includes(msg.roomId)
             );
         });
-        // setUnreadCount(pendingMessages.length);
+        setUnreadCount(pendingMessages.length);
     }, [messages, showDropdown, combinedRooms]);
 
     const handleToggleDropdown = () => {

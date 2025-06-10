@@ -3,7 +3,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { userLogin, messageClear } from '../../store/Reducers/authReducer';
+import { userLogin, messageClear, logout } from '../../store/Reducers/authReducer';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -29,11 +29,36 @@ const Login = ({isVisible, onClose}) => {
     })
   }
 
-  const submit = (e) => {
-    e.preventDefault()
-    dispatch(userLogin(state));
-    console.log(state)
-  }
+  const submit = async (e) => {
+    e.preventDefault();
+    try {
+      await dispatch(userLogin(state)).unwrap();
+    } catch (error) {
+      const message = error?.data?.message || error?.message || "Đăng nhập thất bại!";
+      toast.error(message);
+      dispatch(messageClear());
+    }
+  };
+
+  useEffect(() => {
+    if (successMessage && role) {
+      if (role !== 'ROLE_USER') {
+        toast.error("Tài khoản này không được phép đăng nhập ở trang khách hàng!");
+        dispatch(logout());
+        dispatch(messageClear());
+        setState({ username: '', password: '' });
+        return;
+      }
+
+      toast.success(successMessage);
+      dispatch(messageClear());
+      connectWebSocket(state.username, role);
+      setState({ username: '', password: '' });
+      onClose();
+      navigate('/');
+    }
+  }, [successMessage, role, dispatch, navigate, onClose, connectWebSocket, state.username]);
+
 
   const handleContinueWithGoogle = () => {
     const callbackUrl = OAuthConfig.redirectUri;
@@ -48,33 +73,6 @@ const Login = ({isVisible, onClose}) => {
 
     window.location.href = targetUrl;
   };
-
-  useEffect(() => {
-    if (successMessage) {
-      toast.success(successMessage);
-      dispatch(messageClear());
-      setState({
-        username: '',
-        password: '',
-      });
-      const username = localStorage.getItem('username');
-      connectWebSocket(username, role);
-      if (role === 'ROLE_ADMIN'){
-        navigate('/admin/dashboard');
-      } else if (role === 'ROLE_EMPLOYEE') {
-          navigate('/employee/dashboard');
-      } else if (role === 'ROLE_NURSE') {
-          navigate('/nurse/dashboard');
-      } else {
-        navigate('/');
-      }
-      onClose()
-    }
-    if (errorMessage) {
-      toast.error(errorMessage);
-      dispatch(messageClear());
-    }
-  }, [successMessage, role, errorMessage, navigate, dispatch, onClose, connectWebSocket]);
 
   if (!isVisible) return null;
 

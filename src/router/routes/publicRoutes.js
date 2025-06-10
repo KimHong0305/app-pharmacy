@@ -1,6 +1,8 @@
 import { lazy } from "react";
-import OrderCart from "../../pages/OrderCart";
-import DetailOrder from "../../pages/DetailOrder";
+
+const OrderCart = lazy(() => import("../../pages/OrderCart"));
+const DetailOrder = lazy(() => import("../../pages/DetailOrder"));
+const EmployeeLogin = lazy(() => import("../../pages/auth/EmployeeLogin"));
 
 const Authenticate = lazy(() => import("../../pages/auth/Authenticate"));
 const Register = lazy(() => import("../../pages/auth/Register"));
@@ -36,6 +38,7 @@ const publicRoutes = [
     { path: '/auth/register', element: <Register /> },
     { path: '/auth/forgot-password', element: <ForgotPassword /> },
     { path: '/authenticate', element: <Authenticate/> },
+    { path: '/employee/login', element: <EmployeeLogin/> },
 
 ];
 

@@ -4,7 +4,7 @@ import Footer from '../../components/Footer';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserInfo } from '../../store/Reducers/authReducer';
 import { useNavigate } from 'react-router-dom';
-import { getHistory } from '../../store/Reducers/order/orderUserReducer';
+import { cancelOrder, getHistory } from '../../store/Reducers/order/orderUserReducer';
 import { createFeedback, deleteFeedback, getFeedbackByUser, updateFeedback } from '../../store/Reducers/feedback/feedbackReducer';
 import { toast } from 'react-toastify';
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -32,6 +32,9 @@ const HistoryOrder = () => {
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [updatedFeedback, setUpdatedFeedback] = useState("");
     const handleRedirectPayment = usePaymentRedirect();
+
+    const [orderToCancel, setOrderToCancel] = useState(null);
+    const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
     useEffect(() => {
         dispatch(getUserInfo());
@@ -124,6 +127,27 @@ const HistoryOrder = () => {
     const handlePay = async (order) => {
         await handleRedirectPayment(order.paymentMethod, order.id);
     }
+
+    const handleCancel = async (order) => {
+        console.log(order);
+        setOrderToCancel(order);
+        setIsCancelDialogOpen(true);
+    }
+
+    const handleConfirmCancel = async () => {
+        if (orderToCancel) {
+            await dispatch(cancelOrder(orderToCancel)).unwrap();
+            toast.success('Hủy đơn hàng thành công');
+            dispatch(getHistory());
+            setOrderToCancel(null);
+            setIsCancelDialogOpen(false);
+        }
+    };
+    
+    const handleCancelCancel = () => {
+        setOrderToCancel(null);
+        setIsCancelDialogOpen(false);
+    };
 
     const filteredHistory = history.filter((order) => {
         switch (activeTab) {
@@ -336,7 +360,14 @@ const HistoryOrder = () => {
                                                 </p>
                                             </div>
                                             {activeTab === "pendingPayment" && (
-                                                <div className="mt-4 text-right">
+                                                <>
+                                                <div className='flex items-center justify-end mt-4'>
+                                                    <button
+                                                        className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 mr-5"
+                                                        onClick={() => handleCancel(order.id)}
+                                                    >
+                                                        Hủy đơn
+                                                    </button>
                                                     <button
                                                         className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                                                         onClick={() => handlePay(order)}
@@ -344,6 +375,7 @@ const HistoryOrder = () => {
                                                         Thanh toán
                                                     </button>
                                                 </div>
+                                                </>
                                             )}
                                             {activeTab === "review" && (
                                                 <div className="mt-4 text-right">
@@ -449,6 +481,29 @@ const HistoryOrder = () => {
                                                 onClick={() => handleSubmitUpdate(selectedFeedback)}
                                             >
                                                 Cập nhật
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {isCancelDialogOpen && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                                    <div className="bg-white p-6 rounded-md shadow-lg">
+                                        <h3 className="text-lg font-bold mb-4">Xác nhận hủy</h3>
+                                        <p className="mb-6">Bạn có chắc chắn muốn hủy đơn hàng này không?</p>
+                                        <div className="flex justify-end space-x-4">
+                                            <button
+                                                className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300"
+                                                onClick={handleCancelCancel}
+                                            >
+                                                Hủy
+                                            </button>
+                                            <button
+                                                className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                                                onClick={handleConfirmCancel}
+                                            >
+                                                Xác nhận
                                             </button>
                                         </div>
                                     </div>

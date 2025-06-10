@@ -58,6 +58,18 @@ export const getHistory = createAsyncThunk(
     }
 );
 
+export const cancelOrder = createAsyncThunk(
+    "user/cancelOrder",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await api.put(`/order/cancel/${id}`);
+            return response.data.result;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 const orderUserSlice = createSlice({
     name: "orderUser",
     initialState: {

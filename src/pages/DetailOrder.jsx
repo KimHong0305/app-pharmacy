@@ -7,6 +7,9 @@ import Footer from '../components/Footer';
 import { getAddressDetail } from '../store/Reducers/addressReducer';
 import { FaTruck } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
+import usePaymentRedirect from '../hooks/usePaymentRedirect';
+import { cancelOrder } from '../store/Reducers/order/orderUserReducer';
+import { toast } from 'react-toastify';
 
 const convertTimestampToDate = (timestamp) => {
     if (!timestamp) return "Không có dữ liệu";
@@ -26,6 +29,11 @@ const DetailOrder = () => {
     const order = location.state;
     const { addressDetail } = useSelector((state) => state.address);
     const [showPriceDetail, setShowPriceDetail] = useState(false);
+    const handleRedirectPayment = usePaymentRedirect();
+
+    const [orderToCancel, setOrderToCancel] = useState(null);
+    const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+
     const handleGoBack = () => {
         navigate(-1);
     };
@@ -63,6 +71,31 @@ const DetailOrder = () => {
         isConfirm,
         leadTime
     } = order;
+
+    const handlePay = async (order) => {
+        await handleRedirectPayment(order.paymentMethod, order.id);
+    }
+
+    const handleCancel = async (order) => {
+        console.log(order);
+        setOrderToCancel(order);
+        setIsCancelDialogOpen(true);
+    }
+
+    const handleConfirmCancel = async () => {
+        if (orderToCancel) {
+            await dispatch(cancelOrder(orderToCancel)).unwrap();
+            toast.success('Hủy đơn hàng thành công');
+            navigate(-1);
+            setOrderToCancel(null);
+            setIsCancelDialogOpen(false);
+        }
+    };
+    
+    const handleCancelCancel = () => {
+        setOrderToCancel(null);
+        setIsCancelDialogOpen(false);
+    };
 
     return (
         <div className='bg-gray-50'>
@@ -228,11 +261,49 @@ const DetailOrder = () => {
                                         </div>
                                     </div>
                                 )}
+                                {!isConfirm && (status !== "SUCCESS" || paymentMethod === "CASH") && (
+                                <div className="flex justify-end mt-6">
+                                    <button
+                                    onClick={() => handleCancel(id)}
+                                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow"
+                                    >
+                                        Hủy đơn hàng
+                                    </button>
+                                    <button
+                                        className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 ml-5"
+                                        onClick={() => handlePay(order)}
+                                    >
+                                        Thanh toán
+                                    </button>
+                                </div>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {isCancelDialogOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-6 rounded-md shadow-lg">
+                        <h3 className="text-lg font-bold mb-4">Xác nhận hủy</h3>
+                        <p className="mb-6">Bạn có chắc chắn muốn hủy đơn hàng này không?</p>
+                        <div className="flex justify-end space-x-4">
+                            <button
+                                className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300"
+                                onClick={handleCancelCancel}
+                            >
+                                Hủy
+                            </button>
+                            <button
+                                className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                                onClick={handleConfirmCancel}
+                            >
+                                Xác nhận
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
         <Footer/>
         </div>

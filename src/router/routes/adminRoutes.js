@@ -7,6 +7,7 @@ const AdminDashboard = lazy(() => import("../../pages/admin/AdminDashboard"));
 const Users = lazy(() => import("../../pages/admin/Users"));
 const Employees = lazy(() => import("../../pages/admin/staff/Employees"));
 const AddEmployee = lazy(() => import("../../pages/admin/staff/AddEmployee"));
+const EditEmployee = lazy(() => import("../../pages/admin/staff/EditEmployee"));
 
 // Categories
 const Categories = lazy(() => import("../../pages/admin/category/Categories"));
@@ -45,6 +46,7 @@ export const adminRoutes = [
     { path: 'admin/users', element: <Users />, role: 'ROLE_ADMIN' },
     { path: 'admin/employees', element: <Employees />, role: 'ROLE_ADMIN' },
     { path: 'admin/employees/add', element: <AddEmployee />, role: 'ROLE_ADMIN' },
+    { path: 'admin/employees/edit/:id', element: <EditEmployee />, role: 'ROLE_ADMIN' },
 
     { path: 'admin/categories', element: <Categories />, role: 'ROLE_ADMIN' },
     { path: 'admin/categories/add', element: <AddCategory />, role: 'ROLE_ADMIN'  },

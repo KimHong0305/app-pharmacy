@@ -53,6 +53,24 @@ export const createEmployee = createAsyncThunk(
   }
 );
 
+export const updateEmployee = createAsyncThunk(
+    "admin/updateEmployee",
+    async (employee, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.put('/employee', employee, {
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log(response.data)
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 export const updateBio = createAsyncThunk(
     "user/updateBio",
     async (bio, { rejectWithValue }) => {
@@ -93,6 +111,40 @@ export const unBanUsers = createAsyncThunk(
         try {
             const token = localStorage.getItem('token');
             const response = await api.put(`/user/unban/${user}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const banEmployee = createAsyncThunk(
+    'admin/banEmployee',
+    async (user, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.put(`/employee/ban/${user}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const unBanEmployee = createAsyncThunk(
+    'admin/unBanUser',
+    async (user, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.put(`/employee/unban/${user}`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

@@ -90,7 +90,10 @@ const OrderCartUser = () => {
             toast.success("Đặt hàng thành công!");
             localStorage.setItem("lastOrderId", result.result.id);
             await dispatch(getCartUser());
-            setShowDialog(true);
+            if (result.result.paymentMethod !== 'CASH'){
+                setShowDialog(true);
+            }
+            navigate('/');
         } catch (error) {
             toast.error(error.message);
         }

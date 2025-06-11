@@ -131,10 +131,19 @@ const DetailOrder = () => {
                                     </div>
                                     <span
                                         className={`px-3 py-1 text-sm rounded-lg ${
-                                            isConfirm === false ? 'bg-yellow-200 text-yellow-800' : 'bg-blue-200 text-blue-800'
+                                            order?.isReceived === true
+                                            ? 'bg-green-200 text-green-800'
+                                            : order.isConfirm === false
+                                            ? 'bg-yellow-200 text-yellow-800'
+                                            : 'bg-blue-200 text-blue-800'
                                         }`}
-                                    >
-                                        {isConfirm === false ? 'Đang xử lý' : 'Đang giao hàng'}
+                                        >
+                                        {order?.isReceived === true
+                                            ? 'Đã nhận hàng'
+                                            : order.isConfirm === false
+                                            ? 'Đang xử lý'
+                                            : 'Đang giao hàng'
+                                        }
                                     </span>
                                 </div>
 

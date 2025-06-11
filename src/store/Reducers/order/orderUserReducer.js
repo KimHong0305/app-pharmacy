@@ -62,7 +62,24 @@ export const cancelOrder = createAsyncThunk(
     "user/cancelOrder",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await api.put(`/order/cancel/${id}`);
+            const response = await api.put(`/order/cancel?orderId=${id}`);
+            return response.data.result;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const receiverOrder = createAsyncThunk(
+    "user/receiverOrder",
+    async (id, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.put(`/order/user/receiver/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
             return response.data.result;
         } catch (error) {
             return rejectWithValue(error.response.data);

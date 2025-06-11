@@ -60,7 +60,8 @@ const OrderDetail = () => {
         deliveryTotal,
         coupon,
         isConfirm,
-        leadTime
+        leadTime,
+        isReceived,
     } = order;
 
     return (
@@ -82,10 +83,19 @@ const OrderDetail = () => {
                                     </div>
                                     <span
                                         className={`px-3 py-1 text-sm rounded-lg ${
-                                            isConfirm === false ? 'bg-yellow-200 text-yellow-800' : 'bg-blue-200 text-blue-800'
+                                            isReceived === true
+                                            ? 'bg-green-200 text-green-800'
+                                            : isConfirm === false
+                                            ? 'bg-yellow-200 text-yellow-800'
+                                            : 'bg-blue-200 text-blue-800'
                                         }`}
-                                    >
-                                        {isConfirm === false ? 'Đang xử lý' : 'Đang giao hàng'}
+                                        >
+                                        {isReceived === true
+                                            ? 'Đã nhận hàng'
+                                            : isConfirm === false
+                                            ? 'Đang xử lý'
+                                            : 'Đang giao hàng'
+                                        }
                                     </span>
                                 </div>
 

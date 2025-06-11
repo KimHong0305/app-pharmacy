@@ -87,7 +87,7 @@ const EmployeeLogin = () => {
                     value={state.username}
                     onChange={inputHandle}
                     className="w-full px-3 py-2 border rounded"
-                    placeholder="Nhập username"
+                    placeholder="Nhập tên đăng nhập"
                     required
                     />
                 </div>

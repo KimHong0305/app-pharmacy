@@ -92,7 +92,10 @@ const OrderUser = () => {
             const result = await dispatch(createOrderHomeUser(order)).unwrap();
             toast.success("Đặt hàng thành công!");
             localStorage.setItem("lastOrderId", result.result.id);
-            setShowDialog(true);
+            if (result.result.paymentMethod !== 'CASH'){
+                setShowDialog(true);
+            }
+            navigate('/');
         } catch (error) {
             toast.error(error.message);
         }

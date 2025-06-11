@@ -4,7 +4,7 @@ import Footer from '../../components/Footer';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserInfo } from '../../store/Reducers/authReducer';
 import { useNavigate } from 'react-router-dom';
-import { cancelOrder, getHistory } from '../../store/Reducers/order/orderUserReducer';
+import { cancelOrder, getHistory, receiverOrder } from '../../store/Reducers/order/orderUserReducer';
 import { createFeedback, deleteFeedback, getFeedbackByUser, updateFeedback } from '../../store/Reducers/feedback/feedbackReducer';
 import { toast } from 'react-toastify';
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -129,15 +129,20 @@ const HistoryOrder = () => {
     }
 
     const handleCancel = async (order) => {
-        console.log(order);
         setOrderToCancel(order);
         setIsCancelDialogOpen(true);
     }
 
+    const handleReceiver = async (order) => {
+        await dispatch(receiverOrder(order)).unwrap();
+        toast.success("Nhận hàng thành công. Bạn có thể đánh giá đơn hàng!")
+        dispatch(getHistory());
+    }
+
     const handleConfirmCancel = async () => {
         if (orderToCancel) {
-            await dispatch(cancelOrder(orderToCancel)).unwrap();
-            toast.success('Hủy đơn hàng thành công');
+            const res = await dispatch(cancelOrder(orderToCancel)).unwrap();
+            toast.success(res.message);
             dispatch(getHistory());
             setOrderToCancel(null);
             setIsCancelDialogOpen(false);
@@ -152,15 +157,15 @@ const HistoryOrder = () => {
     const filteredHistory = history.filter((order) => {
         switch (activeTab) {
             case "processing":
-                return !order.isConfirm  &&  (order.status === "SUCCESS" || order.paymentMethod === "CASH");
+                return (!order.isConfirm && order.status === 'SUCCESS' ) || (order.status === "PENDING" && order.paymentMethod === "CASH");
             case "shipping":
-                return order.isConfirm && order.status !== "CANCELLED";
+                return order.isConfirm && order?.isReceived === false;
             case "cancelled":
-                return order.status === "FAILED" && !order.isConfirm;
+                return order.status === "FAILED" || order.status === "CANCELLED";
             case "pendingPayment":
                 return order.status === "PENDING" && order.paymentMethod !== "CASH";
             case "review":
-                return order.isConfirm  &&  (order.status === "SUCCESS" || order.paymentMethod === "CASH");
+                return order.isReceived === true;
             case "reviewed":
                 return false;
             default:
@@ -283,13 +288,22 @@ const HistoryOrder = () => {
                                                     <p className="text-lg font-semibold cursor-pointer" onClick={() => handleOrderDetail(order)}>Mã đơn hàng: {order.id}</p>
                                                     <p className="text-sm text-gray-600">Ngày đặt: {order.orderDate}</p>
                                                 </div>
-                                                {order.status !== 'FAILED' && (
+                                                {(order.status !== 'CANCELLED') && (
                                                     <span
                                                         className={`px-3 py-1 text-sm rounded-lg ${
-                                                            order.isConfirm === false ? 'bg-yellow-200 text-yellow-800' : 'bg-blue-200 text-blue-800'
+                                                            order?.isReceived === true
+                                                            ? 'bg-green-200 text-green-800'
+                                                            : order.isConfirm === false
+                                                            ? 'bg-yellow-200 text-yellow-800'
+                                                            : 'bg-blue-200 text-blue-800'
                                                         }`}
-                                                    >
-                                                        {order.isConfirm === false ? 'Đang xử lý' : 'Đang giao hàng'}
+                                                        >
+                                                        {order?.isReceived === true
+                                                            ? 'Đã nhận hàng'
+                                                            : order.isConfirm === false
+                                                            ? 'Đang xử lý'
+                                                            : 'Đang giao hàng'
+                                                        }
                                                     </span>
                                                 )}
 
@@ -369,10 +383,34 @@ const HistoryOrder = () => {
                                                         Hủy đơn
                                                     </button>
                                                     <button
-                                                        className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                                                        className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
                                                         onClick={() => handlePay(order)}
                                                     >
                                                         Thanh toán
+                                                    </button>
+                                                </div>
+                                                </>
+                                            )}
+                                            {activeTab === "processing" && (
+                                                <>
+                                                <div className='flex items-center justify-end mt-4'>
+                                                    <button
+                                                        className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600"
+                                                        onClick={() => handleCancel(order.id)}
+                                                    >
+                                                        Hủy đơn
+                                                    </button>
+                                                </div>
+                                                </>
+                                            )}
+                                            {activeTab === "shipping" && (
+                                                <>
+                                                <div className='flex items-center justify-end mt-4'>
+                                                    <button
+                                                        className="px-4 py-2 text-white bg-sky-500 rounded-md hover:bg-sky-600"
+                                                        onClick={() => handleReceiver(order.id)}
+                                                    >
+                                                        Đã nhận hàng
                                                     </button>
                                                 </div>
                                                 </>

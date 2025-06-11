@@ -62,8 +62,8 @@ export const cancelOrder = createAsyncThunk(
     "user/cancelOrder",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await api.put(`/order/cancel?orderId=${id}`);
-            return response.data.result;
+            const response = await api.post(`/order/cancel?orderId=${id}`);
+            return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }

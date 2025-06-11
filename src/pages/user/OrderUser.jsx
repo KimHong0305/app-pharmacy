@@ -95,7 +95,9 @@ const OrderUser = () => {
             if (result.result.paymentMethod !== 'CASH'){
                 setShowDialog(true);
             }
-            navigate('/');
+            else {
+                navigate('/');
+            }
         } catch (error) {
             toast.error(error.message);
         }

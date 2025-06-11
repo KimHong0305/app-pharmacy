@@ -99,6 +99,7 @@ const PaymentCallback = () => {
                         </h1>
                         {isSuccess ? (
                             <div className="text-center">
+                                <p className="mb-2 font-medium">Đây là mã đơn hàng của bạn</p>
                                 <p className="mb-3">{paymentInfo.orderInfo}</p>
                                 {!tokenExists && (
                                     <div className="flex flex-col bg-amber-100 my-5 rounded-lg font-semibold py-2">

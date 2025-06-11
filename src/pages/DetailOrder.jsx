@@ -8,7 +8,7 @@ import { getAddressDetail } from '../store/Reducers/addressReducer';
 import { FaTruck } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import usePaymentRedirect from '../hooks/usePaymentRedirect';
-import { cancelOrder } from '../store/Reducers/order/orderUserReducer';
+import { cancelOrder, receiverOrder } from '../store/Reducers/order/orderUserReducer';
 import { toast } from 'react-toastify';
 
 const convertTimestampToDate = (timestamp) => {
@@ -69,7 +69,7 @@ const DetailOrder = () => {
         deliveryTotal,
         coupon,
         isConfirm,
-        leadTime
+        leadTime,
     } = order;
 
     const handlePay = async (order) => {
@@ -96,6 +96,11 @@ const DetailOrder = () => {
         setOrderToCancel(null);
         setIsCancelDialogOpen(false);
     };
+
+    const handleReceiver = async (order) => {
+        await dispatch(receiverOrder(order)).unwrap();
+        toast.success("Nhận hàng thành công. Bạn có thể đánh giá đơn hàng!")
+    }
 
     return (
         <div className='bg-gray-50'>
@@ -270,22 +275,32 @@ const DetailOrder = () => {
                                         </div>
                                     </div>
                                 )}
-                                {!isConfirm && (status !== "SUCCESS" || paymentMethod === "CASH") && (
                                 <div className="flex justify-end mt-6">
+                                {!isConfirm && status !== "CANCELLED" && (
                                     <button
                                     onClick={() => handleCancel(id)}
                                     className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow"
                                     >
                                         Hủy đơn hàng
                                     </button>
+                                )}
+                                {!isConfirm && paymentMethod !== "CASH" && status === "PENDING" && (
                                     <button
-                                        className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 ml-5"
+                                        className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ml-5"
                                         onClick={() => handlePay(order)}
                                     >
                                         Thanh toán
                                     </button>
-                                </div>
                                 )}
+                                {order.isConfirm && !order.isReceived && (
+                                    <button
+                                        className="px-4 py-2 text-white bg-sky-500 rounded-md hover:bg-sky-600 ml-5"
+                                        onClick={() => handleReceiver(order.id)}
+                                    >
+                                        Đã nhận hàng
+                                    </button>
+                                )}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -105,10 +105,19 @@ const SearchOrder = () => {
                                                 </div>
                                                 <span
                                                     className={`px-3 py-1 text-sm rounded-lg ${
-                                                        result.isConfirm === false ? 'bg-yellow-200 text-yellow-800' : 'bg-blue-200 text-blue-800'
+                                                        result?.isReceived === true
+                                                        ? 'bg-green-200 text-green-800'
+                                                        : result.isConfirm === false
+                                                        ? 'bg-yellow-200 text-yellow-800'
+                                                        : 'bg-blue-200 text-blue-800'
                                                     }`}
-                                                >
-                                                    {result.isConfirm === false ? 'Đang xử lý' : 'Đang giao hàng'}
+                                                    >
+                                                    {result?.isReceived === true
+                                                        ? 'Đã nhận hàng'
+                                                        : result.isConfirm === false
+                                                        ? 'Đang xử lý'
+                                                        : 'Đang giao hàng'
+                                                    }
                                                 </span>
                                             </div>
 

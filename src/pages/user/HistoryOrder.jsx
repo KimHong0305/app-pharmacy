@@ -157,7 +157,7 @@ const HistoryOrder = () => {
     const filteredHistory = history.filter((order) => {
         switch (activeTab) {
             case "processing":
-                return (!order.isConfirm && order.status === 'SUCCESS' ) || (order.status === "PENDING" && order.paymentMethod === "CASH");
+                return (!order.isConfirm && order.status === 'SUCCESS' ) || (!order.isConfirm && order.status === "PENDING" && order.paymentMethod === "CASH");
             case "shipping":
                 return order.isConfirm && order?.isReceived === false;
             case "cancelled":

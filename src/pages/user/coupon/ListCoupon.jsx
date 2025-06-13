@@ -56,7 +56,7 @@ const ListCoupon = () => {
                                         coupons.map((coupon) => (
                                             <div 
                                                 key={coupon.id} 
-                                                className="flex justify-center items-center border border-gray-300 rounded-lg p-4 shadow-md bg-white"
+                                                className="flex justify-start items-center border border-gray-300 rounded-lg p-4 shadow-md bg-white"
                                             >
                                                 <img 
                                                     className="w-20 object-cover rounded-md"

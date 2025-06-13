@@ -94,7 +94,9 @@ const OrderCartUser = () => {
                 setShowDialog(true);
             }
             else {
-                navigate('/');
+                setTimeout(() => {
+                    navigate('/');
+                }, 5000);
             }
         } catch (error) {
             toast.error(error.message);

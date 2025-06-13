@@ -75,12 +75,12 @@ export const receiverOrder = createAsyncThunk(
     async (id, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await api.put(`/order/user/receiver/${id}`, {
+            const response = await api.put(`/order/user/receiver/${id}`, {},{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
-            return response.data.result;
+            return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }

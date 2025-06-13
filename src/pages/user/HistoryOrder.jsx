@@ -165,7 +165,7 @@ const HistoryOrder = () => {
             case "pendingPayment":
                 return order.status === "PENDING" && order.paymentMethod !== "CASH";
             case "review":
-                return order.isReceived === true;
+                return order.isReceived === true && (order.status === 'SUCCESS' || order.paymentMethod === "CASH");
             case "reviewed":
                 return false;
             default:

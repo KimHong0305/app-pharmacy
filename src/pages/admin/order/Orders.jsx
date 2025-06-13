@@ -124,7 +124,7 @@ const Orders = () => {
                                     <TableCell className="cursor-pointer" onClick={() => handleOrderDetail(order)}>{order.id}</TableCell>
                                     <TableCell>{order.orderDate}</TableCell>
                                     <TableCell>{order.orderItemResponses.length}</TableCell>
-                                    <TableCell>{new Intl.NumberFormat('vi-VN').format(order.totalPrice)} đ</TableCell>
+                                    <TableCell>{new Intl.NumberFormat('vi-VN').format(order.newTotalPrice)} đ</TableCell>
                                     <TableCell>{order.paymentMethod}</TableCell>
                                     <TableCell>
                                         <span

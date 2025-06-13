@@ -99,15 +99,18 @@ const PaymentCallback = () => {
                         </h1>
                         {isSuccess ? (
                             <div className="text-center">
-                                <p className="mb-2 font-medium">Đây là mã đơn hàng của bạn</p>
-                                <p className="mb-3">{paymentInfo.orderInfo}</p>
-                                {!tokenExists && (
+                                {!tokenExists ? (
                                     <div className="flex flex-col bg-amber-100 my-5 rounded-lg font-semibold py-2">
                                         <p>Đây là mã đơn hàng của bạn</p>
                                         <p className="text-amber-600 text-lg">{paymentInfo.orderInfo}</p>
                                         <p>Hãy lưu lại để tra cứu</p>
                                     </div>
-                                )}
+                                    ) : (
+                                    <>
+                                        <p className="mb-2 font-medium">Đây là mã đơn hàng của bạn</p>
+                                        <p className="mb-3">{paymentInfo.orderInfo}</p>
+                                    </>
+                                    )}
                                 <button
                                     className="p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
                                     onClick={() => {

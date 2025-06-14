@@ -11,6 +11,7 @@ import { addCartGuest, addCartUser, getCartGuest, getCartUser } from '../store/R
 import { toast } from 'react-toastify';
 import { getFeedbackByProduct, getReplyFeedback, setReply } from '../store/Reducers/feedback/feedbackReducer';
 import { FaRegHeart } from "react-icons/fa";
+import Breadcrumb from '../components/Breadcrumb';
 const ProductDetail = () => {
     const token = localStorage.getItem('token');
 
@@ -50,7 +51,19 @@ const ProductDetail = () => {
 
     const onSliderChange = (index) => {
         setActiveImageIndex(index);
-    };      
+    };     
+
+    const breadcrumbPaths = [
+        { label: "Trang chủ", to: "/" },
+        product?.[0]?.category?.parent && {
+            label: product[0].category.parent.name,
+            to: `/categories/${product[0].category.parent.id}/products`
+        },
+        product?.[0]?.category && {
+            label: product[0].category.name,
+            to: `/categories/${product[0].category.id}/products`
+        }
+    ].filter(Boolean);
 
     useEffect(() => {
         dispatch(getProductById(productId));
@@ -163,7 +176,8 @@ const ProductDetail = () => {
     return (
         <div>
             <Header />
-            <div className="px-4 md:px-8 lg:px-48 container mx-auto my-10">
+            <div className="px-4 md:px-8 lg:px-48 container mx-auto my-5">
+                <Breadcrumb paths={breadcrumbPaths} />
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-6 pb-2">
                     {/* Slider */}
                     <div className='md:col-span-2 flex-col items-start justify-center'>

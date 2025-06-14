@@ -7,7 +7,7 @@ export const createPaymentMoMo = createAsyncThunk(
         try {
             const response = await api.post(
                 `/momo/create-payment?orderId=${orderId}`,
-                null
+                {}
             );
 
             return response.data;

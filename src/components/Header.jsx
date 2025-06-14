@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
 import { FaBell, FaCartShopping } from "react-icons/fa6";
 import { PiLineVertical } from "react-icons/pi";
@@ -21,6 +21,7 @@ const Header = () => {
   const products = useSelector((state) => state.product.allProducts);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const location = useLocation();
 
   const cartCount = cartItems.length;
   const navigate = useNavigate();
@@ -80,8 +81,16 @@ const Header = () => {
   };
 
   const handleCategoryClick = (categoryId, categoryName) => {
-    navigate(`/categories/${categoryId}/products`, { state: { categoryName } });
+    const prevTrail = location.state?.breadcrumbTrail || [];
+    const newTrail = [...prevTrail, { id: categoryId, name: categoryName }];
+
+    navigate(`/categories/${categoryId}/products`, {
+      state: {
+        breadcrumbTrail: newTrail,
+      },
+    });
   };
+
 
   useEffect(() => {
     if (searchQuery.trim() === '') {

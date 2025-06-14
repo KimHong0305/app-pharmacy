@@ -5,13 +5,13 @@ import { getProductByCategory } from "../store/Reducers/productReducer";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { getChildCategory } from "../store/Reducers/categoryReducer";
+import Breadcrumb from "../components/Breadcrumb";
 
 const ProductList = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
 
-    const categoryName = location.state?.categoryName;
     const { categoryId } = useParams();
     const products = useSelector((state) => state.product.products);
     const { childCategories } = useSelector((state) => state.category);
@@ -23,14 +23,56 @@ const ProductList = () => {
     const [maxPriceDisplay, setMaxPriceDisplay] = useState("");
     const [filteredProducts, setFilteredProducts] = useState([]);
 
+    const storedBreadcrumb = sessionStorage.getItem('breadcrumbTrail');
+    const breadcrumbTrail = Array.isArray(location.state?.breadcrumbTrail)
+        ? location.state.breadcrumbTrail
+        : storedBreadcrumb
+            ? JSON.parse(storedBreadcrumb)
+            : [];
+
+    const categoryName =
+        location.state?.categoryName ??
+        breadcrumbTrail.find(cat => String(cat.id) === String(categoryId))?.name ??
+        "Danh mục";
+
+    const breadcrumbPaths = [
+        { label: "Trang chủ", to: "/" },
+        ...breadcrumbTrail.map((cat, index) => ({
+            label: cat.name,
+            to: index === breadcrumbTrail.length - 1 ? null : `/categories/${cat.id}/products`,
+        })),
+    ];
+
     useEffect(() => {
         dispatch(getProductByCategory({ page: 0, size: 50, categoryId, sortOrder }));
         dispatch(getChildCategory(categoryId));
     }, [dispatch, categoryId, sortOrder]);
 
     useEffect(() => {
+        const currentIdStr = String(categoryId);
+        const trail = [...breadcrumbTrail];
+
+        const isInTrail = trail.some(cat => String(cat.id) === currentIdStr);
+
+        if (!isInTrail && categoryName) {
+            const newTrail = [{ id: categoryId, name: categoryName }];
+            sessionStorage.setItem("breadcrumbTrail", JSON.stringify(newTrail));
+        } else {
+            const lastItem = trail[trail.length - 1];
+            if (String(lastItem?.id) !== currentIdStr) {
+                const index = trail.findIndex(cat => String(cat.id) === currentIdStr);
+                if (index !== -1) {
+                    const newTrail = trail.slice(0, index + 1);
+                    sessionStorage.setItem("breadcrumbTrail", JSON.stringify(newTrail));
+                }
+            }
+        }
+    }, [categoryId, breadcrumbTrail, categoryName]);
+
+    useEffect(() => {
         setFilteredProducts(products);
     }, [products]);
+
 
     const formatCurrency = (value) => {
         return value
@@ -51,11 +93,32 @@ const ProductList = () => {
     };
 
     const handleProductClick = (productId) => {
-        navigate(`/products/${productId}`);
+        navigate(`/products/${productId}`, {
+            state: {
+                breadcrumbTrail: breadcrumbTrail,
+            },
+        });
     };
 
-    const handleCategoryClick = (categoryId, categoryName) => {
-        navigate(`/categories/${categoryId}/products`, { state: { categoryName } });
+    const handleCategoryClick = (id, name) => {
+        let newTrail = [];
+
+        const existingIndex = breadcrumbTrail.findIndex(cat => cat.id === id);
+
+        if (existingIndex !== -1) {
+            newTrail = breadcrumbTrail.slice(0, existingIndex + 1);
+        } else {
+            newTrail = [...breadcrumbTrail, { id, name }];
+        }
+
+        sessionStorage.setItem('breadcrumbTrail', JSON.stringify(newTrail));
+
+        navigate(`/categories/${id}/products`, {
+            state: {
+                categoryName: name,
+                breadcrumbTrail: newTrail,
+            },
+        });
     };
 
     const handleSortOrderChange = (order) => {
@@ -81,7 +144,8 @@ const ProductList = () => {
     return (
         <div>
         <Header />
-        <div className="container mx-auto px-4 md:px-8 lg:px-16 max-w-screen-xl my-10">
+        <div className="container mx-auto px-4 md:px-8 lg:px-16 max-w-screen-xl my-5">
+            <Breadcrumb paths={breadcrumbPaths} />
             <p className="text-2xl font-semibold">{categoryName}</p>
             <div className="grid grid-cols-4 gap-6 md:grid-cols-[repeat(auto-fill,136px)] md:pb-4">
             {childCategories.map((child) => (
@@ -102,54 +166,59 @@ const ProductList = () => {
             ))}
             </div>
 
-            <div className="container relative grid grid-cols-1 items-start gap-3 md:grid-cols-[193px,1fr]">
+            <div className={`container relative grid items-start gap-3 ${
+                childCategories.length === 0 ? "md:grid-cols-[193px,1fr]" : "grid-cols-1"
+            }`}>
             {/* Bộ lọc */}
-            <div className="px-1">
-                <div className="flex justify-between py-5">
-                <p className="font-semibold">Bộ lọc</p>
-                <button
-                    className="text-blue-600 font-semibold"
-                    onClick={() => {
-                    setMinPrice("");
-                    setMaxPrice("");
-                    setMinPriceDisplay("");
-                    setMaxPriceDisplay("");
-                    setFilteredProducts(products);
-                    }}
-                >
-                    Thiết lập lại
-                </button>
-                </div>
-                <div className="grid gap-4">
-                    <p className="text-sm font-semibold">Khoảng giá</p>
-                    <div className="flex items-center border border-gray-300 rounded-md px-3 py-1 w-full">
-                        <input
-                        type="text"
-                        placeholder="Tối thiểu"
-                        value={minPriceDisplay}
-                        onChange={handleMinPriceChange}
-                        className="flex-1 bg-transparent focus:outline-none text-gray-900 placeholder-gray-500 w-0"
-                        />
-                        <span className="text-gray-500 ml-1">đ</span>
+            {childCategories.length === 0 && (
+                <div className="px-1">
+                    <div className="flex justify-between py-5">
+                        <p className="font-semibold">Bộ lọc</p>
+                        <button
+                            className="text-blue-600 font-semibold"
+                            onClick={() => {
+                                setMinPrice("");
+                                setMaxPrice("");
+                                setMinPriceDisplay("");
+                                setMaxPriceDisplay("");
+                                setFilteredProducts(products);
+                            }}
+                        >
+                            Thiết lập lại
+                        </button>
                     </div>
-                    <div className="flex items-center border border-gray-300 rounded-md px-3 py-1 w-full">
-                        <input
-                        type="text"
-                        placeholder="Tối đa"
-                        value={maxPriceDisplay}
-                        onChange={handleMaxPriceChange}
-                        className="flex-1 bg-transparent focus:outline-none text-gray-900 placeholder-gray-500 w-0"
-                        />
-                        <span className="text-gray-500 ml-1">đ</span>
+                    <div className="grid gap-4">
+                        <p className="text-sm font-semibold">Khoảng giá</p>
+                        <div className="flex items-center border border-gray-300 rounded-md px-3 py-1 w-full">
+                            <input
+                                type="text"
+                                placeholder="Tối thiểu"
+                                value={minPriceDisplay}
+                                onChange={handleMinPriceChange}
+                                className="flex-1 bg-transparent focus:outline-none text-gray-900 placeholder-gray-500 w-0"
+                            />
+                            <span className="text-gray-500 ml-1">đ</span>
+                        </div>
+                        <div className="flex items-center border border-gray-300 rounded-md px-3 py-1 w-full">
+                            <input
+                                type="text"
+                                placeholder="Tối đa"
+                                value={maxPriceDisplay}
+                                onChange={handleMaxPriceChange}
+                                className="flex-1 bg-transparent focus:outline-none text-gray-900 placeholder-gray-500 w-0"
+                            />
+                            <span className="text-gray-500 ml-1">đ</span>
+                        </div>
+                        <button
+                            className="w-full h-8 px-3 rounded-md bg-sky-500 hover:bg-sky-700 text-white text-sm font-semibold"
+                            onClick={handleApplyFilter}
+                        >
+                            Áp dụng
+                        </button>
                     </div>
-                    <button
-                        className="w-full h-8 px-3 rounded-md bg-sky-500 hover:bg-sky-700 text-white text-sm font-semibold"
-                        onClick={handleApplyFilter}
-                    >
-                        Áp dụng
-                    </button>
                 </div>
-            </div>
+            )}
+
 
             {/* Danh sách sản phẩm */}
             <div className="px-1">

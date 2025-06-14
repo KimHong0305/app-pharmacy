@@ -1,13 +1,14 @@
-import {allNav} from './allNav';
+import {navAdmin, navEmployee, navNurse} from './allNav';
 
 export const getNav = (role) => {
-    const finalNavs = []
-
-    for (let i = 0; i < allNav.length; i++) {
-       if (role === allNav[i].role) {
-         finalNavs.push(allNav[i])
-       } 
-    }
-    return finalNavs
-
-}
+  switch (role) {
+    case 'ROLE_ADMIN':
+      return navAdmin;
+    case 'ROLE_EMPLOYEE':
+      return navEmployee;
+    case 'ROLE_NURSE':
+      return navNurse;
+    default:
+      return [];
+  }
+};

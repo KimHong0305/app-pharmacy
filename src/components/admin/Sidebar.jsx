@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { BiLogOutCircle } from "react-icons/bi";
+import { BiLogOutCircle } from 'react-icons/bi';
 import logo from '../../assets/logo.png';
 import { getNav } from '../../navigation/index';
 import { logout } from '../../store/Reducers/authReducer';
@@ -29,60 +29,64 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
   };
 
   const isActive = (nav) =>
-    nav.activePaths
-      ? nav.activePaths.includes(pathname)
-      : pathname === nav.path;
+    nav.activePaths ? nav.activePaths.includes(pathname) : pathname === nav.path;
 
   return (
     <div>
       <div
         onClick={() => setShowSidebar(false)}
         className={`fixed duration-200 ${
-          !showSidebar ? "invisible" : "visible"
-        } w-screen h-screen bg-[#daf3f9] top-0 left-0 z-10`}
+          !showSidebar ? 'invisible' : 'visible'
+        } w-screen h-screen bg-black/20 top-0 left-0 z-10 lg:hidden`}
       ></div>
 
       <div
-        className={`w-[260px] fixed bg-[#daf3f9] z-50 top-0 h-screen shadow-[0_0_15px_0_rgb(34_41_47_/_5%)] transition-all ${
-          showSidebar ? "left-0" : "-left-[260px] lg:left-0"
+        className={`w-[260px] fixed bg-[#daf3f9] z-50 top-0 h-screen shadow-md transition-all duration-300 ${
+          showSidebar ? 'left-0' : '-left-[260px] lg:left-0'
         }`}
       >
-        <div className="h-[80px] flex justify-center items-center">
-          <Link to="/admin/dashboard" className="w-[180px] h-[70px]">
-            <img className="w-full h-full" src={logo} alt="Logo" />
+        <div className="h-[80px] flex justify-center items-center border-b border-gray-300">
+          <Link to="/" className="w-[180px] h-[70px]">
+            <img className="w-full h-full object-contain" src={logo} alt="Logo" />
           </Link>
         </div>
 
-        <div className="px-[16px]">
-          <ul>
-            {allNav.map((n, i) => (
-              <li key={i}>
-                <Link
-                  to={n.path}
-                  className={`${
-                    isActive(n)
-                      ? "bg-[#84ccde] shadow-indigo-500/50 text-white font-semibold duration-500"
-                      : "text-[#030811] font-semibold duration-200"
-                  } px-[12px] py-[9px] rounded-sm flex justify-start items-center gap-[12px] hover:pl-4 transition-all w-full mb-1`}
-                >
-                  <span>{n.icon}</span>
-                  <span>{n.title}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+        <div className="px-2 h-[calc(100vh-140px)]">
+          {allNav.map((group, groupIndex) => (
+            <div key={groupIndex} className="mb-2">
+              <p className="uppercase text-[12px] text-gray-600 font-medium mb-2 px-1">
+                {group.group}
+              </p>
+              <ul>
+                {group.items.map((item, itemIndex) => (
+                  <li key={itemIndex}>
+                    <Link
+                      to={item.path}
+                      className={`${
+                        isActive(item)
+                          ? 'bg-sky-600 text-white shadow-sm'
+                          : 'text-gray-800 hover:bg-sky-100'
+                      } px-3 py-3 rounded-md flex items-center gap-3 transition-all duration-200 font-medium`}
+                    >
+                      <span className="text-[18px]">{item.icon}</span>
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
 
-          <div>
-            <button
-              onClick={handleLogout}
-              className="text-[#030811] font-semibold duration-200 px-[12px] py-[9px] rounded-sm flex justify-start items-center gap-[12px] hover:pl-4 transition-all w-full mb-1"
-            >
-              <span>
-                <BiLogOutCircle />
-              </span>
-              <span>Logout</span>
-            </button>
-          </div>
+        {/* Logout */}
+        <div className="px-4 py-3 border-t border-gray-300">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 text-gray-800 hover:bg-red-100 px-3 py-2 rounded-md transition-all duration-200 font-medium"
+          >
+            <BiLogOutCircle className="text-[18px]" />
+            <span className="text-sm">Logout</span>
+          </button>
         </div>
       </div>
     </div>

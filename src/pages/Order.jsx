@@ -77,12 +77,13 @@ const Order = () => {
         const fullname = document.getElementById("fullName").value.trim();
         const phone = document.getElementById("phoneNumber").value.trim();
         const address = document.getElementById("address").value.trim();
+        const email = document.getElementById("email").value.trim();
 
         const province = selectedProvince;
         const district = selectedDistrict;
         const village = selectedVillage;
 
-        if (!fullname || !phone || !selectedProvince || !selectedDistrict || !selectedVillage || !address) {
+        if (!fullname || !phone || !selectedProvince || !selectedDistrict || !selectedVillage || !address || !email) {
             toast.error("Vui lòng điền đầy đủ thông tin!");
             return;
         }
@@ -95,12 +96,13 @@ const Order = () => {
             province,
             district,
             village,
+            email,
             addressCategory: addressType === "Nhà riêng" ? "HOUSE" : "COMPANY",
             paymentMethod: paymentMethod,
             isInsurance: false,
             service_id: service,
         };
-        console.log('don hang',order)
+        // console.log('don hang',order)
         try{
             const result = await dispatch(createOrderHomeGuest(order)).unwrap();
             toast.success("Đặt hàng thành công!");
@@ -170,6 +172,18 @@ const Order = () => {
                                     placeholder="Số điện thoại"
                                     className="p-2 border rounded w-full"
                                     required
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="email" className="block font-medium text-gray-700 mb-2">
+                                    Email <span className="text-red-500 ml-1">*</span>
+                                </label>
+                                <input
+                                    id="email"
+                                    type="text"
+                                    placeholder="Email"
+                                    className="p-2 border rounded w-full"
                                 />
                             </div>
 
@@ -252,7 +266,7 @@ const Order = () => {
                                 </label>
                                 <div className="flex items-center gap-4">
                                     <div
-                                        className={`px-2 py-1 border rounded-md cursor-pointer ${
+                                        className={`px-3 py-2 border rounded-md cursor-pointer ${
                                             addressType === "Nhà riêng" ? "bg-blue-100 text-blue-500 " : "bg-gray-100"
                                         }`}
                                         onClick={() => setAddressType("Nhà riêng")}
@@ -260,7 +274,7 @@ const Order = () => {
                                         Nhà riêng
                                     </div>
                                     <div
-                                        className={`px-2 py-1 border rounded-md cursor-pointer ${
+                                        className={`px-3 py-2 border rounded-md cursor-pointer ${
                                             addressType === "Văn phòng" ? "bg-blue-100 text-blue-500 " : "bg-gray-100"
                                         }`}
                                         onClick={() => setAddressType("Văn phòng")}

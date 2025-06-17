@@ -34,7 +34,7 @@ const Login = ({isVisible, onClose}) => {
     try {
       await dispatch(userLogin(state)).unwrap();
     } catch (error) {
-      const message = error?.data?.message || error?.message || "Đăng nhập thất bại!";
+      const message = error?.message || error?.data?.message || "Đăng nhập thất bại!";
       toast.error(message);
       dispatch(messageClear());
     }

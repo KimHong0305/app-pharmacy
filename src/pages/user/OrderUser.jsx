@@ -32,12 +32,22 @@ const OrderUser = () => {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [showDialog, setShowDialog] = useState(false);
-    const [selectedVoucher, setSelectedVoucher] = useState(null);
-    const [discountAmount, setDiscountAmount] = useState(0);
+    const [selectedVouchers, setSelectedVouchers] = useState({
+        PRODUCT: null,
+        DELIVERY: null,
+    });
+    const [productDiscount, setProductDiscount] = useState(0);
+    const [deliveryDiscount, setDeliveryDiscount] = useState(0);
     const [shippingMethod, setShippingMethod] = useState("FAST");
     const [shippingFee, setShippingFee] = useState(0);
     const [service, setService] = useState(null);
     const handleRedirectPayment = usePaymentRedirect();
+
+    const calculateDiscount = (voucher, basePrice) => {
+        if (!voucher) return 0;
+        const raw = (basePrice * voucher.percent) / 100;
+        return Math.min(raw, voucher.max);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -80,13 +90,17 @@ const OrderUser = () => {
 
     const handleOrder = async() => {
         const order = {
-            ...(selectedVoucher && { couponId: selectedVoucher.id }),
+            couponIds: [
+                ...(selectedVouchers.PRODUCT ? [selectedVouchers.PRODUCT.id] : []),
+                ...(selectedVouchers.DELIVERY ? [selectedVouchers.DELIVERY.id] : []),
+            ],
             priceId: selectedProduct.price.id,
             addressId: defaultAddress.id,
             paymentMethod: paymentMethod,
             isInsurance: false,
             service_id: service,
         };
+
         // console.log(order)
         try{
             const result = await dispatch(createOrderHomeUser(order)).unwrap();
@@ -279,52 +293,89 @@ const OrderUser = () => {
                                 <IoIosArrowForward />
                                 </p>
                             </div>
-                            {selectedVoucher && (
+                            {selectedVouchers.PRODUCT && (
                                 <div className="my-2 flex justify-between items-center bg-orange-50 border border-orange-200 rounded-lg px-3 py-2 shadow-sm relative overflow-hidden">
-                                {/* Thanh màu bên trái */}
-                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-300 rounded-l-lg" />
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-300 rounded-l-lg" />
 
-                                {/* Nội dung voucher */}
-                                <div className="flex items-center space-x-2 z-10">
-                                    <div className="bg-white text-orange-500 rounded-full p-1.5 flex items-center justify-center shadow-sm">
-                                    <FaTicketAlt className="h-4 w-4" />
+                                    <div className="flex items-center space-x-2 z-10">
+                                        <div className="bg-white text-orange-500 rounded-full p-1.5 flex items-center justify-center shadow-sm">
+                                            <FaTicketAlt className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-medium text-orange-700">
+                                                {selectedVouchers.PRODUCT.name}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                    <p className="text-xs font-medium text-orange-700">{selectedVoucher.name}</p>
-                                    </div>
-                                </div>
 
-                                {/* Nút huỷ */}
-                                <button
-                                    onClick={() => {
-                                    setSelectedVoucher(null);
-                                    setDiscountAmount(0);
-                                    }}
-                                    className="text-[10px] text-red-500 hover:text-red-700 font-medium z-10"
-                                >
-                                    Hủy
-                                </button>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedVouchers((prev) => ({ ...prev, PRODUCT: null }));
+                                            setProductDiscount(0);
+                                        }}
+                                        className="text-[10px] text-red-500 hover:text-red-700 font-medium z-10"
+                                    >
+                                        Hủy
+                                    </button>
                                 </div>
                             )}
-                        <p className="flex justify-between">
+
+                            {selectedVouchers.DELIVERY && (
+                                <div className="my-2 flex justify-between items-center bg-green-50 border border-green-200 rounded-lg px-3 py-2 shadow-sm relative overflow-hidden">
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-300 rounded-l-lg" />
+
+                                    <div className="flex items-center space-x-2 z-10">
+                                        <div className="bg-white text-green-500 rounded-full p-1.5 flex items-center justify-center shadow-sm">
+                                            <FaTicketAlt className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-medium text-green-700">
+                                                {selectedVouchers.DELIVERY.name}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        onClick={() => {
+                                            setSelectedVouchers((prev) => ({ ...prev, DELIVERY: null }));
+                                            setDeliveryDiscount(0);
+                                        }}
+                                        className="text-[10px] text-red-500 hover:text-red-700 font-medium z-10"
+                                    >
+                                        Hủy
+                                    </button>
+                                </div>
+                            )}
+                        <p className="flex justify-between text-sm ">
                             <span>Tạm tính:</span>
                             <span>
                                 {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(selectedProduct.price.price)}
                             </span>
                         </p>
-                        <div className="flex justify-between items-center my-2">
-                            <p>Giảm giá:</p>
-                            <p className="text-red-500">
-                            - {discountAmount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
-                            </p>
-                        </div>
-                        <p className="flex justify-between my-2">
+                        <p className="flex justify-between my-2 text-sm ">
                             <span>Phí vận chuyển:</span>
                             <span>
                                 {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shippingFee)}
                             </span>
                         </p>
-                        <div className="border-t border-gray-300 my-2"></div>
+                        {selectedVouchers.PRODUCT && (
+                            <div className="flex justify-between text-sm my-2">
+                                <span>Giảm giá sản phẩm:</span>
+                                <span className="text-red-500">
+                                    - {productDiscount.toLocaleString('vi-VN')}₫
+                                </span>
+                            </div>
+                        )}
+
+                        {selectedVouchers.DELIVERY && (
+                            <div className="flex justify-between text-sm my-2">
+                                <span>Giảm phí giao hàng:</span>
+                                <span className="text-red-600">
+                                    - {Math.round(deliveryDiscount).toLocaleString('vi-VN')}₫
+                                </span>
+                            </div>
+                        )}
+                    <div className="border-t border-gray-300 my-2"></div>
                         <p className="flex justify-between items-end font-bold">
                             <div className="flex flex-col">
                                 <span className="text-lg font-medium">Tổng tiền:</span>
@@ -334,7 +385,7 @@ const OrderUser = () => {
                             </div>
                             <p className="text-xl font-semibold text-red-500">
                                 {/* <span className="text-xs line-through mr-1 text-gray-500">{selectedProduct.price.price}</span> */}
-                                {(selectedProduct.price.price - discountAmount + shippingFee ).toLocaleString("vi-VN", {
+                                {(selectedProduct.price.price + shippingFee - deliveryDiscount - productDiscount).toLocaleString("vi-VN", {
                                     style: "currency",
                                     currency: "VND",
                                 })}
@@ -353,15 +404,25 @@ const OrderUser = () => {
                     onClose={() => setIsDialogOpen(false)} 
                     vouchers={coupons} 
                     totalPrice={selectedProduct.price.price}
-                    onSelectVoucher={(voucher) => {
-                        setSelectedVoucher(voucher);
-                        const discount = (selectedProduct.price.price * voucher.percent) / 100;
-                        const finalDiscount = discount < voucher.max ? discount : voucher.max;
-                        
-                        setDiscountAmount(finalDiscount);
+                    onSelectVoucher={(selected) => {
+                        setSelectedVouchers(selected);
+
+                        const productDiscount = calculateDiscount(
+                            selected.PRODUCT,
+                            selectedProduct.price.price
+                        );
+                        setProductDiscount(productDiscount);
+
+                        const deliveryDiscount = calculateDiscount(
+                            selected.DELIVERY,
+                            shippingFee
+                        );
+                        setDeliveryDiscount(deliveryDiscount);
+
                         setIsDialogOpen(false);
                     }}
                 />
+
             </div>
             {showDialog && (
                 <PaymentConfirmDialog onConfirm={handleConfirm} onCancel={handleCancel} />

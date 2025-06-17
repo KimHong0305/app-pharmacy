@@ -6,12 +6,29 @@ export const getCouponUser = createAsyncThunk(
     async (_, { rejectWithValue }) => {
       try {
         const token = localStorage.getItem('token');
-        const response = await api.get('/coupon/user', {
+        const response = await api.get(`/coupon/user`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         return response.data;
+      } catch (error) {
+        return rejectWithValue(error.response.data);
+      }
+    }
+);
+
+export const getCouponById = createAsyncThunk(
+    'coupon/getCouponById',
+    async (id, { rejectWithValue }) => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await api.get(`/coupon/user/id?couponId=${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return response.data.result;
       } catch (error) {
         return rejectWithValue(error.response.data);
       }
@@ -91,6 +108,7 @@ const couponSlice = createSlice({
     name: 'coupon',
     initialState: {
         coupons: [],
+        coupon: {},
         loading: false,
         error: null,
     },
@@ -106,6 +124,18 @@ const couponSlice = createSlice({
                 state.coupons = action.payload.result;
             })
             .addCase(getCouponUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // get by Id
+            .addCase(getCouponById.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(getCouponById.fulfilled, (state, action) => {
+                state.loading = false;
+                state.coupon = action.payload;
+            })
+            .addCase(getCouponById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })

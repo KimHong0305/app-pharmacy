@@ -48,6 +48,7 @@ const EditCoupon = () => {
             levelUser: coupon.levelUser,
             description: coupon.description,
             expireDate: coupon.expireDate,
+            couponType: coupon.couponType,
         };
 
         formData.append("updateCoupon", new Blob([JSON.stringify(editCoupon)], { type: "application/json" }));
@@ -134,6 +135,20 @@ const EditCoupon = () => {
                                         <option value="VANG">VÀNG</option>
                                         <option value="BACHKIM">BẠCH KIM</option>
                                         <option value="KIMCUONG">KIM CƯƠNG</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="font-medium text-gray-700">Loại mã giảm giá</label>
+                                    <select
+                                        name="couponType"
+                                        value={coupon.couponType}
+                                        onChange={handleChange}
+                                        className="mt-2 border border-gray-300 rounded-lg w-full p-2"
+                                    >
+                                        <option value="">Chọn loại</option>
+                                        <option value="PRODUCT">Giảm giá sản phẩm</option>
+                                        <option value="DELIVERY">Giảm giá giao hàng</option>
                                     </select>
                                 </div>
 

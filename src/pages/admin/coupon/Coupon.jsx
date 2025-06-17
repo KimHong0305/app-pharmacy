@@ -81,6 +81,19 @@ const Coupon = () => {
         setIsDeleteDialogOpen(false);
     };
 
+    const levelMap = {
+        DONG: 'Đồng',
+        BAC: 'Bạc',
+        VANG: 'Vàng',
+        BACHKIM: 'Bạch Kim',
+        KIMCUONG: 'Kim Cương',
+    };
+
+    const typeMap = {
+        PRODUCT: 'Giảm giá sản phẩm',
+        DELIVERY: 'Giảm giá giao hàng',
+    };
+
     return (
         <div className="px-2 md:px-4">
         <div className="flex flex-col p-4 rounded bg-white shadow-lg">
@@ -141,6 +154,7 @@ const Coupon = () => {
                     <TableHead>Ngày tạo</TableHead>
                     <TableHead>Ngày hết hạn</TableHead>
                     <TableHead>Đối tượng</TableHead>
+                    <TableHead>Loại</TableHead>
                     <TableHead>Action</TableHead>
                 </TableRow>
                 </TableHeader>
@@ -159,7 +173,8 @@ const Coupon = () => {
                         <TableCell>{coupon.percent}%</TableCell>
                         <TableCell>{coupon.createDate}</TableCell>
                         <TableCell>{coupon.expireDate}</TableCell>
-                        <TableCell>{coupon.levelUser}</TableCell>
+                        <TableCell>{levelMap[coupon.levelUser] || 'Không rõ'}</TableCell>
+                        <TableCell>{typeMap[coupon.couponType] || 'Không rõ'}</TableCell>
                         <TableCell>
                             <div className='flex'>
                                 <button className="flex items-center justify-center p-2 rounded-lg bg-sky-200"

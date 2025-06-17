@@ -24,19 +24,44 @@ const OrderCartUser = () => {
 
     const { coupons } = useSelector((state) => state.coupon);  
 
-    const { cartItems, totalPrice, selectedVoucher, discountAmount } = location.state || {};
+    const {
+        cartItems,
+        totalPrice,
+        selectedVouchers = { PRODUCT: null, DELIVERY: null },
+        discountAmount: initialDiscountAmount = 0
+    } = location.state || {};
+
+    const calculateProductDiscount = (voucher, price) => {
+        if (!voucher || voucher.couponType !== "PRODUCT") return 0;
+        const percentDiscount = (price * voucher.percent) / 100;
+        return Math.min(percentDiscount, voucher.max);
+    };
+
+    const calculateDeliveryDiscount = (voucher, fee) => {
+        if (!voucher || voucher.couponType !== "DELIVERY") return 0;
+        const percentDiscount = (fee * voucher.percent) / 100;
+        return Math.min(percentDiscount, voucher.max);
+    };
+
+    console.log(selectedVouchers)
     const [defaultAddress, setDefaultAddress] = useState(null);
     const [showAddressList, setShowAddressList] = useState(false);
     const [loading, setLoading] = useState(true);
     const [paymentMethod, setPaymentMethod] = useState("CASH");
     const { address } = useSelector((state) => state.address);
-    const [voucher, setVoucher] = useState(selectedVoucher);
-    const [amount, setAmount] = useState(discountAmount);
+    const [voucher, setVoucher] = useState(selectedVouchers);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [shippingMethod, setShippingMethod] = useState("FAST");
     const [shippingFee, setShippingFee] = useState(0);
     const [service, setService] = useState(null);
     const [showDialog, setShowDialog] = useState(false);
+
+    const [amount, setAmount] = useState(
+        calculateProductDiscount(selectedVouchers.PRODUCT, totalPrice)
+    );
+    const [shippingDiscount, setShippingDiscount] = useState(
+        calculateDeliveryDiscount(selectedVouchers.DELIVERY, shippingFee)
+    );
 
     const handleRedirectPayment = usePaymentRedirect();
 
@@ -77,14 +102,17 @@ const OrderCartUser = () => {
 
     const handleOrder = async() => {
         const order = {
-            ...(voucher && { couponId: voucher.id }),
+            couponIds: [
+                ...(voucher?.PRODUCT ? [voucher.PRODUCT.id] : []),
+                ...(voucher?.DELIVERY ? [voucher.DELIVERY.id] : []),
+            ],
             addressId: defaultAddress.id,
             paymentMethod: paymentMethod,
             isInsurance: false,
             service_id: service,
         };
         
-        // console.log(order)
+        console.log(order)
         try{
             const result = await dispatch(createOrderCartUser(order)).unwrap();
             toast.success("Đặt hàng thành công!");
@@ -278,34 +306,66 @@ const OrderCartUser = () => {
                             <IoIosArrowForward />
                             </p>
                         </div>
-                        {voucher && (
-                            <div className="my-2 flex justify-between items-center bg-orange-50 border border-orange-200 rounded-lg px-3 py-2 shadow-sm relative overflow-hidden">
-                            {/* Thanh màu bên trái */}
-                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-300 rounded-l-lg" />
+                        {(voucher?.PRODUCT || voucher?.DELIVERY) && (
+                            <div className="space-y-2 my-2">
+                                {voucher?.PRODUCT && (
+                                <div className="flex justify-between items-center bg-orange-50 border border-orange-200 rounded-lg px-3 py-2 shadow-sm relative overflow-hidden">
+                                    {/* Thanh màu bên trái */}
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-300 rounded-l-lg" />
 
-                            {/* Nội dung voucher */}
-                            <div className="flex items-center space-x-2 z-10">
-                                <div className="bg-white text-orange-500 rounded-full p-1.5 flex items-center justify-center shadow-sm">
-                                <FaTicketAlt className="h-4 w-4" />
-                                </div>
-                                <div>
-                                <p className="text-xs font-medium text-orange-700">{voucher.name}</p>
-                                </div>
-                            </div>
+                                    {/* Nội dung voucher */}
+                                    <div className="flex items-center space-x-2 z-10">
+                                    <div className="bg-white text-orange-500 rounded-full p-1.5 flex items-center justify-center shadow-sm">
+                                        <FaTicketAlt className="h-4 w-4" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-medium text-orange-700">{voucher.PRODUCT.name}</p>
+                                    </div>
+                                    </div>
 
-                            {/* Nút huỷ */}
-                            <button
-                                onClick={() => {
-                                setVoucher(null);
-                                setAmount(0);
-                                }}
-                                className="text-[10px] text-red-500 hover:text-red-700 font-medium z-10"
-                            >
-                                Hủy
-                            </button>
+                                    {/* Nút huỷ */}
+                                    <button
+                                    onClick={() => {
+                                        setVoucher((prev) => ({ ...prev, PRODUCT: null }));
+                                        setAmount(0);
+                                    }}
+                                    className="text-[10px] text-red-500 hover:text-red-700 font-medium z-10"
+                                    >
+                                    Hủy
+                                    </button>
+                                </div>
+                                )}
+
+                                {voucher?.DELIVERY && (
+                                <div className="flex justify-between items-center bg-green-50 border border-green-200 rounded-lg px-3 py-2 shadow-sm relative overflow-hidden">
+                                    {/* Thanh màu bên trái */}
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-300 rounded-l-lg" />
+
+                                    {/* Nội dung voucher */}
+                                    <div className="flex items-center space-x-2 z-10">
+                                    <div className="bg-white text-green-600 rounded-full p-1.5 flex items-center justify-center shadow-sm">
+                                        <FaTicketAlt className="h-4 w-4" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-medium text-green-700">{voucher.DELIVERY.name}</p>
+                                    </div>
+                                    </div>
+
+                                    {/* Nút huỷ */}
+                                    <button
+                                    onClick={() => {
+                                        setVoucher((prev) => ({ ...prev, DELIVERY: null }));
+                                        setShippingDiscount(0);
+                                    }}
+                                    className="text-[10px] text-red-500 hover:text-red-700 font-medium z-10"
+                                    >
+                                    Hủy
+                                    </button>
+                                </div>
+                                )}
                             </div>
                         )}
-                        <p className="flex justify-between">
+                        <p className="flex justify-between text-sm ">
                             <span>Tạm tính:</span>
                             <span>
                             {totalPrice.toLocaleString("vi-VN", {
@@ -314,18 +374,24 @@ const OrderCartUser = () => {
                             })}
                             </span>
                         </p>
-                        <div className="flex justify-between items-center my-2">
-                            <p>Giảm giá:</p>
-                            <p className="text-red-500">
-                            - {amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
-                            </p>
-                        </div>
-                        <p className="flex justify-between my-2">
+                        <p className="flex justify-between my-2 text-sm ">
                             <span>Phí vận chuyển:</span>
                             <span>
                                 {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shippingFee)}
                             </span>
                         </p>
+                        <div className="flex justify-between items-center my-2 text-sm ">
+                            <p>Ưu đãi vận chuyển:</p>
+                            <p className="text-red-500">
+                            - {shippingDiscount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                            </p>
+                        </div>
+                        <div className="flex justify-between items-center my-2 text-sm ">
+                            <p>Voucher:</p>
+                            <p className="text-red-500">
+                            - {amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                            </p>
+                        </div>
                         <div className="border-t border-gray-300 my-2"></div>
                         <p className="flex justify-between items-end font-bold">
                             <div className="flex flex-col">
@@ -336,7 +402,7 @@ const OrderCartUser = () => {
                             </div>
                             <p className="text-xl font-semibold text-red-500">
                                 {/* <span className="text-xs line-through mr-1 text-gray-500">{totalPrice}</span> */}
-                                {(totalPrice - amount + shippingFee).toLocaleString("vi-VN", {
+                                {(totalPrice - amount + shippingFee - shippingDiscount).toLocaleString("vi-VN", {
                                     style: "currency",
                                     currency: "VND",
                                 })}
@@ -355,15 +421,19 @@ const OrderCartUser = () => {
                     onClose={() => setIsDialogOpen(false)} 
                     vouchers={coupons} 
                     totalPrice={totalPrice}
-                    onSelectVoucher={(voucher) => {
-                        setVoucher(voucher);
-                        const discount = (totalPrice * voucher.percent) / 100;
-                        const finalDiscount = discount < voucher.max ? discount : voucher.max;
-                        
-                        setAmount(finalDiscount);
+                    onSelectVoucher={(selected) => {
+                        setVoucher(selected);
+
+                        const newAmount = calculateProductDiscount(selected.PRODUCT, totalPrice);
+                        setAmount(newAmount);
+
+                        const deliveryDiscount = calculateDeliveryDiscount(selected.DELIVERY, shippingFee);
+                        setShippingDiscount(deliveryDiscount);
+
                         setIsDialogOpen(false);
                     }}
                 />
+
                 {showDialog && (
                     <PaymentConfirmDialog onConfirm={handleConfirm} onCancel={handleCancel} />
                 )}

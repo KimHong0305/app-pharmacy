@@ -56,18 +56,18 @@ const ListCoupon = () => {
                                         coupons.map((coupon) => (
                                             <div 
                                                 key={coupon.id} 
-                                                className="flex justify-start items-center border border-gray-300 rounded-lg p-4 shadow-md bg-white"
+                                                className="flex justify-start items-center shadow-md bg-white"
                                             >
                                                 <img 
-                                                    className="w-20 object-cover rounded-md"
+                                                    className="w-20 object-cover rounded-l-lg"
                                                     src={coupon.image} 
                                                     alt={coupon.name}
                                                 />
                                                 <div className='flex flex-col items-start pl-5'>
-                                                    <h3 className="text-lg font-semibold text-gray-800 text-center">
+                                                    <p className="text-lg font-semibold text-gray-800 text-center">
                                                         {coupon.name}
-                                                    </h3>
-                                                    <p className="text-gray-600 text-sm">
+                                                    </p>
+                                                    <p className="mt-2 text-gray-600 text-sm">
                                                         {coupon.description}
                                                     </p>
                                                     <div className="mt-2 text-center text-gray-500 text-xs text-red-600">

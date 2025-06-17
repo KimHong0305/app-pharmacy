@@ -267,14 +267,14 @@ const Inventory = () => {
                         <TableCell>
                             <div className="flex flex-col gap-1">
                                 {isLowStock(10) && (
-                                <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-orange-700 bg-orange-100 rounded-full">
+                                <span className="inline-flex items-center gap-1 px-1 py-1 text-xs font-semibold text-orange-700 bg-orange-100 rounded-lg">
                                     <FaExclamationTriangle className="text-orange-500" />
                                     Sắp hết hàng
                                 </span>
                                 )}
 
                                 {isExpiringSoon(dateExpiration) && (
-                                <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">
+                                <span className="inline-flex items-center gap-1 px-1 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-lg">
                                     <FaClock className="text-red-500" />
                                     Sắp hết hạn
                                 </span>

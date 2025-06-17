@@ -96,14 +96,13 @@ export const navAdmin = [
 // ------------------ NAV EMPLOYEE ------------------
 export const navEmployee = [
     {
-        group: "Tổng quan",
         items: [
-        {
-            id: 10,
-            title: "Bảng điều khiển",
-            icon: <IoMdHome />,
-            path: "/employee/dashboard",
-        },
+            {
+                id: 10,
+                title: "Bảng điều khiển",
+                icon: <IoMdHome />,
+                path: "/employee/dashboard",
+            }
         ],
     },
     {
@@ -127,6 +126,12 @@ export const navEmployee = [
             icon: <CiBoxes />,
             path: "/employee/units",
         },
+        {
+            id: 17,
+            title: "Mã giảm giá",
+            icon: <RiCoupon2Line />,
+            path: "/employee/coupons",
+        },
         ],
     },
     {
@@ -144,11 +149,6 @@ export const navEmployee = [
             icon: <CiDeliveryTruck />,
             path: "/employee/orders/cod",
         },
-        ],
-    },
-    {
-        group: "Khách hàng",
-        items: [
         {
             id: 16,
             title: "Phản hồi",
@@ -157,52 +157,27 @@ export const navEmployee = [
         },
         ],
     },
-    {
-        group: "Khuyến mãi",
-        items: [
-        {
-            id: 17,
-            title: "Mã giảm giá",
-            icon: <RiCoupon2Line />,
-            path: "/employee/coupons",
-        },
-        ],
-    },
 ];
 
 // ------------------ NAV NURSE ------------------
 export const navNurse = [
     {
-        group: "Tổng quan",
-        items: [
-        {
-            id: 19,
-            title: "Bảng điều khiển",
-            icon: <IoMdHome />,
-            path: "/nurse/home",
-        },
-        ],
+        id: 19,
+        title: "Bảng điều khiển",
+        icon: <IoMdHome />,
+        path: "/nurse/home",
     },
     {
-        group: "Mua thuốc",
-        items: [
-        {
-            id: 20,
-            title: "Tạo đơn thuốc",
-            icon: <CiShoppingBasket />,
-            path: "/nurse/order",
-        },
-        ],
+        id: 20,
+        title: "Tạo đơn thuốc",
+        icon: <CiShoppingBasket />,
+        path: "/nurse/order",
     },
     {
-        group: "Tư vấn",
-        items: [
-        {
-            id: 21,
-            title: "Chat với dược sĩ",
-            icon: <IoChatboxEllipsesOutline />,
-            path: "/nurse/chat",
-        },
-        ],
+        id: 21,
+        title: "Chat trực tuyến",
+        icon: <IoChatboxEllipsesOutline />,
+        path: "/nurse/chat",
     },
 ];
+

@@ -37,7 +37,6 @@ const Categories = () => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Lọc theo tên hoặc tên danh mục cha
     const filteredCategories = allCategory.filter((category) => {
         const nameMatch = category.name.toLowerCase().includes(searchTerm.toLowerCase());
         const parentMatch = category.parent?.name?.toLowerCase().includes(searchTerm.toLowerCase());

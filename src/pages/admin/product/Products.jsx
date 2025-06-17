@@ -30,16 +30,29 @@ const Products = () => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     useEffect(() => {
-        dispatch(getAllProducts({ page: currentPage, size }));
-    }, [dispatch, currentPage, size]);
+        if (!searchQuery.trim()) {
+            dispatch(getAllProducts({ page: currentPage, size }));
+        }
+    }, [currentPage, size, dispatch]);
+
+    useEffect(() => {
+        const delayDebounce = setTimeout(() => {
+            if (searchQuery.trim()) {
+                dispatch(getAllProducts({ page: 0, size: 1000 }));
+            }
+        }, 500);
+
+        return () => clearTimeout(delayDebounce);
+    }, [searchQuery, dispatch]);
+
 
     const handleItemsPerPageChange = (e) => {
-        setSize(Number(e.target.value)); 
-        dispatch(getAllProducts({ page: 0, size: Number(e.target.value) }));
+        setCurrentPage(0);
+        setSize(Number(e.target.value));
     };
 
     const handlePageChange = (page) => {
-        if (page >= 0 && page < totalPages) {
+        if (page >= 0 && page < totalFilteredPages) {
             setCurrentPage(page);
         }
     };
@@ -80,7 +93,23 @@ const Products = () => {
         setIsDeleteDialogOpen(false);
     };
     
-    const handleSearch = (e) => setSearchQuery(e.target.value);
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(0);
+    };
+
+
+    const filteredProducts = allProducts.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const paginatedProducts = searchQuery
+    ? filteredProducts.slice(currentPage * size, (currentPage + 1) * size)
+    : allProducts;
+
+    const totalFilteredPages = searchQuery
+    ? Math.ceil(filteredProducts.length / size)
+    : totalPages;
 
     return (
         <div className="px-2 md:px-4">
@@ -154,7 +183,7 @@ const Products = () => {
                     <TableCell colSpan="4">{error}</TableCell>
                     </TableRow>
                 ) : (
-                    allProducts.map((product) => (
+                    paginatedProducts.map((product) => (
                     <TableRow key={product.id}>
                         <TableCell>
                             <img className="size-[50px]" alt="" src={product.image}/>
@@ -188,19 +217,19 @@ const Products = () => {
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 0}
                 />
-                {Array.from({ length: totalPages }).map((_, idx) => (
+                {Array.from({ length: totalFilteredPages }).map((_, idx) => (
                     <PaginationItem className="list-none" key={idx}>
-                        <PaginationLink
-                            isActive={currentPage === idx}
-                            onClick={() => handlePageChange(idx)}
+                    <PaginationLink
+                        isActive={currentPage === idx}
+                        onClick={() => handlePageChange(idx)}
                         >
-                            {idx + 1}
-                        </PaginationLink>
-                    </PaginationItem>                  
+                        {idx + 1}
+                    </PaginationLink>
+                    </PaginationItem>
                 ))}
                 <PaginationNext
                     onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages - 1}
+                    disabled={currentPage >= totalFilteredPages - 1}
                 />
             </Pagination>
                 </div>

@@ -25,21 +25,67 @@ import { toast } from 'react-toastify';
 const Prices = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { prices, loading, totalPages, currentPage } = useSelector((state) => state.price);
+    const { prices, loading, totalPages } = useSelector((state) => state.price);
 
     const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20];
     const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
 
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredPrices, setFilteredPrices] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
+
     const [priceToDelete, setPriceToDelete] = useState(null);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+    const [currentPage, setCurrentPage] = useState(0);
+
+    const paginatedPrices = isSearching
+    ? filteredPrices.slice(currentPage * size, (currentPage + 1) * size)
+    : prices?.content || [];
+
+    const totalItems = isSearching ? filteredPrices.length : totalPages * size;
+    const totalPagesComputed = isSearching ? Math.ceil(totalItems / size) : totalPages;
+
     useEffect(() => {
-        dispatch(getAllPrices({ page: currentPage, size }));
-    }, [dispatch, size, currentPage]);
+        if (searchQuery.trim() === '') {
+            dispatch(getAllPrices({ page: currentPage, size }));
+        }
+    }, [currentPage, size]);
+
+    useEffect(() => {
+        const delayDebounce = setTimeout(() => {
+            if (searchQuery.trim() === '') {
+                setIsSearching(false);
+                setCurrentPage(0);
+            } else {
+                setIsSearching(true);
+                const fetchAll = async () => {
+                    const res = await dispatch(getAllPrices({ page: 0, size: 300 }));
+                    const allPrices = res.payload?.content || [];
+                    const filtered = allPrices.filter(price =>
+                        price.product.name.toLowerCase().includes(searchQuery.toLowerCase())
+                    );
+                    setFilteredPrices(filtered);
+                    setCurrentPage(0); // reset lại page khi search
+                };
+                fetchAll();
+            }
+        }, 500);
+
+        return () => clearTimeout(delayDebounce);
+    }, [searchQuery]);
+
 
     const handlePageChange = (page) => {
-        dispatch(getAllPrices({ page, size }));
+        setCurrentPage(page);
+        if (!isSearching) {
+            dispatch(getAllPrices({ page, size }));
+        }
     };
+
+    useEffect(() => {
+        setCurrentPage(0);
+    }, [searchQuery, size]);
 
     const handleItemsPerPageChange = (e) => {
         setSize(Number(e.target.value));
@@ -105,12 +151,12 @@ const Prices = () => {
                 <div className="relative ml-4 w-1/5">
                     <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
-                    type="text"
-                    id="search"
-                    // value={searchQuery}
-                    // onChange={handleSearch}
-                    className="border border-gray-400 hover:border-blue-500 rounded-md pl-10 pr-4 py-1 h-10"
-                    placeholder="Search"
+                        type="text"
+                        id="search"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="border border-gray-400 hover:border-blue-500 rounded-md pl-10 pr-4 py-1 h-10"
+                        placeholder="Search"
                     />
                 </div>
                 </div>
@@ -144,7 +190,7 @@ const Prices = () => {
                     <TableCell colSpan="5">Loading...</TableCell>
                     </TableRow>
                 ) : (
-                    prices.map((price) => (
+                    (isSearching ? paginatedPrices : prices).map((price) => (
                     <TableRow key={price.id}>
                         <TableCell>
                             <img className="size-[50px]" alt="" src={price.image}/>
@@ -176,15 +222,15 @@ const Prices = () => {
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 0}
             />
-            {Array.from({ length: totalPages }).map((_, idx) => (
+            {Array.from({ length: totalPagesComputed }).map((_, idx) => (
                 <PaginationItem className="list-none" key={idx}>
-                <PaginationLink
+                    <PaginationLink
                     isActive={currentPage === idx}
                     onClick={() => handlePageChange(idx)}
-                >
+                    >
                     {idx + 1}
-                </PaginationLink>
-                </PaginationItem>                  
+                    </PaginationLink>
+                </PaginationItem>
             ))}
             <PaginationNext
                 onClick={() => handlePageChange(currentPage + 1)}

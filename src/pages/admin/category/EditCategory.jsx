@@ -79,7 +79,7 @@ const EditCategory = () => {
                         <button className="inline-block ml-5">Quay lại</button>
                     </span>
                     <div className='py-5'>
-                        <h2 className="text-center text-2xl font-bold mb-2">Thêm danh mục</h2>
+                        <h2 className="text-center text-2xl font-bold mb-2">Sửa danh mục</h2>
                         <div className='px-16 md:px-56 lg:px-80'>
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 {/* Tên danh mục */}

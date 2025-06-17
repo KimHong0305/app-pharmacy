@@ -6,7 +6,6 @@ export const getAllProducts = createAsyncThunk(
   async ({ page = 0, size = 1000, sortOrder = 'asc' }, { rejectWithValue }) => {
     try {
       const response = await api.get(`product?page=${page}&size=${size}&sortOrder=${sortOrder}`);
-      // console.log(response.data.result)
       return response.data.result;
     } catch (error) {
       return rejectWithValue(error.response.data);

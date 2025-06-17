@@ -3,7 +3,7 @@ import api from "../../api/api";
 
 export const getAllPrices = createAsyncThunk(
   "price/getAllPrices",
-  async ({ page = 0, size = 5 }, { rejectWithValue }) => {
+  async ({ page = 0, size = 300 }, { rejectWithValue }) => {
     try {
       const response = await api.get(`/price?page=${page}&size=${size}`);
       return response.data.result;

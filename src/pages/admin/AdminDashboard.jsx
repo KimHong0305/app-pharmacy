@@ -7,8 +7,61 @@ import { getTotalCategory, getTotalCompany, getTotalProduct, getTotalUser } from
 import { getStatisticMonthForAdmin, getStatisticYearForAdmin } from '../../store/Reducers/statisticReducer';
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import ReactApexChart from 'react-apexcharts';
+import { IoIosArrowForward } from "react-icons/io";
+import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
+
+    const nearExpiryList = [
+    {
+        productName: 'Paracetamol 500mg',
+        lotCode: 'PA-2023-01',
+        expiryDate: '2025-07-15',
+        quantity: 24,
+    },
+    {
+        productName: 'Amoxicillin 250mg',
+        lotCode: 'AM-2023-03',
+        expiryDate: '2025-08-01',
+        quantity: 50,
+    },
+    {
+        productName: 'Vitamin C 1000mg',
+        lotCode: 'VC-2022-12',
+        expiryDate: '2025-06-25',
+        quantity: 18,
+    },
+    {
+        productName: 'Ibuprofen 400mg',
+        lotCode: 'IB-2023-04',
+        expiryDate: '2025-07-01',
+        quantity: 32,
+    },
+    {
+        productName: 'Cefuroxime 500mg',
+        lotCode: 'CE-2023-05',
+        expiryDate: '2025-09-10',
+        quantity: 20,
+    },
+    ];
+
+    const lowStockList = [
+    {
+        productName: 'Cetirizine 10mg',
+        lotCode: 'CT-2024-01',
+        quantity: 5,
+    },
+    {
+        productName: 'Omeprazole 20mg',
+        lotCode: 'OM-2023-12',
+        quantity: 8,
+    },
+    {
+        productName: 'Diazepam 5mg',
+        lotCode: 'DZ-2025-02',
+        quantity: 3,
+    },
+    ];
 
     const dispatch = useDispatch()
     const {totalUser, totalCompany, totalProduct, totalCategory} = useSelector(state=> state.dashboard)
@@ -20,6 +73,8 @@ const AdminDashboard = () => {
         dispatch(getTotalCategory());
 
     }, [dispatch])
+
+    const navigate = useNavigate();
 
     const { dataYear, dataMonth } = useSelector((state) => state.statistic);
     const [selectedMonthInfo, setSelectedMonthInfo] = useState(null);
@@ -93,119 +148,204 @@ const AdminDashboard = () => {
     }, [dataYear]);
 
     return (
-        <div className='px-2 md:px-7 py-5'>
-
-
-            <div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-7'>
-                
-                <div className='flex justify-between shadow-md items-center p-5 bg-[#fae8e8] rounded-md gap-3'>
-                    <div className='flex flex-col justify-start items-start text-[#5c5a5a]'>
-                        <h2 className='text-3xl font-bold'>{totalUser}</h2>
-                        <span className='text-md font-medium'>Total Users</span>
+        <div className="px-2 md:px-7 py-5">
+            {/* Grid thống kê tổng */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-7">
+                {[
+                {
+                    value: totalUser,
+                    label: "Total Users",
+                    icon: <MdCurrencyExchange />,
+                    bg: "#fa0305",
+                    cardBg: "#fae8e8",
+                },
+                {
+                    value: totalCompany,
+                    label: "Companies",
+                    icon: <MdProductionQuantityLimits />,
+                    bg: "#760077",
+                    cardBg: "#fde2ff",
+                },
+                {
+                    value: totalProduct,
+                    label: "Products",
+                    icon: <FaUsers />,
+                    bg: "#038000",
+                    cardBg: "#e9feea",
+                },
+                {
+                    value: totalCategory,
+                    label: "Categories",
+                    icon: <FaCartShopping />,
+                    bg: "#0200f8",
+                    cardBg: "#ecebff",
+                },
+                ].map((item, idx) => (
+                <div
+                    key={idx}
+                    className={`flex justify-between items-center p-5 rounded-xl shadow-md gap-4`}
+                    style={{ backgroundColor: item.cardBg }}
+                >
+                    <div className="flex flex-col text-[#5c5a5a]">
+                    <h2 className="text-3xl font-bold">{item.value}</h2>
+                    <span className="text-md font-medium">{item.label}</span>
                     </div>
-
-                    <div className='w-[40px] h-[47px] rounded-full bg-[#fa0305] flex justify-center items-center text-xl'>
-                    <MdCurrencyExchange className='text-[#fae8e8] shadow-lg' /> 
-                    </div> 
-                </div>
-
-
-                <div className='flex shadow-md justify-between items-center p-5 bg-[#fde2ff] rounded-md gap-3'>
-                    <div className='flex flex-col justify-start items-start text-[#5c5a5a]'>
-                        <h2 className='text-3xl font-bold'>{totalCompany}</h2>
-                        <span className='text-md font-medium'>Companies</span>
+                    <div
+                    className="w-12 h-12 rounded-full flex justify-center items-center text-white text-xl shadow-lg"
+                    style={{ backgroundColor: item.bg }}
+                    >
+                    {item.icon}
                     </div>
-
-                    <div className='w-[40px] h-[47px] rounded-full bg-[#760077] flex justify-center items-center text-xl'>
-                    <MdProductionQuantityLimits  className='text-[#fae8e8] shadow-lg' /> 
-                    </div> 
                 </div>
-
-
-                <div className='flex shadow-md justify-between items-center p-5 bg-[#e9feea] rounded-md gap-3'>
-                    <div className='flex flex-col justify-start items-start text-[#5c5a5a]'>
-                        <h2 className='text-3xl font-bold'>{totalProduct}</h2>
-                        <span className='text-md font-medium'>Products</span>
-                    </div>
-
-                    <div className='w-[40px] h-[47px] rounded-full bg-[#038000] flex justify-center items-center text-xl'>
-                    <FaUsers  className='text-[#fae8e8] shadow-lg' /> 
-                    </div> 
-                </div>
-
-
-                <div className='flex shadow-md justify-between items-center p-5 bg-[#ecebff] rounded-md gap-3'>
-                    <div className='flex flex-col justify-start items-start text-[#5c5a5a]'>
-                        <h2 className='text-3xl font-bold'>{totalCategory}</h2>
-                        <span className='text-md font-medium'>Categories</span>
-                    </div>
-
-                    <div className='w-[40px] h-[47px] rounded-full bg-[#0200f8] flex justify-center items-center text-xl'>
-                    <FaCartShopping  className='text-[#fae8e8] shadow-lg' /> 
-                    </div> 
-                </div>
- 
+                ))}
             </div>
 
-        
-        
-        <div className='w-full flex flex-wrap mt-7'>
-            <div className='w-full lg:pr-3'>
-                <div className='w-full drop-shadow-md bg-[#ffffff] p-4 rounded-md'>
-                    <ReactApexChart
-                        options={chartData.options}
-                        series={chartData.series}
-                        type="line"
-                        width='100%'
-                        height={400}
-                    />
-                    {selectedMonthInfo && (
-                <>
-                    <div className='flex flex-col items-end justify-center px-24'>
-                        <p className="text-lg font-medium mt-2">
-                            Doanh thu tháng {selectedMonthInfo.month}: {selectedMonthInfo.money.toLocaleString('vi-VN')}đ
+            {/* Biểu đồ và chi tiết */}
+            <div className="w-full mt-10">
+                <div className="bg-white shadow-md rounded-xl p-6">
+                <ReactApexChart
+                    options={chartData.options}
+                    series={chartData.series}
+                    type="line"
+                    width="100%"
+                    height={400}
+                />
+
+                {selectedMonthInfo && (
+                    <div className="mt-4 px-4">
+                    <div className="flex items-center justify-between">
+                        <p className="text-lg font-medium text-gray-800">
+                        Doanh thu tháng {selectedMonthInfo.month}:{' '}
+                        <span className="text-blue-600 font-semibold">
+                            {selectedMonthInfo.money.toLocaleString('vi-VN')}đ
+                        </span>
                         </p>
-                        <div 
-                            className="flex justify-end items-end cursor-pointer group"
-                            onClick={() => setShowDetail(!showDetail)}
+                        <button
+                        onClick={() => setShowDetail(!showDetail)}
+                        className="text-sm text-blue-600 hover:underline flex items-center gap-1"
                         >
-                            <AiOutlineInfoCircle className="text-base text-blue-700 group-hover:text-blue-900 transition" />
-                            <p className="ml-1 text-sm text-blue-700 group-hover:text-blue-900 transition">
-                                {showDetail ? 'Ẩn chi tiết' : 'Xem chi tiết'}
-                            </p>
-                        </div>
+                        <AiOutlineInfoCircle />
+                        {showDetail ? 'Ẩn chi tiết' : 'Xem chi tiết'}
+                        </button>
                     </div>
-                </>
-                )}
-                {showDetail && (
-                    <div className="mt-4 w-full px-24">
-                        <h3 className="text-lg font-semibold mb-2">
-                            Doanh thu theo ngày trong tháng {selectedMonthInfo.month}
+                    {showDetail && (
+                        <div className="mt-3 border-t border-gray-200 pt-3">
+                        <h3 className="text-base font-semibold mb-2 text-gray-700">
+                            Chi tiết chi tiêu trong tháng {selectedMonthInfo.month}
                         </h3>
-                        <div className="text-sm space-y-1">
+                        <ul className="space-y-1 text-sm text-gray-700">
                             {dataMonth && dataMonth.length > 0 ? (
-                                dataMonth.map((item, index) => (
-                                <p
-                                    key={index}
-                                    className="text-gray-700 text-sm flex items-center gap-2 border-b border-dashed border-gray-200 pb-1"
-                                >
-                                    <span className="text-blue-500">•</span>
-                                    <span>
-                                        <span className="font-medium">Ngày {new Date(item.date).toLocaleDateString('vi-VN')}:</span>{' '}
-                                        {item.money.toLocaleString('vi-VN')}đ
-                                    </span>
-                                </p>
-
-                                ))
+                            dataMonth.map((item, idx) => (
+                                <li key={idx} className="flex items-center gap-2">
+                                <span className="text-blue-500">•</span>
+                                <span>
+                                    Ngày{' '}
+                                    <span className="font-medium">
+                                    {new Date(item.date).toLocaleDateString('vi-VN')}:
+                                    </span>{' '}
+                                    {item.money.toLocaleString('vi-VN')}đ
+                                </span>
+                                </li>
+                            ))
                             ) : (
-                                <p className="italic text-gray-500">Không có dữ liệu chi tiêu trong tháng này.</p>
+                            <p className="italic text-gray-500">Không có dữ liệu.</p>
                             )}
+                        </ul>
                         </div>
+                    )}
                     </div>
                 )}
                 </div>
             </div>
-        </div>
+
+            {/* Danh sách thuốc sắp hết hạn */}
+            <div className="mt-10">
+                <div className="bg-white rounded-xl shadow-md p-6">
+                    <div className='flex items-center justify-between'>
+                        <h2 className='text-xl font-semibold mb-4'>Thuốc sắp hết hạn</h2>
+                        <div className='flex items-center justify-center text-sm text-blue-600 space-x-1 cursor-pointer'
+                        onClick={() => navigate('/admin/inventory')}>
+                            <p>Tới xem</p>
+                            <IoIosArrowForward />
+                        </div>
+                    </div>
+                    <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                        <tr>
+                            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tên thuốc</th>
+                            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Lô</th>
+                            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Hạn sử dụng</th>
+                            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Số lượng còn</th>
+                        </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                        {nearExpiryList.length > 0 ? (
+                            nearExpiryList.map((item) => (
+                            <tr key={item.lotCode} className="hover:bg-gray-50">
+                                <td className="px-4 py-2 text-sm text-gray-900">{item.productName}</td>
+                                <td className="px-4 py-2 text-sm text-gray-900">{item.lotCode}</td>
+                                <td className="px-4 py-2 text-sm text-red-600 font-medium">
+                                {new Date(item.expiryDate).toLocaleDateString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 text-sm text-gray-900">{item.quantity}</td>
+                            </tr>
+                            ))
+                        ) : (
+                            <tr>
+                            <td colSpan="4" className="text-center text-sm text-gray-500 py-5 italic">
+                                Không có thuốc sắp hết hạn trong thời gian tới.
+                            </td>
+                            </tr>
+                        )}
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+            {/* Danh sách thuốc sắp hết hàng */}
+            <div className="mt-10">
+                <div className="bg-white rounded-xl shadow-md p-6">
+                    <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-semibold mb-4">Thuốc sắp hết hàng</h2>
+                    <div
+                        className="flex items-center justify-center text-sm text-blue-600 space-x-1 cursor-pointer"
+                        onClick={() => navigate('/admin/inventory')}
+                    >
+                        <p>Tới xem</p>
+                        <IoIosArrowForward />
+                    </div>
+                    </div>
+                    <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                        <tr>
+                            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tên thuốc</th>
+                            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Lô</th>
+                            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Số lượng còn</th>
+                        </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                        {lowStockList.length > 0 ? (
+                            lowStockList.map((item) => (
+                            <tr key={item.lotCode} className="hover:bg-gray-50">
+                                <td className="px-4 py-2 text-sm text-gray-900">{item.productName}</td>
+                                <td className="px-4 py-2 text-sm text-gray-900">{item.lotCode}</td>
+                                <td className="px-4 py-2 text-sm text-orange-600 font-medium">{item.quantity}</td>
+                            </tr>
+                            ))
+                        ) : (
+                            <tr>
+                            <td colSpan="3" className="text-center text-sm text-gray-500 py-5 italic">
+                                Không có thuốc sắp hết hàng hiện tại.
+                            </td>
+                            </tr>
+                        )}
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

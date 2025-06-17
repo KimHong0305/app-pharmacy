@@ -52,30 +52,56 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
         </div>
 
         <div className="px-2 h-[calc(100vh-140px)]">
-          {allNav.map((group, groupIndex) => (
-            <div key={groupIndex} className="mb-2">
-              <p className="uppercase text-[12px] text-gray-600 font-medium mb-2 px-1">
-                {group.group}
-              </p>
-              <ul>
-                {group.items.map((item, itemIndex) => (
-                  <li key={itemIndex}>
-                    <Link
-                      to={item.path}
-                      className={`${
-                        isActive(item)
-                          ? 'bg-sky-600 text-white shadow-sm'
-                          : 'text-gray-800 hover:bg-sky-100'
-                      } px-3 py-3 rounded-md flex items-center gap-3 transition-all duration-200 font-medium`}
-                    >
-                      <span className="text-[18px]">{item.icon}</span>
-                      <span className="text-sm">{item.title}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {Array.isArray(allNav) && allNav.length > 0 && (
+            <>
+              {allNav[0]?.items === undefined ? (
+                <ul className="mt-4 px-1">
+                  {allNav.map((item, index) => (
+                    <li key={index}>
+                      <Link
+                        to={item.path}
+                        className={`${
+                          isActive(item)
+                            ? 'bg-sky-600 text-white shadow-sm'
+                            : 'text-gray-800 hover:bg-sky-100'
+                        } px-3 py-3 rounded-md flex items-center gap-3 transition-all duration-200 font-medium`}
+                      >
+                        <span className="text-[18px]">{item.icon}</span>
+                        <span className="text-sm">{item.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                allNav.map((group, groupIndex) => (
+                  <div key={groupIndex} className="mb-2">
+                    {group.group && (
+                      <p className="uppercase text-[12px] text-gray-600 font-medium mb-2 px-1">
+                        {group.group}
+                      </p>
+                    )}
+                    <ul>
+                      {group.items.map((item, itemIndex) => (
+                        <li key={itemIndex}>
+                          <Link
+                            to={item.path}
+                            className={`${
+                              isActive(item)
+                                ? 'bg-sky-600 text-white shadow-sm'
+                                : 'text-gray-800 hover:bg-sky-100'
+                            } px-3 py-3 rounded-md flex items-center gap-3 transition-all duration-200 font-medium`}
+                          >
+                            <span className="text-[18px]">{item.icon}</span>
+                            <span className="text-sm">{item.title}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))
+              )}
+            </>
+          )}
         </div>
 
         {/* Logout */}
@@ -85,7 +111,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
             className="w-full flex items-center gap-3 text-gray-800 hover:bg-red-100 px-3 py-2 rounded-md transition-all duration-200 font-medium"
           >
             <BiLogOutCircle className="text-[18px]" />
-            <span className="text-sm">Logout</span>
+            <span className="text-sm">Đăng xuất</span>
           </button>
         </div>
       </div>

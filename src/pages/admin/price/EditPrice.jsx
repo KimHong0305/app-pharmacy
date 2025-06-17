@@ -15,6 +15,7 @@ const EditPrice = () => {
     const [productName, setProductName] = useState(price.product.name);
     const [priceValue, setPrice] = useState(price.price);
     const [unitName, setUnitName] = useState(price.unit.name);
+    const [quantity, setQuantity] = useState(price.quantity || 0);
 
     const handleGoBack = () => {
         navigate(-1);
@@ -35,7 +36,8 @@ const EditPrice = () => {
             priceId: price.id,
             productId: price.product.id,
             price: parseInt(cleanPrice, 10),
-          };
+            quantity: quantity,
+        };
 
         console.log("Cập nhật giá:", editPrice)
         
@@ -91,6 +93,18 @@ const EditPrice = () => {
                                     placeholder="Nhập giá"
                                 />
                                 <span className="text-gray-500 ml-1">đ</span>
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block font-semibold mb-2">Số lượng:</label>
+                                <input
+                                    type="number"
+                                    min={0}
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(parseInt(e.target.value, 10) || 0)}
+                                    className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+                                    placeholder="Nhập số lượng"
+                                />
                             </div>
 
                             <button

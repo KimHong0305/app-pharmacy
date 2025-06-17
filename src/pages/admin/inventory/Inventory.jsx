@@ -27,7 +27,7 @@ import { FaExclamationTriangle, FaClock, FaCheckCircle } from "react-icons/fa";
 const Inventory = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { prices, loading, totalPages, currentPage } = useSelector((state) => state.price);
+    const { prices, loading} = useSelector((state) => state.price);
 
     const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20];
     const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
@@ -38,20 +38,31 @@ const Inventory = () => {
     const [showFilter, setShowFilter] = useState(false);
     const [filterExpiring, setFilterExpiring] = useState(false);
     const [filterLowStock, setFilterLowStock] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const [currentPage, setCurrentPage] = useState(0);
+    const startIndex = currentPage * size;
+    const endIndex = startIndex + size;
 
     useEffect(() => {
-        dispatch(getAllPrices({ page: currentPage, size }));
+        dispatch(getAllPrices({ page: 0, size: 1000 }));
     }, [dispatch, size, currentPage]);
+
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value.toLowerCase());
+        setCurrentPage(0);
+    };
 
     const truncateText = (text, maxLength) => 
         text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;    
 
     const handlePageChange = (page) => {
-        dispatch(getAllPrices({ page, size }));
+        setCurrentPage(page);
     };
 
     const handleItemsPerPageChange = (e) => {
         setSize(Number(e.target.value));
+        setCurrentPage(0);
     };
 
     const handleEditPrice= (price) => {
@@ -98,11 +109,14 @@ const Inventory = () => {
         return quantity <= 10;
     };
 
-        const filteredPrices = prices.filter((price) => {
+    const filteredPrices = prices.filter((price) => {
         const meetsExpiring = !filterExpiring || isExpiringSoon(price.expirationDate);
         const meetsLowStock = !filterLowStock || isLowStock(price.quantity);
-        return meetsExpiring && meetsLowStock;
+        const matchesSearch = price.product.name.toLowerCase().includes(searchQuery);
+        return meetsExpiring && meetsLowStock && matchesSearch;
     });
+    
+    const paginatedPrices = filteredPrices.slice(startIndex, endIndex);
 
     const dateExpiration = '05/06/2025';
 
@@ -136,8 +150,8 @@ const Inventory = () => {
                     <input
                     type="text"
                     id="search"
-                    // value={searchQuery}
-                    // onChange={handleSearch}
+                    value={searchQuery}
+                    onChange={handleSearch}
                     className="border border-gray-400 hover:border-blue-500 rounded-md pl-10 pr-4 py-1 h-10"
                     placeholder="Search"
                     />
@@ -238,8 +252,7 @@ const Inventory = () => {
                 <TableRow>
                     <TableHead>Hình ảnh</TableHead>
                     <TableHead>Tên sản phẩm</TableHead>
-                    <TableHead>Giá gốc</TableHead>
-                    <TableHead>Giá bán</TableHead>
+                    <TableHead>Giá</TableHead>
                     <TableHead>Đơn vị</TableHead>
                     <TableHead>Số lượng</TableHead>
                     <TableHead>HSD</TableHead>
@@ -253,20 +266,19 @@ const Inventory = () => {
                     <TableCell colSpan="5">Loading...</TableCell>
                     </TableRow>
                 ) : (
-                    filteredPrices.map((price) => (
+                    paginatedPrices.map((price) => (
                     <TableRow key={price.id}>
                         <TableCell>
                             <img className="size-[50px]" alt="" src={price.image}/>
                         </TableCell>
                         <TableCell>{truncateText(price.product.name, 40)}</TableCell>
-                        <TableCell>100.000đ</TableCell>
-                        <TableCell>120.000đ</TableCell>
+                        <TableCell>{new Intl.NumberFormat('vi-VN').format(price.price)} đ</TableCell>
                         <TableCell>{price.unit.name}</TableCell>
-                        <TableCell>100</TableCell>
+                        <TableCell>{price.quantity}</TableCell>
                         <TableCell>{dateExpiration}</TableCell>
                         <TableCell>
                             <div className="flex flex-col gap-1">
-                                {isLowStock(10) && (
+                                {isLowStock(price.quantity) && (
                                 <span className="inline-flex items-center gap-1 px-1 py-1 text-xs font-semibold text-orange-700 bg-orange-100 rounded-lg">
                                     <FaExclamationTriangle className="text-orange-500" />
                                     Sắp hết hàng
@@ -280,7 +292,7 @@ const Inventory = () => {
                                 </span>
                                 )}
 
-                                {!isLowStock(10) && !isExpiringSoon(dateExpiration) && (
+                                {!isLowStock(price.quantity) && !isExpiringSoon(dateExpiration) && (
                                 <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
                                     <FaCheckCircle className="text-green-500" />
                                     Còn hàng
@@ -312,21 +324,24 @@ const Inventory = () => {
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 0}
             />
-            {Array.from({ length: totalPages }).map((_, idx) => (
+
+            {Array.from({ length: Math.ceil(filteredPrices.length / size) }).map((_, idx) => (
                 <PaginationItem className="list-none" key={idx}>
-                <PaginationLink
-                    isActive={currentPage === idx}
-                    onClick={() => handlePageChange(idx)}
-                >
-                    {idx + 1}
-                </PaginationLink>
-                </PaginationItem>                  
+                    <PaginationLink
+                        isActive={currentPage === idx}
+                        onClick={() => handlePageChange(idx)}
+                    >
+                        {idx + 1}
+                    </PaginationLink>
+                </PaginationItem>
             ))}
+
             <PaginationNext
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages - 1}
+                disabled={currentPage === Math.ceil(filteredPrices.length / size) - 1}
             />
-            </Pagination>
+        </Pagination>
+
             </div>
         </div>
         {isDeleteDialogOpen && (

@@ -127,6 +127,12 @@ export const navEmployee = [
             path: "/employee/units",
         },
         {
+            id: 23,
+            title: "Quản lý kho",
+            icon: <MdOutlineInventory2 />,
+            path: "/employee/inventory",
+        },
+        {
             id: 17,
             title: "Mã giảm giá",
             icon: <RiCoupon2Line />,

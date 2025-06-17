@@ -123,7 +123,9 @@ const Orders = () => {
                                 <TableRow key={order} >
                                     <TableCell className="cursor-pointer" onClick={() => handleOrderDetail(order)}>{order.id}</TableCell>
                                     <TableCell>{order.orderDate}</TableCell>
-                                    <TableCell>{order.orderItemResponses.length}</TableCell>
+                                    <TableCell>
+                                        {order.orderItemResponses?.reduce((sum, item) => sum + item.quantity, 0)}
+                                    </TableCell>
                                     <TableCell>{new Intl.NumberFormat('vi-VN').format(order.newTotalPrice)} đ</TableCell>
                                     <TableCell>{order.paymentMethod}</TableCell>
                                     <TableCell>

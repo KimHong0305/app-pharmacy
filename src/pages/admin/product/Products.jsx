@@ -167,7 +167,6 @@ const Products = () => {
                     <TableHead>Hình ảnh</TableHead>
                     <TableHead>Tên sản phẩm</TableHead>
                     <TableHead>Danh mục</TableHead>
-                    <TableHead>Số lượng</TableHead>
                     <TableHead>Công ty</TableHead>
                     <TableHead>Ngày khởi tạo</TableHead>
                     <TableHead>Action</TableHead>
@@ -190,7 +189,6 @@ const Products = () => {
                         </TableCell>
                         <TableCell>{truncateText(product.name, 35)}</TableCell>
                         <TableCell>{product.category.name}</TableCell>
-                        <TableCell>{product.quantity}</TableCell>
                         <TableCell>{product.company.name}</TableCell>
                         <TableCell>{product.dateCreation}</TableCell>
                         <TableCell>

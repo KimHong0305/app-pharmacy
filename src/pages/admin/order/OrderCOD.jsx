@@ -54,21 +54,25 @@ const OrderCOD = () => {
         navigate(`/admin/orders/${order.id}`, { state: order });
     };
 
-    const handleConfirm = async(orderId) => {
-        console.log(orderId)
+    const handleConfirm = async (orderId) => {
         try {
-            await dispatch(confirmOrder(orderId)).unwrap();
-            toast.success('Cập nhật trạng thái đơn hàng thành công!');
+            const res = await dispatch(confirmOrder(orderId)).unwrap();
+            toast.success(res.message);
             dispatch(getOrderCOD({ page: currentPage, size }));
-          } catch (error) {
-            toast.error(error.message);
+        } catch (error) {
+            toast.error(error.message || "Xác nhận đơn hàng thất bại");
+
+            if (error.result && Array.isArray(error.result) && error.result.length > 0) {
+                console.log("Các sản phẩm thiếu:", error.result);
+                toast.warning(`Thiếu hàng: ${error.result.map(p => p.product?.name || 'Sản phẩm').join(', ')}`);
+            }
         }
-    }
+    };
+
 
     const handlePrint = () =>{
 
     }
-    console.log(role)
 
     return (
         <div className="px-2 md:px-4">
@@ -126,7 +130,9 @@ const OrderCOD = () => {
                                 <TableRow key={order} >
                                     <TableCell className="cursor-pointer" onClick={() => handleOrderDetail(order)}>{order.id}</TableCell>
                                     <TableCell>{order.orderDate}</TableCell>
-                                    <TableCell>{order.orderItemResponses.length}</TableCell>
+                                    <TableCell>
+                                        {order.orderItemResponses?.reduce((sum, item) => sum + item.quantity, 0)}
+                                    </TableCell>
                                     <TableCell>{new Intl.NumberFormat('vi-VN').format(order.newTotalPrice)} đ</TableCell>
                                     <TableCell>{order.paymentMethod}</TableCell>
                                     <TableCell>

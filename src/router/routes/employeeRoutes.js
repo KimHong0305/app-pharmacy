@@ -27,6 +27,7 @@ const Coupon = lazy(() => import("../../pages/admin/coupon/Coupon"));
 const AddCoupon = lazy(() => import("../../pages/admin/coupon/AddCoupon"));
 const EditCoupon = lazy(() => import("../../pages/admin/coupon/EditCoupon"));
 
+const Inventory = lazy(() => import("../../pages/admin/inventory/Inventory"));
 export const employeeRoutes = [
     { path: 'employee/dashboard', element: <EmployeeDashboard />, role: 'ROLE_EMPLOYEE' },
     { path: 'employee/feedback', element: <Feedback />, role: 'ROLE_EMPLOYEE' },
@@ -48,6 +49,8 @@ export const employeeRoutes = [
     { path: 'employee/coupons', element: <Coupon />, role: 'ROLE_EMPLOYEE' },
     { path: 'employee/coupons/add', element: <AddCoupon />, role: 'ROLE_EMPLOYEE' },
     { path: 'employee/coupons/edit/:id', element: <EditCoupon />, role: 'ROLE_EMPLOYEE' },
+
+    { path: 'employee/inventory', element: <Inventory />, role: 'ROLE_EMPLOYEE' },
 ];
 
 export default employeeRoutes;

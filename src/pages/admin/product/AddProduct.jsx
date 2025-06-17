@@ -19,7 +19,6 @@ const AddProduct = () => {
     const dispatch = useDispatch();
 
     const [productName, setProductName] = useState('');
-    const [quantity, setQuantity] = useState('');
     const [categoryName, setCategoryName] = useState('');
     const [company, setCompany] = useState('');
     const [benefits, setBenefits] = useState('');
@@ -41,10 +40,10 @@ const AddProduct = () => {
     const { companies } = useSelector((state) => state.company);
     const { units } = useSelector((state) => state.unit);
 
-    const [rows, setRows] = useState([{ unit: '', price: '' }]);
+    const [rows, setRows] = useState([{ unit: '', price: '', quantity: '' }]);
 
     const handleAddRow = () => {
-        setRows([...rows, { unit: '', price: '' }]);
+        setRows([...rows, { unit: '', price: '', quantity: '' }]);
     };
 
     const handleRemoveRow = (index) => {
@@ -103,7 +102,6 @@ const AddProduct = () => {
 
         const newProduct = {
             name: productName,
-            quantity: quantity,
             categoryId: categoryName,
             companyId: company,
             benefits: benefits.replace(/\n/g, "\\n"),
@@ -155,6 +153,7 @@ const AddProduct = () => {
                     productId: result.result.id,
                     unitId: row.unit,
                     price: row.price,
+                    quantity: row.quantity,
                 };
     
                 return dispatch(createPrice(priceData)).unwrap();
@@ -219,19 +218,6 @@ const AddProduct = () => {
                                     </div>
 
                                     <div className='md:col-span-1'>
-                                        {/* Số lượng */}
-                                        <label htmlFor="quantity" className="font-medium text-gray-700">
-                                            Số lượng <span className="text-red-500 ml-1">*</span>
-                                        </label>
-                                        <input
-                                            type="number"
-                                            id="quantity"
-                                            value={quantity}
-                                            onChange={(e) => setQuantity(e.target.value)}
-                                            className="mt-2 mb-5 w-full px-4 py-2 border border-gray-300 rounded-md"
-                                            placeholder="Nhập số lượng"
-                                            required
-                                        />
 
                                         {/* Công ty*/}
                                         <label htmlFor="company" className="font-medium text-gray-700">
@@ -422,69 +408,88 @@ const AddProduct = () => {
                                     </label>
                                     <div className="mt-2">
                                         <table className="w-full border-collapse border border-gray-300">
-                                            <thead>
-                                                <tr className="bg-gray-100">
-                                                    <th className="border border-gray-300 px-4 py-2 text-left w-2/5">Đơn vị</th>
-                                                    <th className="border border-gray-300 px-4 py-2 text-left w-2/5">Giá</th>
-                                                    <th className="border border-gray-300 px-4 py-2 w-1/12"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {rows.map((row, index) => (
-                                                    <tr key={index}>
-                                                        <td className="border border-gray-300 px-4 py-2 w-2/5">
-                                                            <select
-                                                                value={row.unit}
-                                                                onChange={(e) => handleRowChange(index, 'unit', e.target.value)}
-                                                                className="w-full px-2 h-10 bg-white border border-gray-300 rounded-md"
-                                                            >
-                                                                <option value="">Chọn đơn vị</option>
-                                                                {units.map((unit) => (
-                                                                    <option key={unit.id} value={unit.id}>
-                                                                        {unit.name}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-                                                        </td>
-                                                        <td className="border border-gray-300 px-4 py-2 w-2/5">
-                                                            <div className='flex items-center border border-gray-300 rounded-md px-3 py-2'>
-                                                                <input
-                                                                    type="text"
-                                                                    value={row.price ? new Intl.NumberFormat("vi-VN").format(row.price) : ''}
-                                                                    onChange={(e) => {
-                                                                        let value = e.target.value.replace(/[^\d]/g, "");
-                                                                        
-                                                                        handleRowChange(index, 'price', value);
+                                        <thead>
+                                            <tr className="bg-gray-100">
+                                            <th className="border border-gray-300 px-4 py-2 text-left w-1/4">Đơn vị</th>
+                                            <th className="border border-gray-300 px-4 py-2 text-left w-1/4">Giá</th>
+                                            <th className="border border-gray-300 px-4 py-2 text-left w-1/4">Số lượng</th>
+                                            <th className="border border-gray-300 px-4 py-2 w-1/12"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {rows.map((row, index) => (
+                                            <tr key={index}>
+                                                {/* Đơn vị */}
+                                                <td className="border border-gray-300 px-4 py-2">
+                                                <select
+                                                    value={row.unit}
+                                                    onChange={(e) => handleRowChange(index, 'unit', e.target.value)}
+                                                    className="w-full px-2 h-10 bg-white border border-gray-300 rounded-md"
+                                                >
+                                                    <option value="">Chọn đơn vị</option>
+                                                    {units.map((unit) => (
+                                                    <option key={unit.id} value={unit.id}>
+                                                        {unit.name}
+                                                    </option>
+                                                    ))}
+                                                </select>
+                                                </td>
 
-                                                                        const formattedValue = new Intl.NumberFormat("vi-VN").format(value);
-                                                                        e.target.value = formattedValue;
-                                                                    }}
-                                                                    className="flex-1 bg-transparent focus:outline-none text-gray-900 placeholder-gray-500 w-0"
-                                                                    placeholder="Nhập giá"
-                                                                />
-                                                                <span className="text-gray-500 ml-1">đ</span>
-                                                            </div>
-                                                        </td>
+                                                {/* Giá */}
+                                                <td className="border border-gray-300 px-4 py-2">
+                                                <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+                                                    <input
+                                                    type="text"
+                                                    value={row.price ? new Intl.NumberFormat("vi-VN").format(row.price) : ''}
+                                                    onChange={(e) => {
+                                                        let value = e.target.value.replace(/[^\d]/g, "");
+                                                        handleRowChange(index, 'price', value);
+                                                        const formattedValue = new Intl.NumberFormat("vi-VN").format(value);
+                                                        e.target.value = formattedValue;
+                                                    }}
+                                                    className="flex-1 bg-transparent focus:outline-none text-gray-900 placeholder-gray-500 w-0"
+                                                    placeholder="Nhập giá"
+                                                    />
+                                                    <span className="text-gray-500 ml-1">đ</span>
+                                                </div>
+                                                </td>
 
-                                                        <td className="border border-gray-300 px-4 py-2 text-center w-1/12">
-                                                            <button className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2"
-                                                            type="button"
-                                                            onClick={() => handleRemoveRow(index)}>
-                                                                <FaRegTrashCan className="text-red-500" /> 
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
+                                                {/* Số lượng */}
+                                                <td className="border border-gray-300 px-4 py-2">
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    value={row.quantity || ''}
+                                                    onChange={(e) => handleRowChange(index, 'quantity', e.target.value)}
+                                                    className="w-full px-2 h-10 bg-white border border-gray-300 rounded-md"
+                                                    placeholder="Nhập số lượng"
+                                                />
+                                                </td>
+
+                                                {/* Xóa */}
+                                                <td className="border border-gray-300 px-4 py-2 text-center">
+                                                <button
+                                                    className="flex items-center justify-center p-2 rounded-lg bg-red-200 ml-2"
+                                                    type="button"
+                                                    onClick={() => handleRemoveRow(index)}
+                                                >
+                                                    <FaRegTrashCan className="text-red-500" />
+                                                </button>
+                                                </td>
+                                            </tr>
+                                            ))}
+                                        </tbody>
                                         </table>
-                                        <button className="bg-green-500 text-white p-2 rounded-full hover:bg-green-600 mt-2"
+
+                                        <button
+                                        className="bg-green-500 text-white p-2 rounded-full hover:bg-green-600 mt-2"
                                         type="button"
-                                        onClick={handleAddRow}>
-                                            <MdAdd className='w-4 h-4'/>
+                                        onClick={handleAddRow}
+                                        >
+                                        <MdAdd className="w-4 h-4" />
                                         </button>
                                     </div>
                                 </div>
-
             
                                 <div className='flex items-center justify-end'>
                                     <button

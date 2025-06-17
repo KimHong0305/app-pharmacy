@@ -15,6 +15,7 @@ const AddPrice = () => {
     const [price, setPrice] = useState('');
     const [selectedProduct, setSelectedProduct] = useState("");
     const [selectedUnit, setSelectedUnit] = useState("");
+    const [quantity, setQuantity] = useState('');
 
     const { allProducts } = useSelector((state) => state.product);
     const { units } = useSelector((state) => state.unit);
@@ -35,25 +36,26 @@ const AddPrice = () => {
     
         const cleanPrice = price.replace(/\./g, "");
     
-        if (!selectedProduct || !selectedUnit || !cleanPrice) {
+        if (!selectedProduct || !selectedUnit || !cleanPrice|| !quantity) {
           toast.error("Vui lòng điền đầy đủ thông tin!");
           return;
         }
     
         const newPrice = {
-          productId: selectedProduct,
-          unitId: selectedUnit,
-          price: parseInt(cleanPrice, 10),
+            productId: selectedProduct,
+            unitId: selectedUnit,
+            price: parseInt(cleanPrice, 10),
+           quantity: parseInt(quantity, 10)
         };
 
         console.log(newPrice)
     
         try {
-          await dispatch(createPrice(newPrice)).unwrap();
-          toast.success('Thêm giá thành công!')
-          navigate(-1);
+            await dispatch(createPrice(newPrice)).unwrap();
+            toast.success('Thêm giá thành công!')
+            navigate(-1);
         } catch (error) {
-          toast.error(error.message);
+            toast.error(error.message);
         }
     };
 
@@ -127,7 +129,21 @@ const AddPrice = () => {
                                         <span className="text-gray-500 ml-1">đ</span>
                                     </div>
                                 </div>
-                                
+
+                                {/* Số lượng */}
+                                <div className="flex flex-col items-start justify-center">
+                                    <label htmlFor="quantity" className="font-semibold mb-2">Số lượng</label>
+                                    <input
+                                        type="number"
+                                        id="quantity"
+                                        value={quantity}
+                                        onChange={(e) => setQuantity(e.target.value)}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                                        placeholder="Nhập số lượng"
+                                        min={1}
+                                    />
+                                </div>
+
                                 <button
                                     type="submit"
                                     className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"

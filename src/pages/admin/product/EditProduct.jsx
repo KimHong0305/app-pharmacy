@@ -25,7 +25,6 @@ const EditProduct = () => {
     };
 
     const [productName, setProductName] = useState(product.name);
-    const [quantity, setQuantity] = useState(product.quantity);
     const [categoryName, setCategoryName] = useState(product.category.id);
     const [company, setCompany] = useState(product.company.id);
     const [benefits, setBenefits] = useState(product.benefits);
@@ -84,7 +83,6 @@ const EditProduct = () => {
         const update = {
             id: product.id,
             name: productName || "",
-            quantity,
             categoryId: categoryName,
             companyId: company,
             benefits: benefits || "",
@@ -197,19 +195,6 @@ const EditProduct = () => {
                                     </div>
 
                                     <div className='md:col-span-1'>
-                                        {/* Số lượng */}
-                                        <label htmlFor="quantity" className="font-medium text-gray-700">
-                                            Số lượng <span className="text-red-500 ml-1">*</span>
-                                        </label>
-                                        <input
-                                            type="number"
-                                            id="quantity"
-                                            value={quantity}
-                                            onChange={(e) => setQuantity(e.target.value)}
-                                            className="mt-2 mb-5 w-full px-4 py-2 border border-gray-300 rounded-md"
-                                            placeholder="Nhập số lượng"
-                                            required
-                                        />
 
                                         {/* Công ty*/}
                                         <label htmlFor="company" className="font-medium text-gray-700">

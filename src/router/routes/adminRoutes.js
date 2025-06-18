@@ -1,10 +1,11 @@
 import { lazy } from "react";
 
+
 // Dashboard
 const AdminDashboard = lazy(() => import("../../pages/admin/AdminDashboard"));
 
 const Inventory = lazy(() => import("../../pages/admin/inventory/Inventory"));
-
+const SplitUnit = lazy(() => import("../../pages/admin/inventory/SplitUnit"));
 // Users
 const Users = lazy(() => import("../../pages/admin/Users"));
 const Employees = lazy(() => import("../../pages/admin/staff/Employees"));
@@ -74,6 +75,7 @@ export const adminRoutes = [
     { path: 'admin/coupons/edit/:id', element: <EditCoupon />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] },
 
     { path: 'admin/inventory', element: <Inventory />, role: 'ROLE_ADMIN' },
+    { path: 'admin/split-unit', element: <SplitUnit />, role: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] },
 ];
 
 export default adminRoutes;

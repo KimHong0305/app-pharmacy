@@ -92,6 +92,7 @@ const Coupon = () => {
     const typeMap = {
         PRODUCT: 'Giảm giá sản phẩm',
         DELIVERY: 'Giảm giá giao hàng',
+        OTHER: 'Khác'
     };
 
     return (

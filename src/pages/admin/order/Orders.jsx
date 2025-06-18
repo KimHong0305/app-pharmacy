@@ -18,9 +18,10 @@ import {
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { confirmOrder, getOrders } from '../../../store/Reducers/order/orderAdminReducer';
+import { confirmOrder, getOrders, sendEmail } from '../../../store/Reducers/order/orderAdminReducer';
 import { IoPrintOutline } from "react-icons/io5";
 import { FaRegSquareCheck } from "react-icons/fa6";
+import InsufficientStockDialog from '../../../components/InsufficientStockDialog';
 
 const Orders = () => {
 
@@ -31,6 +32,9 @@ const Orders = () => {
     const [size, setSize] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
     const [currentPage, setCurrentPage] = useState(0);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [insufficientProducts, setInsufficientProducts] = useState([]);
+    const [isInsufficientDialogOpen, setIsInsufficientDialogOpen] = useState(false);
+    const [email, setEmail] = useState(null);
 
     const { orders, totalPages } = useSelector((state) => state.orderAdmin);
     const { role } = useSelector((state) => state.auth); 
@@ -55,17 +59,24 @@ const Orders = () => {
         navigate(`/admin/orders/${order.id}`, { state: order });
     };
 
-    const handleConfirm = async(orderId) => {
-        console.log(orderId)
+    const handleConfirm = async (order) => {
         try {
-            await dispatch(confirmOrder(orderId)).unwrap();
-            toast.success('Cập nhật trạng thái đơn hàng thành công!');
+            setEmail(order.email)
+            const res = await dispatch(confirmOrder(order.id)).unwrap();
+
+            if (res.result && res.result.length > 0) {
+                setInsufficientProducts(res.result);
+                setIsInsufficientDialogOpen(true);
+                toast.warning("Có sản phẩm không đủ số lượng trong kho!");
+            } else {
+                toast.success(res.message);
+            }
+
             dispatch(getOrders({ page: currentPage, size }));
-          } catch (error) {
-            toast.error(error.message);
+        } catch (error) {
+            toast.error(error.message || "Lỗi xác nhận đơn hàng");
         }
-    }
-    console.log(role)
+    };
 
     return (
         <div className="px-2 md:px-4">
@@ -151,7 +162,7 @@ const Orders = () => {
                                             {!order.isConfirm && role === 'ROLE_EMPLOYEE' ? (
                                                 <button
                                                     className="flex items-center justify-center p-2 rounded-lg bg-green-200"
-                                                    onClick={() => handleConfirm(order.id)}
+                                                    onClick={() => handleConfirm(order)}
                                                 >
                                                     <FaRegSquareCheck className="text-green-400" />
                                                 </button>
@@ -216,6 +227,26 @@ const Orders = () => {
                 </div>
             </div>
             )}
+
+            <InsufficientStockDialog
+                open={isInsufficientDialogOpen}
+                onClose={() => setIsInsufficientDialogOpen(false)}
+                productList={insufficientProducts}
+                onCheckStock={() => {
+                    setIsInsufficientDialogOpen(false);
+                    navigate('/admin/split-unit', { state: { products: insufficientProducts } });
+                }}
+                onContactCustomer={async () => {
+                    setIsInsufficientDialogOpen(false);
+                    try {
+                        const res = await dispatch(sendEmail(email)).unwrap();
+                        toast.success('Đã liên hệ với khách thành công');
+                    } catch (error) {
+                        toast.error(error || 'Đã liên hệ với khách trước đó');
+                        console.error('Lỗi khi gửi email:', error);
+                    }
+                }}
+            />
 
         </div>
     );

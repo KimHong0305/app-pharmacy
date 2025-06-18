@@ -9,7 +9,8 @@ const VoucherDialog = ({ isOpen, onClose, vouchers, onSelectVoucher, totalPrice 
 
     const [selectedVouchers, setSelectedVouchers] = useState({
         PRODUCT: null,
-        DELIVERY: null
+        DELIVERY: null,
+        OTHER: null
     });
 
     const [manualCode, setManualCode] = useState("");
@@ -35,7 +36,7 @@ const VoucherDialog = ({ isOpen, onClose, vouchers, onSelectVoucher, totalPrice 
     };
 
     const handleApply = () => {
-        if (selectedVouchers.PRODUCT || selectedVouchers.DELIVERY) {
+        if (selectedVouchers.PRODUCT || selectedVouchers.DELIVERY || selectedVouchers.OTHER) {
             onSelectVoucher(selectedVouchers);
             onClose();
         }
@@ -53,6 +54,13 @@ const VoucherDialog = ({ isOpen, onClose, vouchers, onSelectVoucher, totalPrice 
 
         try {
             const coupon = await dispatch(getCouponById(code)).unwrap();
+            console.log(coupon)
+
+            if (!coupon || !coupon.expireDate || !coupon.couponType) {
+                setInputError("Mã không hợp lệ.");
+                return;
+            }
+
             const isValid = isVoucherValid(coupon);
 
             if (!isValid) {
@@ -71,10 +79,12 @@ const VoucherDialog = ({ isOpen, onClose, vouchers, onSelectVoucher, totalPrice 
                 ...prev,
                 [coupon.couponType]: coupon
             }));
-        } catch {
+        } catch (error) {
             setInputError("Không tìm thấy mã giảm giá.");
+            console.error("Lỗi khi tìm voucher:", error);
         }
     };
+
 
     const productVouchers = vouchers.filter(v => v.couponType === "PRODUCT");
     const deliveryVouchers = vouchers.filter(v => v.couponType === "DELIVERY");
@@ -118,7 +128,7 @@ const VoucherDialog = ({ isOpen, onClose, vouchers, onSelectVoucher, totalPrice 
             );
         });
 
-    const hasSelected = selectedVouchers.PRODUCT || selectedVouchers.DELIVERY;
+    const hasSelected = selectedVouchers.PRODUCT || selectedVouchers.DELIVERY || selectedVouchers.OTHER;
 
     return (
         <div className="fixed inset-0 flex justify-end bg-black bg-opacity-50 z-50">
@@ -148,28 +158,35 @@ const VoucherDialog = ({ isOpen, onClose, vouchers, onSelectVoucher, totalPrice 
                     {inputError && <p className="text-sm text-red-500 mt-1">{inputError}</p>}
                 </div>
 
-                {fetchedVoucher && !vouchers.some(v => v.id === fetchedVoucher.id) && (
+                {fetchedVoucher && (
                     <label
                         key={fetchedVoucher.id}
-                        className="flex items-center justify-between p-4 border-2 border-green-500 bg-green-50 rounded-xl mb-4"
+                        className={`flex items-center justify-between bg-slate-50 pr-4 rounded-lg mb-4
+                            ${
+                                !isVoucherValid(fetchedVoucher)
+                                    ? "opacity-60 cursor-not-allowed shadow"
+                                    : "shadow hover:shadow-lg cursor-pointer transition-shadow duration-200"
+                            }
+                        `}
                     >
                         <div className="flex items-center gap-4">
                             <img
                                 src={fetchedVoucher.image}
                                 alt={fetchedVoucher.name}
-                                className="w-14 h-14 rounded-lg object-cover"
+                                className="w-[80px] h-[120px] rounded-l-lg object-cover"
                             />
-                            <div>
+                            <div className="flex flex-col gap-1 py-2">
                                 <p className="font-semibold">{fetchedVoucher.name}</p>
-                                <p className="text-sm text-gray-600">{fetchedVoucher.description}</p>
+                                <p className="text-xs text-gray-600">{fetchedVoucher.description}</p>
                                 <p className="text-xs text-red-500">HSD: {fetchedVoucher.expireDate}</p>
                             </div>
                         </div>
                         <input
                             type="radio"
-                            className="accent-blue-500 w-5 h-5"
+                            className="accent-blue-500 w-5 h-5 ml-2"
                             checked={selectedVouchers[fetchedVoucher.couponType]?.id === fetchedVoucher.id}
                             onChange={() => handleSelectVoucher(fetchedVoucher)}
+                            disabled={!isVoucherValid(fetchedVoucher)}
                         />
                     </label>
                 )}

@@ -26,10 +26,7 @@ const Cart = () => {
   const token = localStorage.getItem('token');
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedVouchers, setSelectedVouchers] = useState({
-    PRODUCT: null,
-    DELIVERY: null
-  });
+  const [selectedVouchers, setSelectedVouchers] = useState({});
   const [discountAmount, setDiscountAmount] = useState(0);
 
   const calculateTotalDiscount = (vouchersObj, total) => {
@@ -165,7 +162,8 @@ const Cart = () => {
                     </div>
                     <button
                       onClick={() => {
-                        const updated = { ...selectedVouchers, [voucher.couponType]: null };
+                        const updated = { ...selectedVouchers };
+                        delete updated[voucher.couponType];
                         setSelectedVouchers(updated);
                       }}
                       className="text-[10px] text-red-500 hover:text-red-700 font-medium z-10"

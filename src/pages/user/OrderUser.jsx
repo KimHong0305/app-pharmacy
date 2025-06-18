@@ -35,9 +35,11 @@ const OrderUser = () => {
     const [selectedVouchers, setSelectedVouchers] = useState({
         PRODUCT: null,
         DELIVERY: null,
+        OTHER: null,
     });
     const [productDiscount, setProductDiscount] = useState(0);
     const [deliveryDiscount, setDeliveryDiscount] = useState(0);
+    const [otherDiscount, setOtherDiscount] = useState(0);
     const [shippingMethod, setShippingMethod] = useState("FAST");
     const [shippingFee, setShippingFee] = useState(0);
     const [service, setService] = useState(null);
@@ -93,6 +95,7 @@ const OrderUser = () => {
             couponIds: [
                 ...(selectedVouchers.PRODUCT ? [selectedVouchers.PRODUCT.id] : []),
                 ...(selectedVouchers.DELIVERY ? [selectedVouchers.DELIVERY.id] : []),
+                ...(selectedVouchers.OTHER ? [selectedVouchers.OTHER.id] : []),
             ],
             priceId: selectedProduct.price.id,
             addressId: defaultAddress.id,
@@ -346,6 +349,33 @@ const OrderUser = () => {
                                     </button>
                                 </div>
                             )}
+
+                            {selectedVouchers.OTHER && (
+                                <div className="my-2 flex justify-between items-center bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 shadow-sm relative overflow-hidden">
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-300 rounded-l-lg" />
+
+                                    <div className="flex items-center space-x-2 z-10">
+                                        <div className="bg-white text-blue-500 rounded-full p-1.5 flex items-center justify-center shadow-sm">
+                                            <FaTicketAlt className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-medium text-blue-700">
+                                                {selectedVouchers.OTHER.name}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        onClick={() => {
+                                            setSelectedVouchers((prev) => ({ ...prev, OTHER: null }));
+                                            setOtherDiscount(0); // Đảm bảo bạn có useState cho otherDiscount
+                                        }}
+                                        className="text-[10px] text-red-500 hover:text-red-700 font-medium z-10"
+                                    >
+                                        Hủy
+                                    </button>
+                                </div>
+                            )}
                         <p className="flex justify-between text-sm ">
                             <span>Tạm tính:</span>
                             <span>
@@ -362,7 +392,7 @@ const OrderUser = () => {
                             <div className="flex justify-between text-sm my-2">
                                 <span>Giảm giá sản phẩm:</span>
                                 <span className="text-red-500">
-                                    - {productDiscount.toLocaleString('vi-VN')}₫
+                                    - {(productDiscount + otherDiscount).toLocaleString('vi-VN')}₫
                                 </span>
                             </div>
                         )}
@@ -385,7 +415,7 @@ const OrderUser = () => {
                             </div>
                             <p className="text-xl font-semibold text-red-500">
                                 {/* <span className="text-xs line-through mr-1 text-gray-500">{selectedProduct.price.price}</span> */}
-                                {(selectedProduct.price.price + shippingFee - deliveryDiscount - productDiscount).toLocaleString("vi-VN", {
+                                {(selectedProduct.price.price + shippingFee - deliveryDiscount - productDiscount - otherDiscount).toLocaleString("vi-VN", {
                                     style: "currency",
                                     currency: "VND",
                                 })}
@@ -418,6 +448,12 @@ const OrderUser = () => {
                             shippingFee
                         );
                         setDeliveryDiscount(deliveryDiscount);
+
+                        const otherDiscount = calculateDiscount(
+                            selected.OTHER,
+                            selectedProduct.price.price
+                        );
+                        setOtherDiscount(otherDiscount);
 
                         setIsDialogOpen(false);
                     }}

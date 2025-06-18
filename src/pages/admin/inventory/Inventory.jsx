@@ -110,15 +110,13 @@ const Inventory = () => {
     };
 
     const filteredPrices = prices.filter((price) => {
-        const meetsExpiring = !filterExpiring || isExpiringSoon(price.expirationDate);
+        const meetsExpiring = !filterExpiring || isExpiringSoon(price.dateExpiration);
         const meetsLowStock = !filterLowStock || isLowStock(price.quantity);
         const matchesSearch = price.product.name.toLowerCase().includes(searchQuery);
         return meetsExpiring && meetsLowStock && matchesSearch;
     });
     
     const paginatedPrices = filteredPrices.slice(startIndex, endIndex);
-
-    const dateExpiration = '05/06/2025';
 
     return (
         <div className="px-2 md:px-4">
@@ -275,7 +273,9 @@ const Inventory = () => {
                         <TableCell>{new Intl.NumberFormat('vi-VN').format(price.price)} đ</TableCell>
                         <TableCell>{price.unit.name}</TableCell>
                         <TableCell>{price.quantity}</TableCell>
-                        <TableCell>{dateExpiration}</TableCell>
+                        <TableCell>
+                            {new Date(price.dateExpiration).toLocaleDateString('vi-VN')}
+                        </TableCell>
                         <TableCell>
                             <div className="flex flex-col gap-1">
                                 {isLowStock(price.quantity) && (
@@ -285,14 +285,14 @@ const Inventory = () => {
                                 </span>
                                 )}
 
-                                {isExpiringSoon(dateExpiration) && (
+                                {isExpiringSoon(price.dateExpiration) && (
                                 <span className="inline-flex items-center gap-1 px-1 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-lg">
                                     <FaClock className="text-red-500" />
                                     Sắp hết hạn
                                 </span>
                                 )}
 
-                                {!isLowStock(price.quantity) && !isExpiringSoon(dateExpiration) && (
+                                {!isLowStock(price.quantity) && !isExpiringSoon(price.dateExpiration) && (
                                 <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
                                     <FaCheckCircle className="text-green-500" />
                                     Còn hàng

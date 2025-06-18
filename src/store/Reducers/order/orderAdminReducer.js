@@ -52,6 +52,18 @@ export const confirmOrder = createAsyncThunk(
     }
 );
 
+export const sendEmail = createAsyncThunk(
+    "employee/sendEmail",
+    async (email, { rejectWithValue }) => {
+        try {
+        const response = await api.get(`/user/over/quantity?email=${email}`);
+        return response.data;
+        } catch (error) {
+        return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 const orderAdminSlice = createSlice({
     name: "orderAdmin",
     initialState: {

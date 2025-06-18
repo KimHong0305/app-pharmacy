@@ -27,7 +27,7 @@ const OrderCartUser = () => {
     const {
         cartItems,
         totalPrice,
-        selectedVouchers = { PRODUCT: null, DELIVERY: null },
+        selectedVouchers = { PRODUCT: null, DELIVERY: null, OTHER: null },
         discountAmount: initialDiscountAmount = 0
     } = location.state || {};
 
@@ -43,7 +43,12 @@ const OrderCartUser = () => {
         return Math.min(percentDiscount, voucher.max);
     };
 
-    console.log(selectedVouchers)
+    const calculateOtherDiscount = (voucher, price) => {
+        if (!voucher || voucher.couponType !== "OTHER") return 0;
+        const percentDiscount = (price * voucher.percent) / 100;
+        return Math.min(percentDiscount, voucher.max);
+    };
+
     const [defaultAddress, setDefaultAddress] = useState(null);
     const [showAddressList, setShowAddressList] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -61,6 +66,10 @@ const OrderCartUser = () => {
     );
     const [shippingDiscount, setShippingDiscount] = useState(
         calculateDeliveryDiscount(selectedVouchers.DELIVERY, shippingFee)
+    );
+
+    const [otherDiscount, setOtherDiscount] = useState(
+        calculateOtherDiscount(selectedVouchers.OTHER, totalPrice)
     );
 
     const handleRedirectPayment = usePaymentRedirect();
@@ -105,6 +114,7 @@ const OrderCartUser = () => {
             couponIds: [
                 ...(voucher?.PRODUCT ? [voucher.PRODUCT.id] : []),
                 ...(voucher?.DELIVERY ? [voucher.DELIVERY.id] : []),
+                ...(voucher?.OTHER ? [voucher.OTHER.id] : []),
             ],
             addressId: defaultAddress.id,
             paymentMethod: paymentMethod,
@@ -112,7 +122,7 @@ const OrderCartUser = () => {
             service_id: service,
         };
         
-        console.log(order)
+        // console.log(order)
         try{
             const result = await dispatch(createOrderCartUser(order)).unwrap();
             toast.success("Đặt hàng thành công!");
@@ -306,14 +316,11 @@ const OrderCartUser = () => {
                             <IoIosArrowForward />
                             </p>
                         </div>
-                        {(voucher?.PRODUCT || voucher?.DELIVERY) && (
+                        {(voucher?.PRODUCT || voucher?.DELIVERY || voucher?.OTHER) && (
                             <div className="space-y-2 my-2">
                                 {voucher?.PRODUCT && (
                                 <div className="flex justify-between items-center bg-orange-50 border border-orange-200 rounded-lg px-3 py-2 shadow-sm relative overflow-hidden">
-                                    {/* Thanh màu bên trái */}
                                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-300 rounded-l-lg" />
-
-                                    {/* Nội dung voucher */}
                                     <div className="flex items-center space-x-2 z-10">
                                     <div className="bg-white text-orange-500 rounded-full p-1.5 flex items-center justify-center shadow-sm">
                                         <FaTicketAlt className="h-4 w-4" />
@@ -322,8 +329,6 @@ const OrderCartUser = () => {
                                         <p className="text-xs font-medium text-orange-700">{voucher.PRODUCT.name}</p>
                                     </div>
                                     </div>
-
-                                    {/* Nút huỷ */}
                                     <button
                                     onClick={() => {
                                         setVoucher((prev) => ({ ...prev, PRODUCT: null }));
@@ -338,10 +343,7 @@ const OrderCartUser = () => {
 
                                 {voucher?.DELIVERY && (
                                 <div className="flex justify-between items-center bg-green-50 border border-green-200 rounded-lg px-3 py-2 shadow-sm relative overflow-hidden">
-                                    {/* Thanh màu bên trái */}
                                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-300 rounded-l-lg" />
-
-                                    {/* Nội dung voucher */}
                                     <div className="flex items-center space-x-2 z-10">
                                     <div className="bg-white text-green-600 rounded-full p-1.5 flex items-center justify-center shadow-sm">
                                         <FaTicketAlt className="h-4 w-4" />
@@ -350,8 +352,6 @@ const OrderCartUser = () => {
                                         <p className="text-xs font-medium text-green-700">{voucher.DELIVERY.name}</p>
                                     </div>
                                     </div>
-
-                                    {/* Nút huỷ */}
                                     <button
                                     onClick={() => {
                                         setVoucher((prev) => ({ ...prev, DELIVERY: null }));
@@ -363,8 +363,32 @@ const OrderCartUser = () => {
                                     </button>
                                 </div>
                                 )}
+
+                                {voucher?.OTHER && (
+                                <div className="flex justify-between items-center bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 shadow-sm relative overflow-hidden">
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-300 rounded-l-lg" />
+                                    <div className="flex items-center space-x-2 z-10">
+                                    <div className="bg-white text-blue-600 rounded-full p-1.5 flex items-center justify-center shadow-sm">
+                                        <FaTicketAlt className="h-4 w-4" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-medium text-blue-700">{voucher.OTHER.name}</p>
+                                    </div>
+                                    </div>
+                                    <button
+                                    onClick={() => {
+                                        setVoucher((prev) => ({ ...prev, OTHER: null }));
+                                        setOtherDiscount(0);
+                                    }}
+                                    className="text-[10px] text-red-500 hover:text-red-700 font-medium z-10"
+                                    >
+                                    Hủy
+                                    </button>
+                                </div>
+                                )}
                             </div>
                         )}
+
                         <p className="flex justify-between text-sm ">
                             <span>Tạm tính:</span>
                             <span>
@@ -389,7 +413,7 @@ const OrderCartUser = () => {
                         <div className="flex justify-between items-center my-2 text-sm ">
                             <p>Voucher:</p>
                             <p className="text-red-500">
-                            - {amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                            - {(amount + otherDiscount).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                             </p>
                         </div>
                         <div className="border-t border-gray-300 my-2"></div>
@@ -402,7 +426,7 @@ const OrderCartUser = () => {
                             </div>
                             <p className="text-xl font-semibold text-red-500">
                                 {/* <span className="text-xs line-through mr-1 text-gray-500">{totalPrice}</span> */}
-                                {(totalPrice - amount + shippingFee - shippingDiscount).toLocaleString("vi-VN", {
+                                {(totalPrice - amount + shippingFee - shippingDiscount - otherDiscount).toLocaleString("vi-VN", {
                                     style: "currency",
                                     currency: "VND",
                                 })}
@@ -429,6 +453,9 @@ const OrderCartUser = () => {
 
                         const deliveryDiscount = calculateDeliveryDiscount(selected.DELIVERY, shippingFee);
                         setShippingDiscount(deliveryDiscount);
+
+                        const otherDiscount = calculateOtherDiscount(selected.OTHER, totalPrice);
+                        setOtherDiscount(otherDiscount)
 
                         setIsDialogOpen(false);
                     }}

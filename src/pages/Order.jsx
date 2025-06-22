@@ -326,7 +326,7 @@ const Order = () => {
                                 <span className="font-normal text-sm text-gray-500">1 sản phẩm</span>
                             </div>
                             <span>
-                                {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(selectedProduct.price.price)}
+                                {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format((selectedProduct.price.price)+shippingFee)}
                             </span>
                         </p>
                         <button

@@ -9,62 +9,13 @@ import { AiOutlineInfoCircle } from "react-icons/ai";
 import ReactApexChart from 'react-apexcharts';
 import { IoIosArrowForward } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
+import { getAllPrices } from '../../store/Reducers/priceReducer';
 
 const AdminDashboard = () => {
 
-    const nearExpiryList = [
-    {
-        productName: 'Paracetamol 500mg',
-        lotCode: 'PA-2023-01',
-        expiryDate: '2025-07-15',
-        quantity: 24,
-    },
-    {
-        productName: 'Amoxicillin 250mg',
-        lotCode: 'AM-2023-03',
-        expiryDate: '2025-08-01',
-        quantity: 50,
-    },
-    {
-        productName: 'Vitamin C 1000mg',
-        lotCode: 'VC-2022-12',
-        expiryDate: '2025-06-25',
-        quantity: 18,
-    },
-    {
-        productName: 'Ibuprofen 400mg',
-        lotCode: 'IB-2023-04',
-        expiryDate: '2025-07-01',
-        quantity: 32,
-    },
-    {
-        productName: 'Cefuroxime 500mg',
-        lotCode: 'CE-2023-05',
-        expiryDate: '2025-09-10',
-        quantity: 20,
-    },
-    ];
-
-    const lowStockList = [
-    {
-        productName: 'Cetirizine 10mg',
-        lotCode: 'CT-2024-01',
-        quantity: 5,
-    },
-    {
-        productName: 'Omeprazole 20mg',
-        lotCode: 'OM-2023-12',
-        quantity: 8,
-    },
-    {
-        productName: 'Diazepam 5mg',
-        lotCode: 'DZ-2025-02',
-        quantity: 3,
-    },
-    ];
-
     const dispatch = useDispatch()
     const {totalUser, totalCompany, totalProduct, totalCategory} = useSelector(state=> state.dashboard)
+    const { prices, loading} = useSelector((state) => state.price);
 
     useEffect(() => {
         dispatch(getTotalUser());
@@ -80,6 +31,29 @@ const AdminDashboard = () => {
     const [selectedMonthInfo, setSelectedMonthInfo] = useState(null);
     const moneyArrayRef = useRef(Array(12).fill(0));
     const [showDetail, setShowDetail] = useState(false);
+
+    const isLowStock = (quantity) => {
+        return quantity <= 10;
+    };
+
+    const isExpiringSoon = (expirationDate) => {
+        const now = new Date();
+        const expiry = new Date(expirationDate);
+        const timeDiff = expiry - now;
+        const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+        return daysDiff <= 120;
+    };
+
+    const lowStockList = prices.filter((price) => {
+        const meetsLowStock = isLowStock(price.quantity);
+        return meetsLowStock;
+    });
+
+    const nearExpiryList = prices.filter((price) => {
+        const meetsExpiring = isExpiringSoon(price.dateExpiration);
+        return meetsExpiring;
+    });
+
     const [chartData, setChartData] = useState({
         series: [
             {
@@ -122,6 +96,7 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         dispatch(getStatisticYearForAdmin(2025));
+        dispatch(getAllPrices({ page: 0, size: 1000 }));
     }, [dispatch]);
 
     useEffect(() => {
@@ -274,7 +249,6 @@ const AdminDashboard = () => {
                         <thead className="bg-gray-50">
                         <tr>
                             <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tên thuốc</th>
-                            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Lô</th>
                             <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Hạn sử dụng</th>
                             <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Số lượng còn</th>
                         </tr>
@@ -283,11 +257,8 @@ const AdminDashboard = () => {
                         {nearExpiryList.length > 0 ? (
                             nearExpiryList.map((item) => (
                             <tr key={item.lotCode} className="hover:bg-gray-50">
-                                <td className="px-4 py-2 text-sm text-gray-900">{item.productName}</td>
-                                <td className="px-4 py-2 text-sm text-gray-900">{item.lotCode}</td>
-                                <td className="px-4 py-2 text-sm text-red-600 font-medium">
-                                {new Date(item.expiryDate).toLocaleDateString('vi-VN')}
-                                </td>
+                                <td className="px-4 py-2 text-sm text-gray-900">{item.product.name}</td>
+                                <td className="px-4 py-2 text-sm text-gray-900">{new Date(item.dateExpiration).toLocaleDateString('vi-VN')}</td>
                                 <td className="px-4 py-2 text-sm text-gray-900">{item.quantity}</td>
                             </tr>
                             ))
@@ -321,7 +292,7 @@ const AdminDashboard = () => {
                         <thead className="bg-gray-50">
                         <tr>
                             <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tên thuốc</th>
-                            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Lô</th>
+                            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Đơn vị</th>
                             <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Số lượng còn</th>
                         </tr>
                         </thead>
@@ -329,8 +300,8 @@ const AdminDashboard = () => {
                         {lowStockList.length > 0 ? (
                             lowStockList.map((item) => (
                             <tr key={item.lotCode} className="hover:bg-gray-50">
-                                <td className="px-4 py-2 text-sm text-gray-900">{item.productName}</td>
-                                <td className="px-4 py-2 text-sm text-gray-900">{item.lotCode}</td>
+                                <td className="px-4 py-2 text-sm text-gray-900">{item.product.name}</td>
+                                <td className="px-4 py-2 text-sm text-gray-900">{item.unit.name}</td>
                                 <td className="px-4 py-2 text-sm text-orange-600 font-medium">{item.quantity}</td>
                             </tr>
                             ))
